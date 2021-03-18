@@ -1,0 +1,56 @@
+﻿@using EsportStats.Shared.Enums
+
+<div class="text-center">
+    <p class="lead">Select a hero to compare by:</p>
+
+    <EditForm Model="selection" id="metric-selection">
+        <div class="form-group">
+            <InputSelect @bind-Value="selection.SelectedHero" class="form-control">
+                @foreach (var value in Enum.GetValues(typeof(Hero)))
+                {
+                    <option>@value</option>
+                }
+            </InputSelect>
+        </div>
+    </EditForm>
+</div>
+
+@if (selection.SelectedHero == Hero.PleaseSelect)
+{
+    <table class="hero-stats table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col" colspan="2">Player</th>
+                <th scope="col">Matches</th>                
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <p class="text-center text-muted font-italic">No hero has been selected yet!</p>
+}
+else
+{
+    <table class="hero-stats table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col" colspan="2">Player</th>
+                <th scope="col">Matches</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in entries)
+            {
+                <tr>
+                    <td><img class="w-100" src="@e.Friend.ImageUrl" /></td>
+                    <td>@e.Friend.Username</td>                                        
+                    <td class="text-right">
+                        @e.Value
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

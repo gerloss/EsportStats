@@ -1,0 +1,70 @@
+﻿@page "/lists"
+
+@using EsportStats.Shared.Enums
+
+<h3>Top Lists</h3>
+
+<div class="text-center">
+    <p class="lead">Select a statistic to compare by:</p>
+
+    <EditForm Model="selection" id="metric-selection">
+        <div class="form-group">
+            <InputSelect @bind-Value="selection.SelectedMetric" class="form-control">
+                @foreach (var value in Enum.GetValues(typeof(Metric)))
+                {
+                    <option>@value</option>
+                }
+            </InputSelect>
+        </div>
+    </EditForm>
+</div>
+
+@if (selection.SelectedMetric == Metric.PleaseSelect)
+{
+    <table class="toplist table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col" colspan="2">Player</th>
+                <th scope="col">Hero</th>
+                <th scope="col">Match ID</th>
+                <th scope="col">Value</th>
+            </tr>
+        </thead>
+        <tbody>
+        
+        </tbody>
+    </table>
+
+    <p class="text-center text-muted font-italic">No statistic has been selected yet!</p>
+}
+else
+{
+    <table class="toplist table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col" colspan="2">Player</th>
+                <th scope="col">Hero</th>
+                <th scope="col">Match ID</th>
+                <th scope="col">Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in entries)
+            {
+                <tr>
+                    <td><img class="w-100" src="@e.Friend.ImageUrl" /></td>
+                    <td>@e.Friend.Username</td>
+                    <td><img class="w-100" src="@e.HeroThumbnail" /></td>
+                    <td class="text-right">
+                        @e.MatchId
+                    </td>
+                    <td class="text-right">
+                        @e.Value
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+

@@ -1,0 +1,33 @@
+﻿@page "/heroes"
+
+<h3>Hero Statistics</h3>
+
+
+<ul class="nav nav-tabs" id="heroes-tabs-selector">
+    <li class="nav-item" @onclick="ToggleTab">
+        <span class="nav-link @(isToggled ? "active": "")" id="spammers-tab">Spammers</span>
+    </li>
+    <li class="nav-item" @onclick="ToggleTab">
+        <span class="nav-link @(!isToggled ? "active": "")" id="by-hero-tab">By Hero</span>
+    </li>
+</ul>
+
+<div class="tab-content" id="heroes-tabs">
+    <div class="tab-pane fade @(isToggled ? "show active": "")" id="spammers">
+        <Spammers />
+    </div>
+    <div class="tab-pane fade @(!isToggled ? "show active": "")" id="by-hero">
+        <HeroStats />
+    </div>
+</div>
+
+@code{
+
+    bool isToggled = true;
+
+    // Tabs use bootstrap css but clock events are handled by blazor instead of bootstrap js
+    private void ToggleTab()
+    {
+        isToggled = !isToggled;
+    }
+}

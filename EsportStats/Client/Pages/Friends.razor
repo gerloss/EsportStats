@@ -1,0 +1,62 @@
+﻿@using EsportStats.Shared.DTO
+
+<div class="row">
+    <div class="col-md-1">
+        <img class="w-100" src="@userimage" />
+    </div>
+    <div class="col-md-6">
+        <h3>Hello @username!</h3>
+        <p>You have the following friends who play Dota 2, you will be able to compare your statistics against theirs!</p>
+    </div>
+</div>
+
+<table class="friends table table-striped table-hover">
+    <thead>
+        <tr>            
+            <th scope="col" colspan="2">Player</th>
+            <th scope="col">Hours played</th>
+            <th scope="col">Last online</th>            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var f in friends)
+        {
+        <tr>
+            <td><img class="w-100" src="@f.ImageUrl" /></td>
+            <td>@f.Username</td>
+            <td class="text-right"> @f.HoursPlayed.ToString("D3") h</td>
+            <td>
+                @if (f.LastOnline.HasValue)
+                {
+                    <span>@f.LastOnline.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                }
+                else
+                {
+                    <span>Online</span>
+                }
+            </td>
+        </tr>
+        }
+    </tbody>
+
+</table>
+
+
+
+
+@code {
+
+    string username = "Username"; // TODO: get from steam account
+    string userimage = "http://placehold.it/160x160";
+
+    //TODO: Get friend list data
+
+    // Mocked data    
+    IEnumerable<SteamFriend> friends = Enumerable.Range(1,10).Select(x => new SteamFriend {
+            Username = $"Friend #{x}",
+            ImageUrl = "http://placehold.it/160x160",
+            HoursPlayed = x*242,
+            LastOnline = DateTime.Now.AddDays(-1 * x).AddHours(-2 * x)
+        });
+
+}

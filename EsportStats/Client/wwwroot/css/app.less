@@ -1,0 +1,207 @@
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+@import url('variables.less');
+
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: @text-color;
+    height: 100vh;
+    position: relative;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+app {
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    header {
+    }
+
+    main {
+        padding: 30px 0;
+        flex-grow: 2;
+    }
+
+    footer {
+        height: 3em;
+        font-size: 75%;
+        background-color: @gray-light;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;        
+    }
+}
+
+// table and column sizes
+@table-pad: 10px;
+@table-pad-sm: 4px;
+@col-image-w: 45px;
+@col-hero-w: 59px;
+@col-hours-w: 140px;
+@col-last-online-w: 200px;
+@col-matchid-w: 150px;
+
+table.friends {
+    thead tr th {
+        padding: @table-pad;
+
+        &:first-of-type {
+            padding: @table-pad @table-pad-sm;
+        }
+    }
+
+    tbody tr {
+        td {
+            padding: @table-pad-sm @table-pad;
+            vertical-align: middle;
+
+            &:first-of-type {
+                padding: @table-pad-sm;
+                width: @col-image-w;
+            }
+
+            &:nth-of-type(3) {
+                width: @col-hours-w;
+            }
+
+            &:nth-of-type(4) {
+                width: @col-last-online-w;
+            }
+        }
+    }
+}
+
+table.toplist {
+    thead tr th {
+        padding: @table-pad;
+
+        &:first-of-type {
+            padding: @table-pad @table-pad-sm;
+        }
+
+        &:nth-of-type(2) {
+            padding: @table-pad 0;
+            width: @col-hero-w;
+        }
+
+        &:nth-of-type(3) {
+            width: @col-matchid-w;
+        }
+    }
+
+    tbody tr {
+        td {
+            padding: @table-pad-sm @table-pad;
+            vertical-align: middle;
+
+            &:first-of-type {
+                padding: @table-pad-sm;
+                width: @col-image-w;
+            }
+
+            &:nth-of-type(3) {
+                padding: @table-pad-sm 0;
+                width: @col-hero-w;
+            }
+
+            &:nth-of-type(4) {
+                width: @col-matchid-w;
+            }
+        }
+    }
+}
+
+table.spammers {
+    thead tr th {
+        padding: @table-pad;
+
+        &:first-of-type {
+            padding: @table-pad @table-pad-sm;
+        }
+
+        &:nth-of-type(2) {
+            padding: @table-pad 0;
+            width: @col-hero-w;
+        }
+
+        &:nth-of-type(3) {
+            padding: @table-pad 0;
+            width: 150px;
+        }
+    }
+
+    tbody tr {
+        td {
+            padding: @table-pad-sm @table-pad;
+            vertical-align: middle;
+
+            &:first-of-type {
+                padding: @table-pad-sm;
+                width: @col-image-w;
+            }
+
+            &:nth-of-type(3) {
+                padding: @table-pad-sm 0;
+                width: @col-hero-w;
+            }
+        }
+    }
+}
+
+table.hero-stats {
+    thead tr th {
+        padding: @table-pad;
+
+        &:first-of-type {
+            padding: @table-pad @table-pad-sm;
+        }
+    }
+
+    tbody tr {
+        td {
+            padding: @table-pad-sm @table-pad;
+            vertical-align: middle;
+
+            &:first-of-type {
+                padding: @table-pad-sm;
+                width: @col-image-w;
+            }
+        }
+    }
+}
+
+form#metric-selection{
+    select{
+        display: inline-block;
+        width: 250px;
+    }
+}
+
+ul#heroes-tabs-selector {
+    span:hover {
+        cursor: pointer;
+    }
+}
+
+#heroes-tabs{
+    padding-top: 20px;
+}

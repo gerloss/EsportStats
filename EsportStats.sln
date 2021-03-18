@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EsportStats.Server", "EsportStats\Server\EsportStats.Server.csproj", "{95A316A5-018D-471C-B69F-DBDFE279E0FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EsportStats.Server", "EsportStats\Server\EsportStats.Server.csproj", "{95A316A5-018D-471C-B69F-DBDFE279E0FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EsportStats.Client", "EsportStats\Client\EsportStats.Client.csproj", "{4BE0F76B-8656-404A-ACDF-1CB37849B56A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EsportStats.Client", "EsportStats\Client\EsportStats.Client.csproj", "{4BE0F76B-8656-404A-ACDF-1CB37849B56A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EsportStats.Shared", "EsportStats\Shared\EsportStats.Shared.csproj", "{3764298E-4BD9-4635-87AC-930DEBE05936}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EsportStats.Shared", "EsportStats\Shared\EsportStats.Shared.csproj", "{3764298E-4BD9-4635-87AC-930DEBE05936}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,5 +33,6 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {108F8D90-B9CE-459A-97F0-8B440ADDF53A}
+		LessCompiler = 4be0f76b-8656-404a-acdf-1cb37849b56a
 	EndGlobalSection
 EndGlobal

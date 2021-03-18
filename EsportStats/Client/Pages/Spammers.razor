@@ -1,0 +1,44 @@
+﻿@using EsportStats.Shared.DTO
+
+<p>The biggest hero spammers: Players who played the most amount of games on a single hero:</p>
+
+<table class="spammers table table-striped table-hover">
+    <thead>
+        <tr>
+            <th scope="col" colspan="2">Player</th>
+            <th scope="col">Hero</th>            
+            <th scope="col">Matches</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var e in entries)
+        {
+            <tr>
+                <td><img class="w-100" src="@e.Friend.ImageUrl" /></td>
+                <td>@e.Friend.Username</td>
+                <td><img class="w-100" src="@e.HeroThumbnail" /></td>                
+                <td class="text-right">
+                    @e.Value
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+
+    IEnumerable<TopListEntry> entries = Enumerable.Range(1, 10).Select(x => new TopListEntry
+    {
+        Friend = new SteamFriend
+        {
+            Username = $"Friend #{x}",
+            ImageUrl = "http://placehold.it/160x160",
+            HoursPlayed = 0,
+            LastOnline = null
+        },
+        HeroThumbnail = "http://placehold.it/59x33",
+        MatchId = x,
+        Value = x * 1234
+    });
+
+}

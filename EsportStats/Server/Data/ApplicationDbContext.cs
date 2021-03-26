@@ -17,5 +17,21 @@ namespace EsportStats.Server.Data
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }
+
+        public DbSet<TopListEntry> TopListEntries { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<ApplicationUser>()                
+                .HasAlternateKey(u => u.SteamId);
+
+            builder.Entity<TopListEntry>()                
+                .HasOne(entry => entry.User)
+                .WithMany(user => user.TopListEntries)
+                .HasForeignKey(entry => entry.UserId);
+
+        }
     }
 }

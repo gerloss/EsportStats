@@ -1,38 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using EsportStats.Shared.DTO;
 using EsportStats.Shared.Enums;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace EsportStats.Client.Pages
 {
 
     public class MetricSelection
     {
-        public Metric SelectedMetric { get; set; }
+        public Metric Selected { get; set; }
+        public Metric CurrentlyDisplayed { get; set; }
     }
 
     public partial class Lists : ComponentBase
     {
-        MetricSelection selection = new MetricSelection();
+        [Inject]
+        private HttpClient _http { get; set; }
 
-        // Mocked data    
-        IEnumerable<TopListEntry> entries = Enumerable.Range(1, 10).Select(x => new TopListEntry
-        {
-            Friend = new SteamFriend
-            {        
-                Username = $"Friend #{x}",
-                ImageUrl = "http://placehold.it/160x160",
-                HoursPlayed = 0,
-                LastOnline = null
-            },
-            HeroThumbnail = "http://placehold.it/59x33",
-            MatchId = x,
-            Value = x * 1234
-        });
+        MetricSelection selection = new MetricSelection() 
+        { 
+            Selected = Metric.PleaseSelect, 
+            CurrentlyDisplayed = Metric.PleaseSelect 
+        };
+        IEnumerable<TopListEntry> entries = new List<TopListEntry>();
+        bool isLoading = false;
+
+        private async Task HandleChanges()
+        {            
+            try
+            {
+                var route = $"/Api/Lists/{(int)selection.Selected}";
+                var result = await _http.GetFromJsonAsync<IEnumerable<TopListEntry>>(route);
+                entries = result;
+                selection.CurrentlyDisplayed = selection.Selected;
+            }
+            catch (HttpRequestException ex)
+            {
+                // TODO: Logging/Error message
+                entries = new List<TopListEntry>();
+                selection.CurrentlyDisplayed = Metric.PleaseSelect;
+            }
+        }
+
 
     }
-    
+
 }

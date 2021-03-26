@@ -129,9 +129,10 @@ table.hero-stats tbody tr td:first-of-type {
   padding: 4px;
   width: 45px;
 }
-form#metric-selection select {
-  display: inline-block;
-  width: 250px;
+form#metric-selection .form-group {
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 ul#heroes-tabs-selector span:hover {
   cursor: pointer;

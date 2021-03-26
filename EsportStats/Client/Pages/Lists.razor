@@ -9,25 +9,31 @@
 
     <EditForm Model="selection" id="metric-selection">
         <div class="form-group">
-            <InputSelect @bind-Value="selection.SelectedMetric" class="form-control">
-                @foreach (var value in Enum.GetValues(typeof(Metric)))
-                {
-                    <option>@value</option>
-                }
-            </InputSelect>
+            <div class="input-group">
+                <InputSelect @bind-Value="selection.Selected"
+                             class="form-control">
+                    @foreach (var value in Enum.GetValues(typeof(Metric)))
+                    {
+                        <option>@value</option>
+                    }
+                </InputSelect>
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="button" @onclick="HandleChanges">Refresh</button>
+                </div>
+            </div>
         </div>
     </EditForm>
 </div>
 
-@if (selection.SelectedMetric == Metric.PleaseSelect)
+@if (selection.CurrentlyDisplayed == Metric.PleaseSelect)
 {
     <table class="toplist table table-striped table-hover">
         <thead>
             <tr>
                 <th scope="col" colspan="2">Player</th>
                 <th scope="col">Hero</th>
-                <th scope="col">Match ID</th>
-                <th scope="col">Value</th>
+                <th scope="col" class="text-right">Match ID</th>
+                <th scope="col" class="text-right">Value</th>
             </tr>
         </thead>
         <tbody>
@@ -45,7 +51,7 @@ else
                 <th scope="col" colspan="2">Player</th>
                 <th scope="col">Hero</th>
                 <th scope="col" class="text-right">Match ID</th>
-                <th scope="col" class="text-right">Value</th>
+                <th scope="col" class="text-right">@selection.CurrentlyDisplayed</th>
             </tr>
         </thead>
         <tbody>
@@ -66,5 +72,4 @@ else
         </tbody>
     </table>
 }
-
 

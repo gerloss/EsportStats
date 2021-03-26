@@ -47,6 +47,7 @@ namespace EsportStats.Server
             services.AddRazorPages();
 
             services.AddScoped<ISteamFriendService, SteamFriendService>();
+            services.AddScoped<ITopListService, TopListService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -28,6 +28,10 @@ namespace EsportStats.Server.Services
                 LastOnline = DateTime.Now.AddDays(-1 * x).AddHours(-2 * x)
             });
 
+            // It would make sense to check how up-to-date the data stored in the local db is...
+            // If its fresh enough we can serve from our own db. (Call to the 'SteamFriendManager' in the DAL.)
+            // If its outdated, we make a call to the external API (Steam or OpenDota)...
+
             return friends;
         }
 

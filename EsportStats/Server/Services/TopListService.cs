@@ -9,7 +9,7 @@ namespace EsportStats.Server.Services
 {
     public interface ITopListService
     {
-        public Task<IEnumerable<TopListEntry>> GetByMetricAsync(Metric metric);
+        public Task<IEnumerable<TopListEntryDTO>> GetByMetricAsync(Metric metric);
     }
 
     public class TopListService : ITopListService
@@ -17,13 +17,13 @@ namespace EsportStats.Server.Services
         /// <summary>
         /// Serves a list of the top values achieved by the selected metric from the currently authenticated user's friends.
         /// </summary>                
-        public async Task<IEnumerable<TopListEntry>> GetByMetricAsync(Metric metric)
+        public async Task<IEnumerable<TopListEntryDTO>> GetByMetricAsync(Metric metric)
         {
 
             // Mocked data. TODO: use Db/External api calls
-            IEnumerable<TopListEntry> entries = Enumerable.Range(1, 10).Select(x => new TopListEntry
+            IEnumerable<TopListEntryDTO> entries = Enumerable.Range(1, 10).Select(x => new TopListEntryDTO
             {
-                Friend = new SteamFriend
+                Friend = new SteamFriendDTO
                 {
                     Username = $"Friend #{x}",
                     ImageUrl = "http://placehold.it/160x160",

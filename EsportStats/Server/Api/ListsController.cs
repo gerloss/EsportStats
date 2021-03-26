@@ -27,7 +27,7 @@ namespace EsportStats.Server.Api
         /// </summary>        
         [HttpGet]
         [Route("{m:int?}")]
-        public async Task<ActionResult<ICollection<TopListEntry>>> Get(int? m)
+        public async Task<ActionResult<ICollection<TopListEntryDTO>>> Get(int? m)
         {
             if (!m.HasValue)
             {

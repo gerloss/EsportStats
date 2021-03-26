@@ -25,7 +25,7 @@ namespace EsportStats.Server.Api
         /// Gets the list of Steam friends of the currently authenticated user.
         /// </summary>        
         [HttpGet]
-        public async Task<ActionResult<ICollection<SteamFriend>>> Get() {
+        public async Task<ActionResult<ICollection<SteamFriendDTO>>> Get() {
 
             try
             {

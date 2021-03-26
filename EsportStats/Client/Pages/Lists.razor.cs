@@ -28,7 +28,7 @@ namespace EsportStats.Client.Pages
             Selected = Metric.PleaseSelect, 
             CurrentlyDisplayed = Metric.PleaseSelect 
         };
-        IEnumerable<TopListEntry> entries = new List<TopListEntry>();
+        IEnumerable<TopListEntryDTO> entries = new List<TopListEntryDTO>();
         bool isLoading = false;
 
         private async Task HandleChanges()
@@ -36,14 +36,14 @@ namespace EsportStats.Client.Pages
             try
             {
                 var route = $"/Api/Lists/{(int)selection.Selected}";
-                var result = await _http.GetFromJsonAsync<IEnumerable<TopListEntry>>(route);
+                var result = await _http.GetFromJsonAsync<IEnumerable<TopListEntryDTO>>(route);
                 entries = result;
                 selection.CurrentlyDisplayed = selection.Selected;
             }
             catch (HttpRequestException ex)
             {
                 // TODO: Logging/Error message
-                entries = new List<TopListEntry>();
+                entries = new List<TopListEntryDTO>();
                 selection.CurrentlyDisplayed = Metric.PleaseSelect;
             }
         }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace EsportStats.Shared.DTO
 {
-    public class SteamFriend
+    public class SteamFriendDTO
     {
         /// <summary>
         /// Steam username.

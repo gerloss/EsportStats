@@ -19,9 +19,9 @@ namespace EsportStats.Client.Pages
         HeroSelection selection = new HeroSelection();
 
         // Mocked data    
-        IEnumerable<TopListEntry> entries = Enumerable.Range(1, 10).Select(x => new TopListEntry
+        IEnumerable<TopListEntryDTO> entries = Enumerable.Range(1, 10).Select(x => new TopListEntryDTO
         {
-            Friend = new SteamFriend
+            Friend = new SteamFriendDTO
             {
                 Username = $"Friend #{x}",
                 ImageUrl = "http://placehold.it/160x160",

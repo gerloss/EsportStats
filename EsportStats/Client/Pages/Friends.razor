@@ -40,23 +40,3 @@
     </tbody>
 
 </table>
-
-
-
-
-@code {
-
-    string username = "Username"; // TODO: get from steam account
-    string userimage = "http://placehold.it/160x160";
-
-    //TODO: Get friend list data
-
-    // Mocked data    
-    IEnumerable<SteamFriend> friends = Enumerable.Range(1,10).Select(x => new SteamFriend {
-            Username = $"Friend #{x}",
-            ImageUrl = "http://placehold.it/160x160",
-            HoursPlayed = x*242,
-            LastOnline = DateTime.Now.AddDays(-1 * x).AddHours(-2 * x)
-        });
-
-}

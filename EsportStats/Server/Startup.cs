@@ -1,5 +1,6 @@
 using EsportStats.Server.Data;
 using EsportStats.Server.Models;
+using EsportStats.Server.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -44,6 +45,8 @@ namespace EsportStats.Server
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddScoped<ISteamFriendService, SteamFriendService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

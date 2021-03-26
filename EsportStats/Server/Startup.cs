@@ -1,5 +1,5 @@
 using EsportStats.Server.Data;
-using EsportStats.Server.Models;
+using EsportStats.Server.Data.Entities;
 using EsportStats.Server.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;

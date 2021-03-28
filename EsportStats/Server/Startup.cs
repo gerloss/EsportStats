@@ -1,4 +1,6 @@
 using AspNet.Security.OpenId.Steam;
+using EsportStats.Client;
+using EsportStats.Server.Common;
 using EsportStats.Server.Data;
 using EsportStats.Server.Data.Entities;
 using EsportStats.Server.Services;
@@ -36,7 +38,8 @@ namespace EsportStats.Server
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddClaimsPrincipalFactory<ApplicationUserClaimsPrincipalFactory>();
 
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();

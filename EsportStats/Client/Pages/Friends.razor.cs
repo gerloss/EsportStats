@@ -26,7 +26,7 @@ namespace EsportStats.Client.Pages
         {
             try
             {
-                friends = await _http.GetFromJsonAsync<IEnumerable<SteamFriendDTO>>("/Api/Friends");
+                friends = await _http.GetFromJsonAsync<IEnumerable<SteamFriendDTO>>("/Api/Profile/Friends");
             }
             catch (HttpRequestException e)
             {

@@ -1,14 +1,18 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
+@using System.Security.Claims
+
 @inject NavigationManager Navigation
 @inject SignOutSessionStateManager SignOutManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <AuthorizeView>
     <Authorized>
-        <li>
-            <a href="">@context.User.Identity.Name</a>
-            <span class="" @onclick="BeginSignOut">(Log out)</span>
+        <li class="current-user">
+            <img src="@context.User.FindFirst("picture")?.Value" /> 
+            <a href="@context.User.FindFirst("profile")?.Value" target="_blank">@context.User.FindFirst("name")?.Value</a>
+            <span @onclick="BeginSignOut">(Log out)</span>
         </li>
     </Authorized>
     <NotAuthorized>

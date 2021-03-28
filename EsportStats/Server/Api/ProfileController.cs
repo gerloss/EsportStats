@@ -1,5 +1,7 @@
 ﻿using EsportStats.Server.Services;
 using EsportStats.Shared.DTO;
+using IdentityModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,24 +24,34 @@ namespace EsportStats.Server.Api
 
 
         /// <summary>
+        /// Gets the steam profile for the currently authenticated user
+        /// </summary>        
+        [HttpGet]
+        [Route("{steamId?:uint}")]
+        [Authorize]
+        public async Task<ActionResult<SteamFriendDTO>> GetProfile(ulong? steamId)
+        {            
+            if (!steamId.HasValue)
+            {
+                steamId = Convert.ToUInt64(HttpContext.User.FindFirst(JwtClaimTypes.Id)?.Value);
+            }
+
+            var profile = await _steamService.GetSteamProfileAsync(steamId.Value);
+            return Ok(profile);
+
+        }
+
+
+        /// <summary>
         /// Gets the list of Steam friends of the currently authenticated user.
         /// </summary>        
         [Route("friends")]
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ICollection<SteamFriendDTO>>> GetFriends()
         {
-
-            try
-            {
-                var friends = await _steamService.GetFriendsAsync();
-                return Ok(friends.OrderByDescending(f => f.HoursPlayed));
-
-            }
-            catch
-            {
-                //TODO: Logging/Error message
-                return BadRequest(); // TODO: Proper response depending on what the error is
-            }
+            var friends = await _steamService.GetFriendsAsync();
+            return Ok(friends.OrderByDescending(f => f.HoursPlayed));
         }
     }
 }

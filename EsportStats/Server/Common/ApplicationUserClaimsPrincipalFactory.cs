@@ -23,6 +23,7 @@ namespace EsportStats.Server.Common
             claims.AddClaim(new Claim(JwtClaimTypes.Name, user.Name));
             claims.AddClaim(new Claim(JwtClaimTypes.Picture, user.AvatarFull));
             claims.AddClaim(new Claim(JwtClaimTypes.Profile, user.ProfileUrl));
+            claims.AddClaim(new Claim(JwtClaimTypes.Id, user.SteamId.ToString()));
 
             return claims;
         }

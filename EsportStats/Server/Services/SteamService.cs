@@ -13,7 +13,7 @@ namespace EsportStats.Server.Services
     public interface ISteamService
     {
         public Task<IEnumerable<SteamFriendDTO>> GetFriendsAsync();
-        public Task<IEnumerable<SteamFriendDTO>> GetFriendsAsync(string userId);
+        public Task<IEnumerable<SteamFriendDTO>> GetFriendsAsync(ulong steamId);
         public Task<SteamProfileExtDTO> GetSteamProfileAsync(ulong steamId);
 
     }
@@ -56,13 +56,15 @@ namespace EsportStats.Server.Services
         /// <summary>
         /// Serves the friends of the user with the id {userId}.
         /// </summary>        
-        public async Task<IEnumerable<SteamFriendDTO>> GetFriendsAsync(string userId)
+        public async Task<IEnumerable<SteamFriendDTO>> GetFriendsAsync(ulong steamId)
         {
             throw new NotImplementedException();
         }
 
         public async Task<SteamProfileExtDTO> GetSteamProfileAsync(ulong steamId)
         {
+            // TODO: Check if its already in db
+
             var steamOptions = new SteamOptions();
             _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);
             var key = steamOptions.Key;

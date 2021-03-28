@@ -14,6 +14,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.Net.Http;
+using EsportStats.Server.Common;
+using Microsoft.Extensions.Configuration;
+using EsportStats.Server.Services;
 
 namespace EsportStats.Server.Areas.Identity.Pages.Account
 {
@@ -24,17 +28,21 @@ namespace EsportStats.Server.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
+        private readonly ISteamService _steamService;
 
         public ExternalLoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             ILogger<ExternalLoginModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ISteamService steamService
+            )
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
             _emailSender = emailSender;
+            _steamService = steamService;
         }
 
         [BindProperty]
@@ -95,17 +103,57 @@ namespace EsportStats.Server.Areas.Identity.Pages.Account
             }
             else
             {
-                // If the user does not have an account, then ask the user to create an account.
-                ReturnUrl = returnUrl;
-                ProviderDisplayName = info.ProviderDisplayName;
-                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+                // If the user does not have an account, then create one automatically.
+                // In case of Steam OpenID Provider, the returned Claimed ID will contain the user's 64 bit SteamID.                
+                // More info at: https://steamcommunity.com/dev
+
+                var claim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                if (claim == null)
                 {
-                    Input = new InputModel
-                    {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                    };
+                    ErrorMessage = "Steam login unsuccessful.";
+                    return RedirectToPage("./Login");
                 }
-                return Page();
+
+                // The Claimed ID format is: https://steamcommunity.com/openid/id/<steamid>
+                var formattedId = claim.Value;
+                ulong steamId = Convert.ToUInt64(formattedId.Split('/', StringSplitOptions.RemoveEmptyEntries).Last());
+
+                var steamProfile = await _steamService.GetSteamProfileAsync(steamId);
+
+                var user = new ApplicationUser 
+                { 
+                    UserName = steamId.ToString(),
+                    Email = steamId.ToString(),
+                    SteamId = steamId,
+                    Name = steamProfile.Name,
+                    ProfileUrl = steamProfile.ProfileUrl,
+                    Avatar = steamProfile.Avatar,
+                    AvatarFull = steamProfile.AvatarFull,
+                    Timestamp = DateTime.Now
+                };
+
+                var createResult = await _userManager.CreateAsync(user);
+                if (createResult.Succeeded)
+                {
+                    var loginResult = await _userManager.AddLoginAsync(user, info);
+                    if (loginResult.Succeeded)
+                    {
+                        _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+                        await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
+                        return LocalRedirect(returnUrl);
+                    }
+                    else
+                    {
+                        ErrorMessage = "Error creating user for this Steam account.";
+                        return RedirectToPage("./Login");
+                    }
+                }
+                else
+                {
+                    ErrorMessage = "Error creating user for this Steam account.";
+                    return RedirectToPage("./Login");
+                }
+
             }
         }
 

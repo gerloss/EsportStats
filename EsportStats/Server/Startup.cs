@@ -48,8 +48,10 @@ namespace EsportStats.Server
             services.AddControllersWithViews();
             services.AddRazorPages();
 
-            services.AddScoped<ISteamFriendService, SteamFriendService>();
+            services.AddScoped<ISteamService, SteamService>();
             services.AddScoped<ITopListService, TopListService>();
+
+            services.AddHttpClient();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,7 +78,7 @@ namespace EsportStats.Server
 
             app.UseIdentityServer();
             app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseAuthorization();            
 
             app.UseEndpoints(endpoints =>
             {

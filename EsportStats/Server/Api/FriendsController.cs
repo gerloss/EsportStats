@@ -14,9 +14,9 @@ namespace EsportStats.Server.Api
     [ApiController]    
     public class FriendsController : ControllerBase
     {
-        private ISteamFriendService _steamFriendService { get; }
+        private ISteamService _steamFriendService { get; }
 
-        public FriendsController(ISteamFriendService steamFriendService)
+        public FriendsController(ISteamService steamFriendService)
         {
             _steamFriendService = steamFriendService;
         }

@@ -1,19 +1,37 @@
-﻿using EsportStats.Shared.DTO;
+﻿using EsportStats.Server.Common;
+using EsportStats.Shared.DTO;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace EsportStats.Server.Services
 {
-    public interface ISteamFriendService
+    public interface ISteamService
     {
         public Task<IEnumerable<SteamFriendDTO>> GetFriendsAsync();
         public Task<IEnumerable<SteamFriendDTO>> GetFriendsAsync(string userId);
+        public Task<SteamProfileExtDTO> GetSteamProfileAsync(ulong steamId);
+
     }
 
-    public class SteamFriendService : ISteamFriendService
+    public class SteamService : ISteamService
     {
+
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _cfg;
+
+        public SteamService(
+            IHttpClientFactory httpClientFactory,
+            IConfiguration cfg)
+        {
+            _httpClientFactory = httpClientFactory;
+            _cfg = cfg;
+        }
+
         /// <summary>
         /// Serves the friends of the currently authenticated user.
         /// </summary>        
@@ -41,6 +59,22 @@ namespace EsportStats.Server.Services
         public async Task<IEnumerable<SteamFriendDTO>> GetFriendsAsync(string userId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<SteamProfileExtDTO> GetSteamProfileAsync(ulong steamId)
+        {
+            var steamOptions = new SteamOptions();
+            _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);
+            var key = steamOptions.Key;
+            var playerInfoUrl = $"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={steamId}";
+
+            var httpClient = _httpClientFactory.CreateClient();
+            var steamInfoResponse = await httpClient.GetAsync(playerInfoUrl);
+
+            var response = await steamInfoResponse.Content.ReadAsStringAsync();
+            var parsedResponse = JsonConvert.DeserializeObject<SteamExtDTO>(response);
+
+            return parsedResponse.Response.Players.FirstOrDefault();
         }
     }
 }

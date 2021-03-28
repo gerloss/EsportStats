@@ -14,7 +14,7 @@ namespace EsportStats.Server.Services
     {
         public Task<IEnumerable<SteamFriendDTO>> GetFriendsAsync();
         public Task<IEnumerable<SteamFriendDTO>> GetFriendsAsync(ulong steamId);
-        public Task<SteamProfileExtDTO> GetSteamProfileAsync(ulong steamId);
+        public Task<SteamProfileExtDTO> GetSteamProfileExternalAsync(ulong steamId);        
 
     }
 
@@ -61,9 +61,11 @@ namespace EsportStats.Server.Services
             throw new NotImplementedException();
         }
 
-        public async Task<SteamProfileExtDTO> GetSteamProfileAsync(ulong steamId)
-        {
-            // TODO: Check if its already in db
+        /// <summary>
+        /// Gets the user profile from the Steam API.
+        /// </summary>
+        public async Task<SteamProfileExtDTO> GetSteamProfileExternalAsync(ulong steamId)
+        {            
 
             var steamOptions = new SteamOptions();
             _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);

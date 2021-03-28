@@ -9,6 +9,7 @@ namespace EsportStats.Server.Data
     public interface IUnitOfWork : IDisposable
     {
         ITopListEntryRepository TopListEntries { get; }
+        IUserRepository Users{ get; }
 
         int SaveChanges();
     }

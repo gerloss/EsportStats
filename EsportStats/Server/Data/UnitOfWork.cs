@@ -11,11 +11,13 @@ namespace EsportStats.Server.Data
         private readonly ApplicationDbContext _context;
 
         public ITopListEntryRepository TopListEntries { get; private set; }
+        public IUserRepository Users { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
             TopListEntries = new TopListEntryRepository(_context);
+            Users = new UserRepository(_context);
         }
 
         public int SaveChanges() //TODO: Async?

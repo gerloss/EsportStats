@@ -16,10 +16,12 @@ namespace EsportStats.Server.Api
     public class ProfileController : ControllerBase
     {
         private ISteamService _steamService { get; }
+        private IUserService _userService { get; }
 
-        public ProfileController(ISteamService steamService)
+        public ProfileController(ISteamService steamService, IUserService userService)
         {
             _steamService = steamService;
+            _userService = userService;
         }
 
 
@@ -36,9 +38,8 @@ namespace EsportStats.Server.Api
                 steamId = Convert.ToUInt64(HttpContext.User.FindFirst(JwtClaimTypes.Id)?.Value);
             }
 
-            var profile = await _steamService.GetSteamProfileAsync(steamId.Value);
+            var profile = await _userService.GetUserAsync(steamId.Value);
             return Ok(profile);
-
         }
 
 

@@ -118,7 +118,7 @@ namespace EsportStats.Server.Areas.Identity.Pages.Account
                 var formattedId = claim.Value;
                 ulong steamId = Convert.ToUInt64(formattedId.Split('/', StringSplitOptions.RemoveEmptyEntries).Last());
 
-                var steamProfile = await _steamService.GetSteamProfileAsync(steamId);
+                var steamProfile = await _steamService.GetSteamProfileExternalAsync(steamId);
 
                 var user = new ApplicationUser 
                 { 

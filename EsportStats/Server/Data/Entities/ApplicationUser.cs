@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using EsportStats.Server.Common;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -54,6 +55,16 @@ namespace EsportStats.Server.Data.Entities
         /// The top list entries of this user.
         /// </summary>
         public List<TopListEntry> TopListEntries { get; set; }
+
+
+        public void UpdateFromExternalProfile(SteamProfileExtDTO dto)
+        {
+            this.Name = dto.Name;
+            this.ProfileUrl = dto.ProfileUrl;
+            this.Avatar = dto.Avatar;
+            this.AvatarFull = dto.AvatarFull;
+            this.Timestamp = DateTime.Now;
+        }
 
     }
 }

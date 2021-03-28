@@ -51,6 +51,7 @@ namespace EsportStats.Server
             services.AddControllersWithViews();
             services.AddRazorPages();
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ISteamService, SteamService>();
             services.AddScoped<ITopListService, TopListService>();
 

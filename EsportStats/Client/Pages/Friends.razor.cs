@@ -20,18 +20,18 @@ namespace EsportStats.Client.Pages
         // TODO: get from steam account
         string username = "Username";
         string userimage = "http://placehold.it/160x160";
-        IEnumerable<SteamFriendDTO> friends = new List<SteamFriendDTO>();    
+        IEnumerable<SteamUserDTO> friends = new List<SteamUserDTO>();    
 
         protected override async Task OnInitializedAsync()
         {
             try
             {
-                friends = await _http.GetFromJsonAsync<IEnumerable<SteamFriendDTO>>("/Api/Profile/Friends");
+                friends = await _http.GetFromJsonAsync<IEnumerable<SteamUserDTO>>("/Api/Profile/Friends");
             }
             catch (HttpRequestException e)
             {
                 // TODO: Logging/Error message
-                friends = new List<SteamFriendDTO>();
+                friends = new List<SteamUserDTO>();
             }
         }
 

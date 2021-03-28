@@ -31,7 +31,7 @@ namespace EsportStats.Server.Api
         [HttpGet]
         [Route("{steamId?:uint}")]
         [Authorize]
-        public async Task<ActionResult<SteamFriendDTO>> GetProfile(ulong? steamId)
+        public async Task<ActionResult<SteamUserDTO>> GetProfile(ulong? steamId)
         {            
             if (!steamId.HasValue)
             {
@@ -49,7 +49,7 @@ namespace EsportStats.Server.Api
         [Route("friends")]
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<ICollection<SteamFriendDTO>>> GetFriends()
+        public async Task<ActionResult<ICollection<SteamUserDTO>>> GetFriends()
         {
             var friends = await _steamService.GetFriendsAsync();
             return Ok(friends.OrderByDescending(f => f.HoursPlayed));

@@ -23,7 +23,7 @@ namespace EsportStats.Server.Services
             // Mocked data. TODO: use Db/External api calls
             IEnumerable<TopListEntryDTO> entries = Enumerable.Range(1, 10).Select(x => new TopListEntryDTO
             {
-                Friend = new SteamFriendDTO
+                Friend = new SteamUserDTO
                 {
                     Username = $"Friend #{x}",
                     ImageUrl = "http://placehold.it/160x160",

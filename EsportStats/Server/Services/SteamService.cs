@@ -12,8 +12,8 @@ namespace EsportStats.Server.Services
 {
     public interface ISteamService
     {
-        public Task<IEnumerable<SteamFriendDTO>> GetFriendsAsync();
-        public Task<IEnumerable<SteamFriendDTO>> GetFriendsAsync(ulong steamId);
+        public Task<IEnumerable<SteamUserDTO>> GetFriendsAsync();
+        public Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(ulong steamId);
         public Task<SteamProfileExtDTO> GetSteamProfileExternalAsync(ulong steamId);        
 
     }
@@ -35,10 +35,10 @@ namespace EsportStats.Server.Services
         /// <summary>
         /// Serves the friends of the currently authenticated user.
         /// </summary>        
-        public async Task<IEnumerable<SteamFriendDTO>> GetFriendsAsync()
+        public async Task<IEnumerable<SteamUserDTO>> GetFriendsAsync()
         {
             // Mocked data. TODO: use Db/External api calls
-            IEnumerable<SteamFriendDTO> friends = Enumerable.Range(1, 10).Select(x => new SteamFriendDTO
+            IEnumerable<SteamUserDTO> friends = Enumerable.Range(1, 10).Select(x => new SteamUserDTO
             {
                 Username = $"Friend #{x}",
                 ImageUrl = "http://placehold.it/160x160",
@@ -56,7 +56,7 @@ namespace EsportStats.Server.Services
         /// <summary>
         /// Serves the friends of the user with the id {userId}.
         /// </summary>        
-        public async Task<IEnumerable<SteamFriendDTO>> GetFriendsAsync(ulong steamId)
+        public async Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(ulong steamId)
         {
             throw new NotImplementedException();
         }

@@ -1,3 +1,4 @@
+using AspNet.Security.OpenId.Steam;
 using EsportStats.Server.Data;
 using EsportStats.Server.Data.Entities;
 using EsportStats.Server.Services;
@@ -40,8 +41,9 @@ namespace EsportStats.Server
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
-            services.AddAuthentication()
-                .AddIdentityServerJwt();
+            services.AddAuthentication(opt => opt.DefaultAuthenticateScheme = SteamAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerJwt()
+                .AddSteam();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

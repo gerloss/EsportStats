@@ -54,6 +54,7 @@ namespace EsportStats.Server
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ISteamService, SteamService>();
             services.AddScoped<ITopListService, TopListService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddHttpClient();
         }
@@ -82,7 +83,7 @@ namespace EsportStats.Server
 
             app.UseIdentityServer();
             app.UseAuthentication();
-            app.UseAuthorization();            
+            app.UseAuthorization();                         
 
             app.UseEndpoints(endpoints =>
             {

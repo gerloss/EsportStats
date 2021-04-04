@@ -9,19 +9,22 @@ namespace EsportStats.Shared.DTO
         /// <summary>
         /// Steam username.
         /// </summary>
-        public string Username { get; set; }
+        public string Name { get; set; }
         /// <summary>
-        /// Steam avatar picture URL.
+        /// The full URL of the player's Steam Community profile.
+        /// </summary>        
+        public string ProfileUrl { get; set; }
+        /// <summary>
+        /// The full URL of the player's 32x32px avatar.
         /// </summary>
-        public string ImageUrl { get; set; }
+        public string Avatar { get; set; }
+        /// <summary>
+        /// The full URL of the player's 184x184px avatar.
+        /// </summary>
+        public string AvatarFull { get; set; }
         /// <summary>
         /// Hours spent in Dota 2.
         /// </summary>
-        public int HoursPlayed { get; set; }
-        /// <summary>
-        /// Date and time of users last online activity.
-        /// </summary>
-        /// <remarks>Null means user is currently online.</remarks>
-        public DateTime? LastOnline { get; set; }
+        public double? HoursPlayed { get; set; }
     }
 }

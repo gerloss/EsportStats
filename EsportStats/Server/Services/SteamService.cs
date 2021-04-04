@@ -40,10 +40,9 @@ namespace EsportStats.Server.Services
             // Mocked data. TODO: use Db/External api calls
             IEnumerable<SteamUserDTO> friends = Enumerable.Range(1, 10).Select(x => new SteamUserDTO
             {
-                Username = $"Friend #{x}",
-                ImageUrl = "http://placehold.it/160x160",
-                HoursPlayed = x * 242,
-                LastOnline = DateTime.Now.AddDays(-1 * x).AddHours(-2 * x)
+                Name = $"Friend #{x}",
+                Avatar = "http://placehold.it/160x160",
+                HoursPlayed = x * 242
             });
 
             // It would make sense to check how up-to-date the data stored in the local db is...

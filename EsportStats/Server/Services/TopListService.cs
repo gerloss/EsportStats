@@ -25,10 +25,9 @@ namespace EsportStats.Server.Services
             {
                 Friend = new SteamUserDTO
                 {
-                    Username = $"Friend #{x}",
-                    ImageUrl = "http://placehold.it/160x160",
-                    HoursPlayed = 0,
-                    LastOnline = null
+                    Name = $"Friend #{x}",
+                    Avatar = "http://placehold.it/160x160",
+                    HoursPlayed = 0
                 },
                 HeroThumbnail = "http://placehold.it/59x33",
                 MatchId = (int)metric,

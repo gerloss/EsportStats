@@ -1,40 +1,34 @@
 ﻿@using EsportStats.Shared.DTO
 
-<div class="row">
-    <div class="col-md-1">
-        <img class="w-100" src="@userimage" />
-    </div>
-    <div class="col-md-6">
-        <h3>Hello @username!</h3>
-        <p>You have the following friends who play Dota 2, you will be able to compare your statistics against theirs!</p>
-    </div>
-</div>
+
+<AuthorizeView>
+    <Authorized>
+        <div class="row">
+            <div class="col-md-1">
+                <img class="w-100" src="@context.User.FindFirst("picture")?.Value" />
+            </div>
+            <div class="col-md-6">
+                <h3>Hello @context.User.FindFirst("name")?.Value!</h3>
+                <p>You have the following friends who play Dota 2, you will be able to compare your statistics against theirs!</p>
+            </div>
+        </div>        
+    </Authorized>    
+</AuthorizeView>
 
 <table class="friends table table-striped table-hover">
     <thead>
         <tr>            
             <th scope="col" colspan="2">Player</th>
-            <th scope="col">Hours played</th>
-            <th scope="col">Last online</th>            
+            <th scope="col">Hours played</th>            
         </tr>
     </thead>
     <tbody>
         @foreach(var f in friends)
         {
         <tr>
-            <td><img class="w-100" src="@f.ImageUrl" /></td>
-            <td>@f.Username</td>
-            <td class="text-right"> @f.HoursPlayed.ToString("D3") h</td>
-            <td>
-                @if (f.LastOnline.HasValue)
-                {
-                    <span>@f.LastOnline.Value.ToString("yyyy-MM-dd HH:mm")</span>
-                }
-                else
-                {
-                    <span>Online</span>
-                }
-            </td>
+            <td><img class="w-100" src="@f.Avatar" /></td>
+            <td>@f.Name</td>
+            <td class="text-right"> @(f.HoursPlayed.HasValue ? $"{f.HoursPlayed.Value.ToString()} h" : "Unknown")</td>            
         </tr>
         }
     </tbody>

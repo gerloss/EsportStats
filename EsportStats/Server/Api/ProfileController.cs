@@ -15,44 +15,22 @@ namespace EsportStats.Server.Api
     [ApiController]
     public class ProfileController : ControllerBase
     {
-        private ISteamService _steamService { get; }
         private IUserService _userService { get; }
 
-        public ProfileController(ISteamService steamService, IUserService userService)
+        public ProfileController(IUserService userService)
         {
-            _steamService = steamService;
             _userService = userService;
         }
-
 
         /// <summary>
         /// Gets the steam profile for the currently authenticated user
         /// </summary>        
-        [HttpGet]
-        [Route("{steamId?:uint}")]
-        [Authorize]
-        public async Task<ActionResult<SteamUserDTO>> GetProfile(ulong? steamId)
-        {            
-            if (!steamId.HasValue)
-            {
-                steamId = Convert.ToUInt64(HttpContext.User.FindFirst(JwtClaimTypes.Id)?.Value);
-            }
-
-            var profile = await _userService.GetUserAsync(steamId.Value);
-            return Ok(profile);
-        }
-
-
-        /// <summary>
-        /// Gets the list of Steam friends of the currently authenticated user.
-        /// </summary>        
-        [Route("friends")]
-        [HttpGet]
-        [Authorize]
-        public async Task<ActionResult<ICollection<SteamUserDTO>>> GetFriends()
+        [HttpGet]        
+        public async Task<ActionResult<SteamUserDTO>> GetProfile()
         {
-            var friends = await _steamService.GetFriendsAsync();
-            return Ok(friends.OrderByDescending(f => f.HoursPlayed));
-        }
+            var id = Convert.ToUInt64(HttpContext.User.FindFirst(JwtClaimTypes.Id)?.Value);
+            var profile = await _userService.GetUserAsync(id);
+            return Ok(profile.ToDTO());
+        }        
     }
 }

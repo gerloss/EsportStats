@@ -1,4 +1,5 @@
 ﻿using EsportStats.Server.Common;
+using EsportStats.Shared.DTO;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -69,6 +70,18 @@ namespace EsportStats.Server.Data.Entities
             this.Avatar = dto.Avatar;
             this.AvatarFull = dto.AvatarFull;
             this.Timestamp = DateTime.Now;
+        }
+
+        public SteamUserDTO ToDTO()
+        {
+            return new SteamUserDTO
+            {
+                Name = this.Name,
+                ProfileUrl = this.ProfileUrl,
+                Avatar = this.Avatar,
+                AvatarFull = this.AvatarFull,
+                HoursPlayed = this.HoursPlayed,                
+            };
         }
     }
 }

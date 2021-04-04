@@ -43,52 +43,52 @@ namespace EsportStats.Server.Services
         public async Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(ulong steamId)
         {
             // Get the list of friend ids
-            var friendIds = await GetSteamFriendsExternalAsync(steamId);
-            var friends = new List<SteamUserDTO>();
+            var friendIds = await GetSteamFriendsExternalAsync(steamId);                        
 
             // Check if friends have an account
             var applicationUsers = await _unitOfWork.Users.GetUsersBySteamIdAsync(friendIds);
-            foreach (var applicationUser in applicationUsers)
-            {
-                // if the user profile is older than 24 hours
-                if (applicationUser.Timestamp < DateTime.Now.AddHours(-24))
-                {
-                    // refresh the user data
-                    var extProfile = await GetSteamProfileExternalAsync(applicationUser.SteamId);
-                    applicationUser.UpdateFromExternalProfile(extProfile);
-                    friends.Add(applicationUser.ToDTO());
-                }                
-            }
-
+            var appUsersToUpdate = applicationUsers.Where(u => u.Timestamp < DateTime.Now.AddHours(-24));            
+            
             // leave the users that were succesfully found
             friendIds = friendIds.Where(id => !applicationUsers.Any(f => f.SteamId == id));
 
             // Check if remaining friends have an External User
             var externalFriends = await _unitOfWork.ExternalUsers.GetExternalUsersBySteamIdAsync(friendIds);
-            foreach(var externalUser in externalFriends)
-            {
-                // if the profile data is older than 24 hours
-                if(externalUser.Timestamp < DateTime.Now.AddHours(-24))
-                {
-                    // refresh the user data
-                    var extProfile = await GetSteamProfileExternalAsync(externalUser.SteamId);
-                    externalUser.UpdateFromExternalProfile(extProfile);
-                    friends.Add(externalUser.ToDTO());
-                }
-            }
+            var externalsToUpdate = externalFriends.Where(u => u.Timestamp < DateTime.Now.AddHours(-24));
 
             // leave the users that were succesfully found
-            friendIds = friendIds.Where(id => !externalFriends.Any(f => f.SteamId == id));
+            var missingFriendIds = friendIds.Where(id => !externalFriends.Any(f => f.SteamId == id)).ToList();
 
-            // Get external data for the remaining users
-            var missingFriends = await GetSteamProfilesExternalAsync(friendIds);
-            var missingEntities = missingFriends.Select(friendFromSteamApi => new ExternalUser(friendFromSteamApi));
-            await _unitOfWork.ExternalUsers.AddRangeAsync(missingEntities);
-            friends.AddRange(missingEntities.Select(f => f.ToDTO()));
+            var idsToUpdate = new List<ulong>(missingFriendIds);
+            idsToUpdate.AddRange(externalsToUpdate.Select(u => u.SteamId));
+            idsToUpdate.AddRange(appUsersToUpdate.Select(u => u.SteamId));
 
+            // Get data for users that need to be updated or created in a single request
+            var updated = await GetSteamProfilesExternalAsync(idsToUpdate);
+
+            foreach(var appUser in appUsersToUpdate)
+            {
+                appUser.UpdateFromExternalProfile(updated.Single(u => u.SteamId == appUser.SteamId));
+            }
+
+            foreach (var extUser in externalsToUpdate)
+            {
+                extUser.UpdateFromExternalProfile(updated.Single(u => u.SteamId == extUser.SteamId));
+            }
+
+            // Create entities for the players that were not found in the db            
+            var createdExternalUsers = updated
+                .Where(u => appUsersToUpdate.Any(appUser => appUser.SteamId == u.SteamId)) // remove players that were already found within the ApplicationUsers
+                .Where(u => externalsToUpdate.Any(ext => ext.SteamId == u.SteamId))        // remove players that were already found in the ExternalUsers table
+                .Select(friendFromSteamApi => new ExternalUser(friendFromSteamApi));       // convert them to new ExternalUser entities
+            await _unitOfWork.ExternalUsers.AddRangeAsync(createdExternalUsers);
             _unitOfWork.SaveChanges();
 
-            //TODO: Optimize the number of external steam api requests (handle them in bulk if possible)
+            var friends = new List<SteamUserDTO>();
+            friends.AddRange(applicationUsers.Select(u => u.ToDTO()));
+            friends.AddRange(externalFriends.Select(u => u.ToDTO()));
+            friends.AddRange(createdExternalUsers.Select(u => u.ToDTO()));
+            
             //TODO: Handle the playtime values!
 
             return friends;

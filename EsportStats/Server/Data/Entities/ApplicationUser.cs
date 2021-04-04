@@ -47,15 +47,20 @@ namespace EsportStats.Server.Data.Entities
         public string AvatarFull { get; set; }
 
         /// <summary>
+        /// The date of the last update of this user's Steam data.
+        /// </summary>
+        [Required]
+        public DateTime Timestamp { get; set; }
+
+        /// <summary>
         /// Amount of Dota 2 played in minutes.
         /// </summary>
         public int? Playtime { get; set; }
 
         /// <summary>
-        /// The date of the last update of this user's Steam data.
+        /// The date of the last update of this user's playtime.
         /// </summary>
-        [Required]
-        public DateTime Timestamp { get; set; }
+        public DateTime? PlaytimeTimestamp { get; set; }
 
         /// <summary>
         /// The top list entries of this user.
@@ -81,7 +86,7 @@ namespace EsportStats.Server.Data.Entities
                 Avatar = this.Avatar,
                 AvatarFull = this.AvatarFull,
                 Playtime = this.Playtime,                
-            };
+        };
         }
     }
 }

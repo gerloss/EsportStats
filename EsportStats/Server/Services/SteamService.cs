@@ -137,8 +137,8 @@ namespace EsportStats.Server.Services
             friends.AddRange(externalFriends.Select(u => u.ToDTO()));
             friends.AddRange(createdExternalUsers.Select(u => u.ToDTO()));
             if (includePlayer)
-            {
-                friends.Add(currentUserProfile.ToDTO());
+            {                
+                friends.Add(currentUserProfile.ToDTO(isCurrentUser: true));
             }
                         
             _unitOfWork.SaveChanges();

@@ -26,5 +26,9 @@ namespace EsportStats.Shared.DTO
         /// Minutes spent in Dota 2.
         /// </summary>
         public int? Playtime { get; set; }
+        /// <summary>
+        /// is this the currently logged in user's profile?
+        /// </summary>
+        public bool IsCurrentPlayer { get; set; } = false;
     }
 }

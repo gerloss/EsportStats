@@ -27,9 +27,15 @@
         <tbody>
             @foreach (var f in friends)
             {
-                <tr>
+                <tr class="@(f.IsCurrentPlayer ? "font-weight-bold" : "")">
                     <td><img class="w-100" src="@f.Avatar" /></td>
-                    <td>@f.Name</td>
+                    <td>
+                        @f.Name 
+                        @if (f.IsCurrentPlayer)
+                        {
+                            <span>(You)</span>
+                        }
+                    </td>
 
                     @{
                         int hours = f.Playtime.Value / 60;

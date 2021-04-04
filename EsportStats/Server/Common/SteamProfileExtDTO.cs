@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EsportStats.Server.Common
 {
-    // DTO based on: https://developer.valvesoftware.com/wiki/Steam_Web_API#Public_Data
+    // DTO based on: https://partner.steamgames.com/doc/webapi/ISteamUser
 
     public class SteamExtDTO
     {

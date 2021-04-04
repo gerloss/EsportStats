@@ -16,6 +16,7 @@ namespace EsportStats.Server.Services
         public Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(ulong steamId);
         public Task<SteamProfileExtDTO> GetSteamProfileExternalAsync(ulong steamId);
         public Task<IEnumerable<SteamProfileExtDTO>> GetSteamProfilesExternalAsync(IEnumerable<ulong> steamIds);
+        public Task<IEnumerable<ulong>> GetSteamFriendsExternalAsync(ulong steamId);
 
     }
 
@@ -62,6 +63,24 @@ namespace EsportStats.Server.Services
         }
 
         /// <summary>
+        /// Gets the lost of the user's steam friends' ids.
+        /// </summary>        
+        public async Task<IEnumerable<ulong>> GetSteamFriendsExternalAsync(ulong steamId)
+        {
+            var steamOptions = new SteamOptions();
+            _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);
+
+            var friendsListUrl = $"https://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key={steamOptions.Key}&steamid={steamId}&relationship=friend";
+
+            var httpClient = _httpClientFactory.CreateClient();
+            var friendsListResponse = await httpClient.GetAsync(friendsListUrl);
+            var response = await friendsListResponse.Content.ReadAsStringAsync();
+            var parsedResponse = JsonConvert.DeserializeObject<SteamFriendsListExtDTO>(response);
+
+            return parsedResponse.FriendsList.Friends.Select(f => f.SteamId).ToList();
+        }
+
+        /// <summary>
         /// Gets the user profile from the Steam API.
         /// </summary>
         public async Task<SteamProfileExtDTO> GetSteamProfileExternalAsync(ulong steamId)
@@ -70,7 +89,7 @@ namespace EsportStats.Server.Services
             var steamOptions = new SteamOptions();
             _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);
             var key = steamOptions.Key;
-            var playerInfoUrl = $"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={steamId}";
+            var playerInfoUrl = $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={steamId}";
 
             var httpClient = _httpClientFactory.CreateClient();
             var steamInfoResponse = await httpClient.GetAsync(playerInfoUrl);
@@ -91,7 +110,7 @@ namespace EsportStats.Server.Services
             _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);
             var key = steamOptions.Key;
             var joinedIds = String.Join(',', steamIds);
-            var playerInfoUrl = $"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={joinedIds}";
+            var playerInfoUrl = $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={joinedIds}";
 
             var httpClient = _httpClientFactory.CreateClient();
             var steamInfoResponse = await httpClient.GetAsync(playerInfoUrl);

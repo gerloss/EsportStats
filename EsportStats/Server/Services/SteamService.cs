@@ -69,11 +69,24 @@ namespace EsportStats.Server.Services
             foreach(var appUser in appUsersToUpdate)
             {
                 appUser.UpdateFromExternalProfile(updated.Single(u => u.SteamId == appUser.SteamId));
+
+                // Playtime values can only be handled individually
+                if (!appUser.PlaytimeTimestamp.HasValue || appUser.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24))
+                {
+                    appUser.Playtime = await GetSteamPlaytimeMinutesAsync(appUser.SteamId);
+                    appUser.PlaytimeTimestamp = DateTime.Now;
+                }
             }
 
             foreach (var extUser in externalsToUpdate)
             {
                 extUser.UpdateFromExternalProfile(updated.Single(u => u.SteamId == extUser.SteamId));
+                // Playtime values can only be handled individually
+                if (!extUser.PlaytimeTimestamp.HasValue || extUser.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24))
+                {
+                    extUser.Playtime = await GetSteamPlaytimeMinutesAsync(extUser.SteamId);
+                    extUser.PlaytimeTimestamp = DateTime.Now;
+                }
             }
 
             // Create entities for the players that were not found in the db            
@@ -81,6 +94,14 @@ namespace EsportStats.Server.Services
                 .Where(u => appUsersToUpdate.Any(appUser => appUser.SteamId == u.SteamId)) // remove players that were already found within the ApplicationUsers
                 .Where(u => externalsToUpdate.Any(ext => ext.SteamId == u.SteamId))        // remove players that were already found in the ExternalUsers table
                 .Select(friendFromSteamApi => new ExternalUser(friendFromSteamApi));       // convert them to new ExternalUser entities
+
+            // Playtime values can only be handled individually
+            foreach (var extUser in createdExternalUsers)
+            {                
+                extUser.Playtime = await GetSteamPlaytimeMinutesAsync(extUser.SteamId);
+                extUser.PlaytimeTimestamp = DateTime.Now;                
+            }
+
             await _unitOfWork.ExternalUsers.AddRangeAsync(createdExternalUsers);
             _unitOfWork.SaveChanges();
 
@@ -88,9 +109,7 @@ namespace EsportStats.Server.Services
             friends.AddRange(applicationUsers.Select(u => u.ToDTO()));
             friends.AddRange(externalFriends.Select(u => u.ToDTO()));
             friends.AddRange(createdExternalUsers.Select(u => u.ToDTO()));
-            
-            //TODO: Handle the playtime values!
-
+                                    
             return friends;
         }
 

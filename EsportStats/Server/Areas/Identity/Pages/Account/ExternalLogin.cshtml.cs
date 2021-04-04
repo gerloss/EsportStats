@@ -18,6 +18,7 @@ using System.Net.Http;
 using EsportStats.Server.Common;
 using Microsoft.Extensions.Configuration;
 using EsportStats.Server.Services;
+using EsportStats.Server.Data;
 
 namespace EsportStats.Server.Areas.Identity.Pages.Account
 {
@@ -29,13 +30,15 @@ namespace EsportStats.Server.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
         private readonly ISteamService _steamService;
+        private readonly IUnitOfWork _unitOfWork;
 
         public ExternalLoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             ILogger<ExternalLoginModel> logger,
             IEmailSender emailSender,
-            ISteamService steamService
+            ISteamService steamService,
+            IUnitOfWork unitOfWork
             )
         {
             _signInManager = signInManager;
@@ -43,6 +46,7 @@ namespace EsportStats.Server.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _steamService = steamService;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty]
@@ -135,6 +139,26 @@ namespace EsportStats.Server.Areas.Identity.Pages.Account
                 var createResult = await _userManager.CreateAsync(user);
                 if (createResult.Succeeded)
                 {
+                    // check if the user's profile already existed as an ExternalUser entity
+                    var externalUser = await _unitOfWork.ExternalUsers.GetExternalUserBySteamIdAsync(user.SteamId);
+                    if (externalUser != null)
+                    {
+                        // get the external user's TopListEntries and move them to the newly created ApplicationUser
+                        var entries = await _unitOfWork.TopListEntries.GetTopEntriesForSteamIdAsync(user.SteamId);
+                        foreach(var entry in entries.Where(e => e.User == null && e.ExternalUserId.HasValue && e.ExternalUserId.Value == externalUser.SteamId))
+                        {
+                            entry.ExternalUserId = null;
+                            entry.UserId = user.Id;
+                        }
+
+                        _unitOfWork.ExternalUsers.Remove(externalUser);
+                        _unitOfWork.SaveChanges();
+                    }
+
+                    user.Playtime = await _steamService.GetSteamPlaytimeMinutesAsync(user.SteamId);
+                    user.PlaytimeTimestamp = DateTime.Now;
+                    await _userManager.UpdateAsync(user);                    
+
                     var loginResult = await _userManager.AddLoginAsync(user, info);
                     if (loginResult.Succeeded)
                     {

@@ -33,5 +33,9 @@ namespace EsportStats.Server.Data.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<TopListEntry>> GetTopEntriesForSteamIdAsync(ulong steamId)
+        {
+            return await AppDbContext.TopListEntries.Include(e => e.User).Where(e => e.ExternalUserId == steamId || e.User.SteamId == steamId).ToListAsync();
+        }
     }
 }

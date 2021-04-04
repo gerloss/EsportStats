@@ -10,5 +10,7 @@ namespace EsportStats.Server.Data.Repositories
     public interface ITopListEntryRepository : IRepository<TopListEntry>
     {
         Task<IEnumerable<TopListEntry>> GetTopEntriesByMetricAsync(Metric metric, int count = 20, ulong? steamId = null);
+        
+        Task<IEnumerable<TopListEntry>> GetTopEntriesForSteamIdAsync(ulong steamId);
     }
 }

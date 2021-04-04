@@ -14,7 +14,8 @@ namespace EsportStats.Server.Services
     {
         public Task<IEnumerable<SteamUserDTO>> GetFriendsAsync();
         public Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(ulong steamId);
-        public Task<SteamProfileExtDTO> GetSteamProfileExternalAsync(ulong steamId);        
+        public Task<SteamProfileExtDTO> GetSteamProfileExternalAsync(ulong steamId);
+        public Task<IEnumerable<SteamProfileExtDTO>> GetSteamProfilesExternalAsync(IEnumerable<ulong> steamIds);
 
     }
 
@@ -64,7 +65,7 @@ namespace EsportStats.Server.Services
         /// Gets the user profile from the Steam API.
         /// </summary>
         public async Task<SteamProfileExtDTO> GetSteamProfileExternalAsync(ulong steamId)
-        {            
+        {
 
             var steamOptions = new SteamOptions();
             _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);
@@ -78,6 +79,27 @@ namespace EsportStats.Server.Services
             var parsedResponse = JsonConvert.DeserializeObject<SteamExtDTO>(response);
 
             return parsedResponse.Response.Players.FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Gets the users profiles from the Steam API.
+        /// </summary>
+        public async Task<IEnumerable<SteamProfileExtDTO>> GetSteamProfilesExternalAsync(IEnumerable<ulong> steamIds)
+        {
+
+            var steamOptions = new SteamOptions();
+            _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);
+            var key = steamOptions.Key;
+            var joinedIds = String.Join(',', steamIds);
+            var playerInfoUrl = $"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={joinedIds}";
+
+            var httpClient = _httpClientFactory.CreateClient();
+            var steamInfoResponse = await httpClient.GetAsync(playerInfoUrl);
+
+            var response = await steamInfoResponse.Content.ReadAsStringAsync();
+            var parsedResponse = JsonConvert.DeserializeObject<SteamExtDTO>(response);
+
+            return parsedResponse.Response.Players;
         }
     }
 }

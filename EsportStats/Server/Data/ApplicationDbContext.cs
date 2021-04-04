@@ -19,6 +19,7 @@ namespace EsportStats.Server.Data
         }
 
         public DbSet<TopListEntry> TopListEntries { get; set; }
+        public DbSet<ExternalUser> ExternalUsers{ get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -27,10 +28,21 @@ namespace EsportStats.Server.Data
             builder.Entity<ApplicationUser>()                
                 .HasAlternateKey(u => u.SteamId);
 
+            builder.Entity<ExternalUser>()
+                .HasKey(u => u.SteamId);
+
+
             builder.Entity<TopListEntry>()                
                 .HasOne(entry => entry.User)
                 .WithMany(user => user.TopListEntries)
-                .HasForeignKey(entry => entry.UserId);
+                .HasForeignKey(entry => entry.UserId); // FK is a string, which is nullable, so this navigation property is optional!
+
+            builder.Entity<TopListEntry>()
+                .HasOne(entry => entry.ExternalUser)
+                .WithMany(user => user.TopListEntries)
+                .HasForeignKey(entry => entry.ExternalUserId); // FK is a ulong?, which is nullable, so this navigation property is optional!
+
+            // TODO: validate that a TopListEntry always has at least one of the two possible navigation properties (ApplicationUser or ExternalUser)
 
         }
     }

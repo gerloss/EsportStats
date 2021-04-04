@@ -22,5 +22,10 @@ namespace EsportStats.Server.Data.Repositories
         {
             return await AppDbContext.Users.SingleOrDefaultAsync(u => u.SteamId == steamId);
         }
+
+        public async Task<IEnumerable<ApplicationUser>> GetUsersBySteamIdAsync(IEnumerable<ulong> steamIds)
+        {
+            return await AppDbContext.Users.Where(u => steamIds.Contains(u.SteamId)).ToListAsync();
+        }
     }
 }

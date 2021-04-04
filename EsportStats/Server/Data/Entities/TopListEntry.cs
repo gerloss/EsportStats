@@ -10,11 +10,13 @@ namespace EsportStats.Server.Data.Entities
     public class TopListEntry
     {
         public int Id { get; set; }
-
-        [Required]
+        
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
-        
+
+        public ulong? ExternalUserId { get; set; }
+        public ExternalUser ExternalUser { get; set; }
+
         public Hero? Hero { get; set; }
 
         [Required]

@@ -1,5 +1,6 @@
 ﻿using EsportStats.Server.Services;
 using EsportStats.Shared.DTO;
+using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -26,8 +27,9 @@ namespace EsportStats.Server.Api
         [HttpGet]
         public async Task<ActionResult<ICollection<SteamUserDTO>>> GetFriends()
         {
-            var friends = await _steamService.GetFriendsAsync();
-            return Ok(friends.OrderByDescending(f => f.HoursPlayed));
+            var id = Convert.ToUInt64(HttpContext.User.FindFirst(JwtClaimTypes.Id)?.Value);
+            var friends = await _steamService.GetFriendsAsync(id);
+            return Ok(friends.OrderByDescending(f => f.Playtime));
         }
     }
 }

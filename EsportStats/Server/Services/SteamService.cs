@@ -20,8 +20,7 @@ namespace EsportStats.Server.Services
     }
 
     public class SteamService : ISteamService
-    {
-
+    {        
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _cfg;
 
@@ -30,7 +29,7 @@ namespace EsportStats.Server.Services
             IConfiguration cfg)
         {
             _httpClientFactory = httpClientFactory;
-            _cfg = cfg;
+            _cfg = cfg;            
         }
 
         /// <summary>
@@ -38,7 +37,11 @@ namespace EsportStats.Server.Services
         /// </summary>        
         public async Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(ulong steamId)
         {
+            var friendIds = await GetSteamFriendsExternalAsync(steamId);
+
             throw new NotImplementedException();
+
+            //return friendUsers.Select(u => u.ToDTO());
         }
 
         /// <summary>

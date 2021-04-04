@@ -11,6 +11,8 @@ namespace EsportStats.Server.Services
     public interface IUserService
     {
         public Task<ApplicationUser> GetUserAsync(ulong steamId);
+
+        public Task<IEnumerable<ApplicationUser>> GetUsersAsync(IEnumerable<ulong> steamIds);
     }
 
 
@@ -38,6 +40,24 @@ namespace EsportStats.Server.Services
             }
 
             return user;
+        }
+
+        public async Task<IEnumerable<ApplicationUser>> GetUsersAsync(IEnumerable<ulong> steamIds)
+        {
+            var users = await _unitOfWork.Users.GetUsersBySteamIdAsync(steamIds);
+
+            foreach(var user in users)
+            {
+                // if the user profile is older than 24 hours
+                if (user.Timestamp < DateTime.Now.AddHours(-24))
+                {
+                    var extProfile = await _steamService.GetSteamProfileExternalAsync(user.SteamId);
+                    user.UpdateFromExternalProfile(extProfile);                    
+                }
+                _unitOfWork.SaveChanges();
+            }
+
+            return users;
         }
     }
 }

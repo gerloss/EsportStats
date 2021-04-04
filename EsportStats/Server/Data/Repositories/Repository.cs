@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EsportStats.Server.Data.Repositories
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class
     {
         // This is still very generic, casting to the application specific DbContext should happen in the descendant repositories.
         protected readonly DbContext _context;
@@ -16,7 +16,7 @@ namespace EsportStats.Server.Data.Repositories
             _context = context;
         }
 
-        public async Task<TEntity> GetAsync(int id)
+        public async Task<TEntity> GetAsync(TKey id)
         {
             return await _context.Set<TEntity>().FindAsync(id);
         }

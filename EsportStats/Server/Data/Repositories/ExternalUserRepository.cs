@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EsportStats.Server.Data.Repositories
 {
-    public class ExternalUserRepository : Repository<ExternalUser>, IExternalUserRepository
+    public class ExternalUserRepository : Repository<ExternalUser, ulong>, IExternalUserRepository
     {
         public ApplicationDbContext AppDbContext
         {
@@ -17,12 +17,7 @@ namespace EsportStats.Server.Data.Repositories
         public ExternalUserRepository(ApplicationDbContext context) : base(context)
         {
         }                
-
-        public async Task<ExternalUser> GetExternalUserBySteamIdAsync(ulong steamId)
-        {
-            return await AppDbContext.ExternalUsers.SingleOrDefaultAsync(u => u.SteamId == steamId);
-        }
-
+        
         public async Task<IEnumerable<ExternalUser>> GetExternalUsersBySteamIdAsync(IEnumerable<ulong> steamIds)
         {
             return await AppDbContext.ExternalUsers.Where(u => steamIds.Contains(u.SteamId)).ToListAsync();

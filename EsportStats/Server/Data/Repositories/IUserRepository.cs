@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EsportStats.Server.Data.Repositories
 {
-    public interface IUserRepository : IRepository<ApplicationUser>
+    public interface IUserRepository : IRepository<ApplicationUser, string>
     {
         Task<ApplicationUser> GetUserBySteamIdAsync(ulong steamId);
         Task<IEnumerable<ApplicationUser>> GetUsersBySteamIdAsync(IEnumerable<ulong> steamIds);

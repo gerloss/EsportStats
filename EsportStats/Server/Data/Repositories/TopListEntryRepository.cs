@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EsportStats.Server.Data.Repositories
 {
-    public class TopListEntryRepository : Repository<TopListEntry>, ITopListEntryRepository
+    public class TopListEntryRepository : Repository<TopListEntry, int>, ITopListEntryRepository
     {
         public ApplicationDbContext AppDbContext
         {

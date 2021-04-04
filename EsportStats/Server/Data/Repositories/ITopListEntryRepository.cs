@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EsportStats.Server.Data.Repositories
 {
-    public interface ITopListEntryRepository : IRepository<TopListEntry>
+    public interface ITopListEntryRepository : IRepository<TopListEntry, int>
     {
         Task<IEnumerable<TopListEntry>> GetTopEntriesByMetricAsync(Metric metric, int count = 20, ulong? steamId = null);
         

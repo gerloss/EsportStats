@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace EsportStats.Server.Data.Repositories
 {
-    public interface IRepository<TEntity> where TEntity : class
+    public interface IRepository<TEntity, TKey> where TEntity : class
     {
-        Task<TEntity> GetAsync(int id);
+        Task<TEntity> GetAsync(TKey id);
         Task<IEnumerable<TEntity>> GetAllAsync();
         Task AddAsync(TEntity entity);
         Task AddRangeAsync(IEnumerable<TEntity> entities);

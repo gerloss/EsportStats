@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EsportStats.Server.Data.Repositories
 {
-    public class UserRepository : Repository<ApplicationUser>, IUserRepository
+    public class UserRepository : Repository<ApplicationUser, string>, IUserRepository
     {
         public ApplicationDbContext AppDbContext
         {

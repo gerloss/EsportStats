@@ -17,24 +17,39 @@
 
 <table class="friends table table-striped table-hover">
     <thead>
-        <tr>            
+        <tr>
             <th scope="col" colspan="2">Player</th>
-            <th scope="col">Hours played</th>            
+            <th scope="col">Hours played</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var f in friends)
-        {
-        <tr>
-            <td><img class="w-100" src="@f.Avatar" /></td>
-            <td>@f.Name</td>
+    @if (isLoaded)
+    {
+        <tbody>
+            @foreach (var f in friends)
+            {
+                <tr>
+                    <td><img class="w-100" src="@f.Avatar" /></td>
+                    <td>@f.Name</td>
 
-            @{
-                int hours = f.Playtime.Value / 60;
-             }
-            <td class="text-right"> @(f.Playtime.HasValue ? $"{hours} h" : "Unknown")</td>            
-        </tr>
-        }
-    </tbody>
+                    @{
+                        int hours = f.Playtime.Value / 60;
+                    }
+                    <td class="text-right"> @(f.Playtime.HasValue ? $"{hours} h" : "Unknown")</td>
+                </tr>
+            }
+        </tbody>      
+    }
+    else
+    {
+        <tbody>
+            <tr>
+                <td colspan="3" class="text-center">
+                    <p>Loading...</p>
+                    <p><img src="images/spinner.svg" alt="Loading..." title="Loading..."></p>
+                </td>
+            </tr>
+        </tbody>
+    }
+
 
 </table>

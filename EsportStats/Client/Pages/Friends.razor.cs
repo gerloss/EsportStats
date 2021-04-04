@@ -17,11 +17,13 @@ namespace EsportStats.Client.Pages
         [Inject]
         private HttpClient _http { get; set; }
         
-        IEnumerable<SteamUserDTO> friends = new List<SteamUserDTO>();    
+        IEnumerable<SteamUserDTO> friends = new List<SteamUserDTO>();
+        bool isLoaded = false;
 
         protected override async Task OnInitializedAsync()
         {            
             friends = await _http.GetFromJsonAsync<IEnumerable<SteamUserDTO>>("/Api/Friends");
+            isLoaded = true;
         }
     }
 

@@ -23,12 +23,16 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var f in friends)
+        @foreach (var f in friends)
         {
         <tr>
             <td><img class="w-100" src="@f.Avatar" /></td>
             <td>@f.Name</td>
-            <td class="text-right"> @(f.Playtime.HasValue ? $"{f.Playtime.Value.ToString()} h" : "Unknown")</td>            
+
+            @{
+                int hours = f.Playtime.Value / 60;
+             }
+            <td class="text-right"> @(f.Playtime.HasValue ? $"{hours} h" : "Unknown")</td>            
         </tr>
         }
     </tbody>

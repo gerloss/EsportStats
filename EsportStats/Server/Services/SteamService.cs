@@ -12,7 +12,6 @@ namespace EsportStats.Server.Services
 {
     public interface ISteamService
     {
-        public Task<IEnumerable<SteamUserDTO>> GetFriendsAsync();
         public Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(ulong steamId);
         public Task<SteamProfileExtDTO> GetSteamProfileExternalAsync(ulong steamId);
         public Task<IEnumerable<SteamProfileExtDTO>> GetSteamProfilesExternalAsync(IEnumerable<ulong> steamIds);
@@ -32,26 +31,6 @@ namespace EsportStats.Server.Services
         {
             _httpClientFactory = httpClientFactory;
             _cfg = cfg;
-        }
-
-        /// <summary>
-        /// Serves the friends of the currently authenticated user.
-        /// </summary>        
-        public async Task<IEnumerable<SteamUserDTO>> GetFriendsAsync()
-        {
-            // Mocked data. TODO: use Db/External api calls
-            IEnumerable<SteamUserDTO> friends = Enumerable.Range(1, 10).Select(x => new SteamUserDTO
-            {
-                Name = $"Friend #{x}",
-                Avatar = "http://placehold.it/160x160",
-                HoursPlayed = x * 242
-            });
-
-            // It would make sense to check how up-to-date the data stored in the local db is...
-            // If its fresh enough we can serve from our own db. (Call to the 'SteamFriendManager' in the DAL.)
-            // If its outdated, we make a call to the external API (Steam or OpenDota)...
-
-            return friends;
         }
 
         /// <summary>

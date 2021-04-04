@@ -1,4 +1,6 @@
 ﻿using EsportStats.Server.Common;
+using EsportStats.Server.Data;
+using EsportStats.Server.Data.Entities;
 using EsportStats.Shared.DTO;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -20,28 +22,76 @@ namespace EsportStats.Server.Services
     }
 
     public class SteamService : ISteamService
-    {        
+    {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _cfg;
 
         public SteamService(
             IHttpClientFactory httpClientFactory,
-            IConfiguration cfg)
+            IConfiguration cfg,
+            IUnitOfWork unitOfWork)
         {
             _httpClientFactory = httpClientFactory;
-            _cfg = cfg;            
+            _cfg = cfg;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Serves the friends of the user with the id {userId}.
+        /// Serves the friends of the user with the id {steamId}.
         /// </summary>        
         public async Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(ulong steamId)
         {
+            // Get the list of friend ids
             var friendIds = await GetSteamFriendsExternalAsync(steamId);
+            var friends = new List<SteamUserDTO>();
 
-            throw new NotImplementedException();
+            // Check if friends have an account
+            var applicationUsers = await _unitOfWork.Users.GetUsersBySteamIdAsync(friendIds);
+            foreach (var applicationUser in applicationUsers)
+            {
+                // if the user profile is older than 24 hours
+                if (applicationUser.Timestamp < DateTime.Now.AddHours(-24))
+                {
+                    // refresh the user data
+                    var extProfile = await GetSteamProfileExternalAsync(applicationUser.SteamId);
+                    applicationUser.UpdateFromExternalProfile(extProfile);
+                    friends.Add(applicationUser.ToDTO());
+                }                
+            }
 
-            //return friendUsers.Select(u => u.ToDTO());
+            // leave the users that were succesfully found
+            friendIds = friendIds.Where(id => !applicationUsers.Any(f => f.SteamId == id));
+
+            // Check if remaining friends have an External User
+            var externalFriends = await _unitOfWork.ExternalUsers.GetExternalUsersBySteamIdAsync(friendIds);
+            foreach(var externalUser in externalFriends)
+            {
+                // if the profile data is older than 24 hours
+                if(externalUser.Timestamp < DateTime.Now.AddHours(-24))
+                {
+                    // refresh the user data
+                    var extProfile = await GetSteamProfileExternalAsync(externalUser.SteamId);
+                    externalUser.UpdateFromExternalProfile(extProfile);
+                    friends.Add(externalUser.ToDTO());
+                }
+            }
+
+            // leave the users that were succesfully found
+            friendIds = friendIds.Where(id => !externalFriends.Any(f => f.SteamId == id));
+
+            // Get external data for the remaining users
+            var missingFriends = await GetSteamProfilesExternalAsync(friendIds);
+            var missingEntities = missingFriends.Select(friendFromSteamApi => new ExternalUser(friendFromSteamApi));
+            await _unitOfWork.ExternalUsers.AddRangeAsync(missingEntities);
+            friends.AddRange(missingEntities.Select(f => f.ToDTO()));
+
+            _unitOfWork.SaveChanges();
+
+            //TODO: Optimize the number of external steam api requests (handle them in bulk if possible)
+            //TODO: Handle the playtime values!
+
+            return friends;
         }
 
         /// <summary>

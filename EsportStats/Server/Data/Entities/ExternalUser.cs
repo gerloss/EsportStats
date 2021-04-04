@@ -13,6 +13,22 @@ namespace EsportStats.Server.Data.Entities
     /// </summary>
     public class ExternalUser
     {
+        public ExternalUser()
+        {
+        }
+
+        public ExternalUser(SteamProfileExtDTO dto)
+        {
+            this.SteamId = dto.SteamId;
+            this.Name = dto.Name;
+            this.ProfileUrl = dto.ProfileUrl;
+            this.Avatar = dto.Avatar;
+            this.AvatarFull = dto.AvatarFull;
+            this.Playtime = null;
+            this.Timestamp = DateTime.Now;
+        }
+
+
         /// <summary>
         /// 64bit SteamID of the user.
         /// </summary>

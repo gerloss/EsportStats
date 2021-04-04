@@ -44,7 +44,7 @@ namespace EsportStats.Server
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
-            services.AddAuthentication(opt => opt.DefaultAuthenticateScheme = SteamAuthenticationDefaults.AuthenticationScheme)
+            services.AddAuthentication()
                 .AddIdentityServerJwt()
                 .AddSteam();
 

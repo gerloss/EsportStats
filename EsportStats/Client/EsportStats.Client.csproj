@@ -30,4 +30,8 @@
     <ProjectReference Include="..\Shared\EsportStats.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>

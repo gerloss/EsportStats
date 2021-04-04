@@ -14,6 +14,7 @@ namespace EsportStats.Server.Services
 {
     public interface ISteamService
     {
+        public Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(string userId);
         public Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(ulong steamId);
         public Task<SteamProfileExtDTO> GetSteamProfileExternalAsync(ulong steamId);
         public Task<IEnumerable<SteamProfileExtDTO>> GetSteamProfilesExternalAsync(IEnumerable<ulong> steamIds);
@@ -35,6 +36,15 @@ namespace EsportStats.Server.Services
             _httpClientFactory = httpClientFactory;
             _cfg = cfg;
             _unitOfWork = unitOfWork;
+        }
+
+        /// <summary>
+        /// Serves the friends of the user with the given userid.
+        /// </summary>        
+        public async Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(string userId)
+        {
+            var user = await _unitOfWork.Users.GetAsync(userId);
+            return await GetFriendsAsync(user.SteamId);
         }
 
         /// <summary>
@@ -68,31 +78,18 @@ namespace EsportStats.Server.Services
 
             foreach(var appUser in appUsersToUpdate)
             {
-                appUser.UpdateFromExternalProfile(updated.Single(u => u.SteamId == appUser.SteamId));
-
-                // Playtime values can only be handled individually
-                if (!appUser.PlaytimeTimestamp.HasValue || appUser.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24))
-                {
-                    appUser.Playtime = await GetSteamPlaytimeMinutesAsync(appUser.SteamId);
-                    appUser.PlaytimeTimestamp = DateTime.Now;
-                }
+                appUser.UpdateFromExternalProfile(updated.Single(u => u.SteamId == appUser.SteamId));                
             }
 
             foreach (var extUser in externalsToUpdate)
             {
-                extUser.UpdateFromExternalProfile(updated.Single(u => u.SteamId == extUser.SteamId));
-                // Playtime values can only be handled individually
-                if (!extUser.PlaytimeTimestamp.HasValue || extUser.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24))
-                {
-                    extUser.Playtime = await GetSteamPlaytimeMinutesAsync(extUser.SteamId);
-                    extUser.PlaytimeTimestamp = DateTime.Now;
-                }
+                extUser.UpdateFromExternalProfile(updated.Single(u => u.SteamId == extUser.SteamId));                                
             }
 
             // Create entities for the players that were not found in the db            
             var createdExternalUsers = updated
-                .Where(u => appUsersToUpdate.Any(appUser => appUser.SteamId == u.SteamId)) // remove players that were already found within the ApplicationUsers
-                .Where(u => externalsToUpdate.Any(ext => ext.SteamId == u.SteamId))        // remove players that were already found in the ExternalUsers table
+                .Where(u => !appUsersToUpdate.Any(appUser => appUser.SteamId == u.SteamId)) // remove players that were already found within the ApplicationUsers
+                .Where(u => !externalsToUpdate.Any(ext => ext.SteamId == u.SteamId))        // remove players that were already found in the ExternalUsers table
                 .Select(friendFromSteamApi => new ExternalUser(friendFromSteamApi));       // convert them to new ExternalUser entities
 
             // Playtime values can only be handled individually
@@ -101,8 +98,29 @@ namespace EsportStats.Server.Services
                 extUser.Playtime = await GetSteamPlaytimeMinutesAsync(extUser.SteamId);
                 extUser.PlaytimeTimestamp = DateTime.Now;                
             }
+            if (createdExternalUsers.Any())
+            {
+                await _unitOfWork.ExternalUsers.AddRangeAsync(createdExternalUsers);
+            }
 
-            await _unitOfWork.ExternalUsers.AddRangeAsync(createdExternalUsers);
+            // Playtime values can only be handled individually
+            // TODO: display friend list on front end, and update these values later asynchronously, because this can take ~250ms
+            foreach(var user in applicationUsers.Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
+            {
+                user.Playtime = await GetSteamPlaytimeMinutesAsync(user.SteamId);
+                user.PlaytimeTimestamp = DateTime.Now;                
+            }
+            foreach (var user in externalFriends.Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
+            {
+                user.Playtime = await GetSteamPlaytimeMinutesAsync(user.SteamId);
+                user.PlaytimeTimestamp = DateTime.Now;
+            }
+            foreach (var user in createdExternalUsers.Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
+            {
+                user.Playtime = await GetSteamPlaytimeMinutesAsync(user.SteamId);
+                user.PlaytimeTimestamp = DateTime.Now;
+            }
+
             _unitOfWork.SaveChanges();
 
             var friends = new List<SteamUserDTO>();
@@ -110,7 +128,7 @@ namespace EsportStats.Server.Services
             friends.AddRange(externalFriends.Select(u => u.ToDTO()));
             friends.AddRange(createdExternalUsers.Select(u => u.ToDTO()));
                                     
-            return friends;
+            return friends.Where(f => f.Playtime.HasValue && f.Playtime.Value > 0);
         }
 
         /// <summary>
@@ -149,8 +167,15 @@ namespace EsportStats.Server.Services
             var playtimeResponse = await httpClient.GetAsync(playtimeUrl);
             var response = await playtimeResponse.Content.ReadAsStringAsync();
             var parsedResponse = JsonConvert.DeserializeObject<SteamGameStatsExtDTO>(response);
-
-            return parsedResponse.Response.Games.SingleOrDefault(g => g.AppId == steamOptions.AppId)?.PlaytimeForeverMinutes ?? 0;
+            
+            if (parsedResponse.Response.GameCount == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                return parsedResponse.Response.Games.SingleOrDefault(g => g.AppId == steamOptions.AppId)?.PlaytimeForeverMinutes ?? 0;
+            }
         }
 
         /// <summary>

@@ -140,7 +140,7 @@ namespace EsportStats.Server.Areas.Identity.Pages.Account
                 if (createResult.Succeeded)
                 {
                     // check if the user's profile already existed as an ExternalUser entity
-                    var externalUser = await _unitOfWork.ExternalUsers.GetExternalUserBySteamIdAsync(user.SteamId);
+                    var externalUser = await _unitOfWork.ExternalUsers.GetAsync(user.SteamId);
                     if (externalUser != null)
                     {
                         // get the external user's TopListEntries and move them to the newly created ApplicationUser

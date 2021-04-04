@@ -17,7 +17,7 @@ namespace EsportStats.Server.Services
         public Task<SteamProfileExtDTO> GetSteamProfileExternalAsync(ulong steamId);
         public Task<IEnumerable<SteamProfileExtDTO>> GetSteamProfilesExternalAsync(IEnumerable<ulong> steamIds);
         public Task<IEnumerable<ulong>> GetSteamFriendsExternalAsync(ulong steamId);
-
+        public Task<int> GetSteamPlaytimeMinutesAsync(ulong steamId);
     }
 
     public class SteamService : ISteamService
@@ -78,6 +78,28 @@ namespace EsportStats.Server.Services
             var parsedResponse = JsonConvert.DeserializeObject<SteamFriendsListExtDTO>(response);
 
             return parsedResponse.FriendsList.Friends.Select(f => f.SteamId).ToList();
+        }
+
+        /// <summary>
+        /// Gets the amount of playtime spent on Dota2 for the user.
+        /// </summary>        
+        public async Task<int> GetSteamPlaytimeMinutesAsync(ulong steamId)
+        {
+            var steamOptions = new SteamOptions();
+            _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);
+
+            var playtimeUrl = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/"
+                            + "?key=" + steamOptions.Key
+                            + "&steamid=" + steamId
+                            + "&appids_filter=" + steamOptions.AppId
+                            + "&include_played_free_games=true&include_appinfo=false";
+
+            var httpClient = _httpClientFactory.CreateClient();
+            var playtimeResponse = await httpClient.GetAsync(playtimeUrl);
+            var response = await playtimeResponse.Content.ReadAsStringAsync();
+            var parsedResponse = JsonConvert.DeserializeObject<SteamGameStatsExtDTO>(response);
+
+            return parsedResponse.Response.Games.SingleOrDefault(g => g.AppId == steamOptions.AppId)?.PlaytimeForeverMinutes ?? 0;
         }
 
         /// <summary>

@@ -27,7 +27,7 @@ namespace EsportStats.Server.Services
                 {
                     Name = $"Friend #{x}",
                     Avatar = "http://placehold.it/160x160",
-                    HoursPlayed = 0
+                    Playtime = 0
                 },
                 HeroThumbnail = "http://placehold.it/59x33",
                 MatchId = (int)metric,

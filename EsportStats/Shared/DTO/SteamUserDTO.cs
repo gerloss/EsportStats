@@ -23,8 +23,8 @@ namespace EsportStats.Shared.DTO
         /// </summary>
         public string AvatarFull { get; set; }
         /// <summary>
-        /// Hours spent in Dota 2.
+        /// Minutes spent in Dota 2.
         /// </summary>
-        public double? HoursPlayed { get; set; }
+        public int? Playtime { get; set; }
     }
 }

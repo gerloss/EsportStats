@@ -47,9 +47,9 @@ namespace EsportStats.Server.Data.Entities
         public string AvatarFull { get; set; }
 
         /// <summary>
-        /// Amount of Dota 2 hours played.
+        /// Amount of Dota 2 played in minutes.
         /// </summary>
-        public double? HoursPlayed { get; set; }
+        public int? Playtime { get; set; }
 
         /// <summary>
         /// The date of the last update of this user's Steam data.
@@ -80,7 +80,7 @@ namespace EsportStats.Server.Data.Entities
                 ProfileUrl = this.ProfileUrl,
                 Avatar = this.Avatar,
                 AvatarFull = this.AvatarFull,
-                HoursPlayed = this.HoursPlayed,                
+                Playtime = this.Playtime,                
             };
         }
     }

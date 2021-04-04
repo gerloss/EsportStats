@@ -25,7 +25,7 @@ namespace EsportStats.Client.Pages
             {
                 Name = $"Friend #{x}",
                 Avatar = "http://placehold.it/160x160",
-                HoursPlayed = 0
+                Playtime = 0
             },
             HeroThumbnail = "",
             MatchId = x,

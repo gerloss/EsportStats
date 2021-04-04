@@ -28,7 +28,7 @@
         <tr>
             <td><img class="w-100" src="@f.Avatar" /></td>
             <td>@f.Name</td>
-            <td class="text-right"> @(f.HoursPlayed.HasValue ? $"{f.HoursPlayed.Value.ToString()} h" : "Unknown")</td>            
+            <td class="text-right"> @(f.Playtime.HasValue ? $"{f.Playtime.Value.ToString()} h" : "Unknown")</td>            
         </tr>
         }
     </tbody>

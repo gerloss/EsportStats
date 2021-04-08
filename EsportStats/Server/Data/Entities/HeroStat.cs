@@ -1,4 +1,5 @@
-﻿using EsportStats.Shared.Enums;
+﻿using EsportStats.Server.Common;
+using EsportStats.Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,6 +10,20 @@ namespace EsportStats.Server.Data.Entities
 {
     public class HeroStat
     {
+        public HeroStat()
+        {
+
+        }
+
+        public HeroStat(HeroStatDTO dto, ulong steamId)
+        {
+            SteamId = SteamId;
+            Games = dto.Games;
+            // In the DTO it comes as an int stored in a string from the external api
+            // First parse it as an int and then convert into Hero Enum
+            Hero = dto.Hero;
+        }
+
         [Key]
         public int Id { get; set; }
 

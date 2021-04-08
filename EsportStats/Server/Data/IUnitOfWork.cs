@@ -11,7 +11,7 @@ namespace EsportStats.Server.Data
         ITopListEntryRepository TopListEntries { get; }
         IUserRepository Users { get; }
         IExternalUserRepository ExternalUsers { get; }
-        IHeroStatRepository HeroStatRepository { get;  }
+        IHeroStatRepository HeroStats { get; }
 
         int SaveChanges();
     }

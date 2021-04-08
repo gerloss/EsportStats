@@ -99,8 +99,8 @@ namespace EsportStats.Server.Services
 
             // Create entities for the players that were not found in the db            
             var createdExternalUsers = updated
-                .Where(u => !appUsersToUpdate.Any(appUser => appUser.SteamId == u.SteamId)) // remove players that were already found within the ApplicationUsers
-                .Where(u => !externalsToUpdate.Any(ext => ext.SteamId == u.SteamId))        // remove players that were already found in the ExternalUsers table
+                .Where(u => !applicationUsers.Any(appUser => appUser.SteamId == u.SteamId)) // remove players that were already found within the ApplicationUsers
+                .Where(u => !externalFriends.Any(ext => ext.SteamId == u.SteamId))          // remove players that were already found in the ExternalUsers table
                 .Where(u => u.SteamId != steamId)                                           // remove the currently logged in user
                 .Select(friendFromSteamApi => new ExternalUser(friendFromSteamApi));        // convert them to new ExternalUser entities
 

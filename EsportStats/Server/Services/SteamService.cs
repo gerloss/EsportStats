@@ -14,8 +14,8 @@ namespace EsportStats.Server.Services
 {
     public interface ISteamService
     {
-        public Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(string userId, bool includePlayer = true);
-        public Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(ulong steamId, bool includePlayer = true);
+        public Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(string userId, bool includePlayer = true, bool includePlaytime = true);
+        public Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(ulong steamId, bool includePlayer = true, bool includePlaytime = true);
         public Task<SteamProfileExtDTO> GetSteamProfileExternalAsync(ulong steamId);
         public Task<IEnumerable<SteamProfileExtDTO>> GetSteamProfilesExternalAsync(IEnumerable<ulong> steamIds);
         public Task<IEnumerable<ulong>> GetSteamFriendsExternalAsync(ulong steamId);
@@ -41,16 +41,16 @@ namespace EsportStats.Server.Services
         /// <summary>
         /// Serves the friends of the user with the given userid.
         /// </summary>        
-        public async Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(string userId, bool includePlayer = true)
+        public async Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(string userId, bool includePlayer = true, bool includePlaytime = true)
         {
             var user = await _unitOfWork.Users.GetAsync(userId);
-            return await GetFriendsAsync(user.SteamId, includePlayer);
+            return await GetFriendsAsync(user.SteamId, includePlayer, includePlaytime);
         }
 
         /// <summary>
         /// Serves the friends of the user with the id {steamId}.
         /// </summary>        
-        public async Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(ulong steamId, bool includePlayer = true)
+        public async Task<IEnumerable<SteamUserDTO>> GetFriendsAsync(ulong steamId, bool includePlayer = true, bool includePlaytime = true)
         {
             // Get the list of friend ids
             var friendIds = await GetSteamFriendsExternalAsync(steamId);                        
@@ -109,27 +109,30 @@ namespace EsportStats.Server.Services
                 await _unitOfWork.ExternalUsers.AddRangeAsync(createdExternalUsers);
             }
 
-            // Playtime values can only be handled individually
-            // TODO: display friend list on front end, and update these values later asynchronously, because this can take ~250ms
-            foreach(var user in applicationUsers.Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
+            if (includePlaytime)
             {
-                user.Playtime = await GetSteamPlaytimeMinutesAsync(user.SteamId);
-                user.PlaytimeTimestamp = DateTime.Now;                
-            }
-            foreach (var user in externalFriends.Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
-            {
-                user.Playtime = await GetSteamPlaytimeMinutesAsync(user.SteamId);
-                user.PlaytimeTimestamp = DateTime.Now;
-            }
-            foreach (var user in createdExternalUsers.Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
-            {
-                user.Playtime = await GetSteamPlaytimeMinutesAsync(user.SteamId);
-                user.PlaytimeTimestamp = DateTime.Now;
-            }
-            if (includePlayer && (!currentUserProfile.PlaytimeTimestamp.HasValue || currentUserProfile.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
-            {
-                currentUserProfile.Playtime = await GetSteamPlaytimeMinutesAsync(steamId);
-                currentUserProfile.PlaytimeTimestamp = DateTime.Now;
+                // Playtime values can only be handled individually
+                // TODO: display friend list on front end, and update these values later asynchronously, because this can take ~250ms
+                foreach(var user in applicationUsers.Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
+                {
+                    user.Playtime = await GetSteamPlaytimeMinutesAsync(user.SteamId);
+                    user.PlaytimeTimestamp = DateTime.Now;                
+                }
+                foreach (var user in externalFriends.Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
+                {
+                    user.Playtime = await GetSteamPlaytimeMinutesAsync(user.SteamId);
+                    user.PlaytimeTimestamp = DateTime.Now;
+                }
+                foreach (var user in createdExternalUsers.Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
+                {
+                    user.Playtime = await GetSteamPlaytimeMinutesAsync(user.SteamId);
+                    user.PlaytimeTimestamp = DateTime.Now;
+                }
+                if (includePlayer && (!currentUserProfile.PlaytimeTimestamp.HasValue || currentUserProfile.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
+                {
+                    currentUserProfile.Playtime = await GetSteamPlaytimeMinutesAsync(steamId);
+                    currentUserProfile.PlaytimeTimestamp = DateTime.Now;
+                }
             }
 
             var friends = new List<SteamUserDTO>();

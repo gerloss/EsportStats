@@ -5,12 +5,17 @@
 
     <EditForm Model="selection" id="metric-selection">
         <div class="form-group">
-            <InputSelect @bind-Value="selection.SelectedHero" class="form-control">
-                @foreach (var value in Enum.GetValues(typeof(Hero)))
-                {
-                    <option>@value</option>
-                }
-            </InputSelect>
+            <div class="input-group">
+                <InputSelect @bind-Value="selection.SelectedHero" class="form-control">
+                    @foreach (var value in Enum.GetValues(typeof(Hero)))
+                    {
+                        <option>@value</option>
+                    }
+                </InputSelect>
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="button" @onclick="HandleChanges">Refresh</button>
+                </div>
+            </div>
         </div>
     </EditForm>
 </div>
@@ -21,14 +26,20 @@
         <thead>
             <tr>
                 <th scope="col" colspan="2">Player</th>
-                <th scope="col" class="text-right">Matches</th>                
+                <th scope="col" class="text-right">Matches</th>
             </tr>
         </thead>
-        <tbody>
-        </tbody>
+        @if (isLoading)
+        {
+            <LoadingBody />
+        }
     </table>
-
-    <p class="text-center text-muted font-italic">No hero has been selected yet!</p>
+    
+    @if (!isLoading)
+    {
+        <p class="text-center text-muted font-italic">No hero has been selected yet!</p>
+    }
+   
 }
 else
 {
@@ -39,18 +50,25 @@ else
                 <th scope="col" class="text-right">Matches</th>
             </tr>
         </thead>
-        <tbody>
-            @foreach (var e in entries)
-            {
-                <tr>
-                    <td><img class="w-100" src="@e.Friend.Avatar" /></td>
-                    <td>@e.Friend.Name</td>                                        
-                    <td class="text-right">
-                        @e.Value
-                    </td>
-                </tr>
-            }
-        </tbody>
+        @if (isLoading)
+        {
+            <LoadingBody />
+        }
+        else 
+        { 
+            <tbody>
+                @foreach (var e in entries)
+                {
+                    <tr>
+                        <td><img class="w-100" src="@e.Friend.Avatar" /></td>
+                        <td>@e.Friend.Name</td>
+                        <td class="text-right">
+                            @e.Value
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        }        
     </table>
 }
 

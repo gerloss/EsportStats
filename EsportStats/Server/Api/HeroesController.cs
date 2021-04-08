@@ -1,6 +1,7 @@
 ﻿using EsportStats.Server.Data.Entities;
 using EsportStats.Server.Services;
 using EsportStats.Shared.DTO;
+using EsportStats.Shared.Enums;
 using IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -31,13 +32,35 @@ namespace EsportStats.Server.Api
             }
 
             /// <summary>
-            /// Gets the list of Steam friends of the currently authenticated user.
+            /// Gets the list of top hero spammers within the friends of the currently authenticated user.
             /// </summary>                
             [HttpGet("spammers")]
             public async Task<ActionResult<ICollection<TopListEntryDTO>>> GetSpammers()
             {
                 var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var entries = await _heroStatService.GetSpammersAsync(currentUserId);
+                return Ok(entries.OrderByDescending(r => r.Value));
+            }
+
+            /// <summary>
+            /// Gets the list of top players by hero within the friends of the currently authenticated user.
+            /// </summary>                
+            [HttpGet("heroes/{heroId}")]
+            public async Task<ActionResult<ICollection<TopListEntryDTO>>> GetSpammers(int heroId)
+            {
+                if (heroId == 0)
+                {
+                    throw new ArgumentException("heroId", "There was no hero selected.");
+                }
+
+                if (!Enum.IsDefined(typeof(Hero), heroId)) {
+                    throw new ArgumentOutOfRangeException("heroId", $"There is no Hero with the id of {heroId}");
+                }
+
+                var hero = (Hero) heroId;
+
+                var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var entries = await _heroStatService.GetTopByHeroAsync(currentUserId, hero);
                 return Ok(entries.OrderByDescending(r => r.Value));
             }
         }

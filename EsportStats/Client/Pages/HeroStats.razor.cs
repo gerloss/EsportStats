@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using EsportStats.Shared.DTO;
 using EsportStats.Shared.Enums;
 using Microsoft.AspNetCore.Components;
+using System.Net.Http;
+using System.Net.Http.Json;
 
 namespace EsportStats.Client.Pages
 {
@@ -12,26 +14,41 @@ namespace EsportStats.Client.Pages
     public class HeroSelection
     {
         public Hero SelectedHero { get; set; }
+        public Hero CurrentlyDisplayed { get; set; }
     }
 
     public partial class HeroStats : ComponentBase
     {
-        HeroSelection selection = new HeroSelection();
+        [Inject]
+        private HttpClient _http { get; set; }
 
-        // Mocked data    
-        IEnumerable<TopListEntryDTO> entries = Enumerable.Range(1, 10).Select(x => new TopListEntryDTO
+        HeroSelection selection = new HeroSelection() { 
+            SelectedHero = Hero.PleaseSelect,
+            CurrentlyDisplayed = Hero.PleaseSelect
+        };
+
+        IEnumerable<TopListEntryDTO> entries = new List<TopListEntryDTO>();
+        bool isLoading = false;
+
+        private async Task HandleChanges()
         {
-            Friend = new SteamUserDTO
+            try
             {
-                Name = $"Friend #{x}",
-                Avatar = "http://placehold.it/160x160",
-                Playtime = 0
-            },
-            Hero = Hero.Antimage,
-            MatchId = x,
-            Value = x * 17
-        });
-
+                isLoading = true;
+                var route = $"/Api/Heroes/{(int)selection.SelectedHero}";
+                var result = await _http.GetFromJsonAsync<IEnumerable<TopListEntryDTO>>(route);
+                entries = result;
+                selection.CurrentlyDisplayed = selection.SelectedHero;
+                isLoading = false;
+            }
+            catch (HttpRequestException ex)
+            {
+                // TODO: Logging/Error message
+                entries = new List<TopListEntryDTO>();
+                selection.CurrentlyDisplayed = Hero.PleaseSelect;
+                isLoading = false;
+            }
+        }
     }
 
 }

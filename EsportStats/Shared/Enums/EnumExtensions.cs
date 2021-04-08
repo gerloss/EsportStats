@@ -50,5 +50,21 @@ namespace EsportStats.Shared.Enums
             return GetDescription(e);
         }
 
+        public static string GetShortName(this Enum e)
+        {
+            Type enumType = e.GetType();
+            var value = Enum.GetName(enumType, e);
+            MemberInfo member = enumType.GetMember(value)[0];
+
+            var attributes = member.GetCustomAttributes(typeof(DisplayAttribute), false);
+            var output = ((DisplayAttribute)attributes[0]).ShortName;
+
+            if (((DisplayAttribute)attributes[0]).ResourceType != null)
+            {
+                output = ((DisplayAttribute)attributes[0]).GetShortName();
+            }
+
+            return output;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using EsportStats.Server.Data;
 using EsportStats.Server.Data.Entities;
+using EsportStats.Shared.DTO;
 using EsportStats.Shared.Enums;
 using System;
 using System.Collections.Generic;
@@ -14,20 +15,28 @@ namespace EsportStats.Server.Services
         // Since Dictionary is not sorted, we use a List of KeyValuePairs instead
         public Task<List<KeyValuePair<Hero, int>>> GetHeroStatsAsync(string userId);
         public Task<List<KeyValuePair<Hero, int>>> GetHeroStatsAsync(ulong steamId);
+
+        public Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(string userId);
+        public Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(ulong steamId);
+
+        public Task<IEnumerable<TopListEntryDTO>> GetTopByHeroAsync(string userId, Hero hero);
+        public Task<IEnumerable<TopListEntryDTO>> GetTopByHeroAsync(ulong steamId, Hero hero);
     }
 
     public class HeroStatService : IHeroStatService
     {
-
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOpenDotaService _openDotaService;
+        private readonly ISteamService _steamService;
 
         public HeroStatService(
             IUnitOfWork unitOfWork,
-            IOpenDotaService openDotaService)
+            IOpenDotaService openDotaService,
+            ISteamService steamService)
         {
             _unitOfWork = unitOfWork;
             _openDotaService = openDotaService;
+            _steamService = steamService;
         }
 
         /// <summary>
@@ -45,21 +54,28 @@ namespace EsportStats.Server.Services
         public async Task<List<KeyValuePair<Hero, int>>> GetHeroStatsAsync(ulong steamId)
         {
             var player = await _unitOfWork.Users.GetUserBySteamIdAsync(steamId);
+            ExternalUser extPlayer = null;
             if (player == null)
             {
-                // The pages listing the hero stats should only be displayed for logged in users
-                // so there is not point in looking for ExternalUsers with the same steamId;
-                throw new ArgumentException($"No user can be found with the SteamId64 {steamId}");
+                extPlayer = await _unitOfWork.ExternalUsers.GetAsync(steamId);
+                if (extPlayer == null)
+                {
+                    // If there is any valid data about this user, then the user should already exist, because they have been persisted during loading the front page.
+                    // So this probably means that no statistics are available.
+                    return new List<KeyValuePair<Hero, int>>();
+                }
             }
 
+            // From here we don't care if its an ApplicationUser or an ExternalUser, we only need their HeroStats regardless
             var stats = await _unitOfWork.HeroStats.GetHeroStatsBySteamIdAsync(steamId);            
+            var timestamp = player != null ? player.HeroStatsTimestamp : extPlayer.HeroStatsTimestamp;            
 
-            if (!player.HeroStatsTimestamp.HasValue || player.HeroStatsTimestamp < DateTime.Now.AddHours(-24))
+            if (!timestamp.HasValue || timestamp < DateTime.Now.AddHours(-24))
             {
                 // Stats are not up to date, so we refresh them from opendota api
                 var updatedStats = await _openDotaService.GetHeroStatsAsync(steamId);
 
-                if (!player.HeroStatsTimestamp.HasValue && !stats.Any())
+                if (!timestamp.HasValue && !stats.Any())
                 {
                     var createdStats = new List<HeroStat>();
                     // No hero stats recorded yet, new entities should be created
@@ -88,6 +104,32 @@ namespace EsportStats.Server.Services
                 // stats are up to date, return from db:
                 return stats.Select(stat => new KeyValuePair<Hero, int>(stat.Hero, stat.Games)).ToList();
             }
+        }
+
+        public async Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(string userId)
+        {
+            var user = await _unitOfWork.Users.GetAsync(userId);
+            return await GetSpammersAsync(user.SteamId);
+
+        }
+
+        public async Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(ulong steamId)
+        {
+            // Playtime should not be refreshed, as it will not be required and it would take a lot of extra time...
+            var players = await _steamService.GetFriendsAsync(steamId, includePlayer: true, includePlaytime: false);
+            throw new NotImplementedException();
+
+        }
+
+        public async Task<IEnumerable<TopListEntryDTO>> GetTopByHeroAsync(string userId, Hero hero)
+        {
+            var user = await _unitOfWork.Users.GetAsync(userId);
+            return await GetTopByHeroAsync(user.SteamId, hero);
+        }
+
+        public async Task<IEnumerable<TopListEntryDTO>> GetTopByHeroAsync(ulong steamId, Hero hero)
+        {
+            throw new NotImplementedException();
         }
     }
 }

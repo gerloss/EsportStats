@@ -94,7 +94,15 @@ namespace EsportStats.Server.Services
                     }                    
                 }
 
-                player.HeroStatsTimestamp = DateTime.Now;
+                if (player != null)
+                {
+                    player.HeroStatsTimestamp = DateTime.Now;
+                }
+                else
+                {
+                    extPlayer.HeroStatsTimestamp = DateTime.Now;
+                }
+                
                 _unitOfWork.SaveChanges();
 
                 return updatedStats.Select(stat => new KeyValuePair<Hero, int>(stat.Hero, stat.Games)).ToList();

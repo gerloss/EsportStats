@@ -17,11 +17,11 @@ namespace EsportStats.Server.Data.Entities
 
         public HeroStat(HeroStatDTO dto, ulong steamId)
         {
-            SteamId = SteamId;
-            Games = dto.Games;
+            this.SteamId = steamId;
+            this.Games = dto.Games;
             // In the DTO it comes as an int stored in a string from the external api
             // First parse it as an int and then convert into Hero Enum
-            Hero = dto.Hero;
+            this.Hero = dto.Hero;
         }
 
         [Key]

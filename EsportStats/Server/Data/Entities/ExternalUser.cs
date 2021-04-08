@@ -81,6 +81,11 @@ namespace EsportStats.Server.Data.Entities
         /// </summary>
         public List<TopListEntry> TopListEntries { get; set; }
 
+        /// <summary>
+        /// The date of the last update of this user's hero stats.
+        /// </summary>
+        public DateTime? HeroStatsTimestamp { get; set; }
+
 
         public void UpdateFromExternalProfile(SteamProfileExtDTO dto)
         {
@@ -88,7 +93,7 @@ namespace EsportStats.Server.Data.Entities
             this.ProfileUrl = dto.ProfileUrl;
             this.Avatar = dto.Avatar;
             this.AvatarFull = dto.AvatarFull;
-            this.Timestamp = DateTime.Now;            
+            this.Timestamp = DateTime.Now;                      
         }
 
         public SteamUserDTO ToDTO()

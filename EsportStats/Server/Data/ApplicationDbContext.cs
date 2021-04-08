@@ -20,6 +20,7 @@ namespace EsportStats.Server.Data
 
         public DbSet<TopListEntry> TopListEntries { get; set; }
         public DbSet<ExternalUser> ExternalUsers{ get; set; }
+        public DbSet<HeroStat> HeroStats { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -43,6 +44,7 @@ namespace EsportStats.Server.Data
                 .HasForeignKey(entry => entry.ExternalUserId); // FK is a ulong?, which is nullable, so this navigation property is optional!
 
             // TODO: validate that a TopListEntry always has at least one of the two possible navigation properties (ApplicationUser or ExternalUser)
+            // TODO: should the navigation properties be defined here for the HeroStat.SteamId towards both user types?
 
         }
     }

@@ -14,7 +14,7 @@ namespace EsportStats.Server.Data.Entities
         // Additional public data scraped from the Steam Api 
         // More info at: https://developer.valvesoftware.com/wiki/Steam_Web_API#Public_Data
 
-        
+
         /// <summary>
         /// 64bit SteamID of the user.
         /// </summary>
@@ -66,6 +66,11 @@ namespace EsportStats.Server.Data.Entities
         /// The top list entries of this user.
         /// </summary>
         public List<TopListEntry> TopListEntries { get; set; }
+
+        /// <summary>
+        /// The date of the last update of this user's hero stats.
+        /// </summary>
+        public DateTime? HeroStatsTimestamp { get; set; }
 
 
         public void UpdateFromExternalProfile(SteamProfileExtDTO dto)

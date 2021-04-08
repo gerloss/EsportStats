@@ -7,38 +7,36 @@
     <thead>
         <tr>
             <th scope="col" colspan="2">Player</th>
-            <th scope="col">Hero</th>            
+            <th scope="col">Hero</th>
             <th scope="col" class="text-right">Matches</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var e in entries)
-        {
-            <tr>
-                <td><img class="w-100" src="@e.Friend.Avatar" /></td>
-                <td>@e.Friend.Name</td>
-                <td><img class="w-100" src="@e.Hero.GetThumbnailUrl()" /></td>                
-                <td class="text-right">
-                    @e.Value
+    @if (isLoaded)
+    {
+        <tbody>
+            @foreach (var e in entries)
+            {
+                <tr>
+                    <td><img class="w-100" src="@e.Friend.Avatar" /></td>
+                    <td>@e.Friend.Name</td>
+                    <td><img class="w-100" src="@e.Hero.GetThumbnailUrl()" /></td>
+                    <td class="text-right">
+                        @e.Value
+                    </td>
+                </tr>
+            }
+        </tbody>
+    }
+    else
+    {
+        <tbody>
+            <tr class="bg-transparent">
+                <td colspan="3" class="text-center">
+                    <p>Loading...</p>
+                    <p><img src="images/spinner.svg" alt="Loading..." title="Loading..."></p>
                 </td>
             </tr>
-        }
-    </tbody>
+        </tbody>
+    }
+
 </table>
-
-@code {
-
-    IEnumerable<TopListEntryDTO> entries = Enumerable.Range(1, 10).Select(x => new TopListEntryDTO
-    {
-        Friend = new SteamUserDTO
-        {
-            Name = $"Friend #{x}",
-            Avatar = "http://placehold.it/160x160",
-            Playtime = 0
-        },
-        Hero = Hero.Antimage,
-        MatchId = x,
-        Value = x * 1234
-    });
-
-}

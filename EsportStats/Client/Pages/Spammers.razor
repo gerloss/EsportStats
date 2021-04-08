@@ -1,4 +1,5 @@
 ﻿@using EsportStats.Shared.DTO
+@using EsportStats.Shared.Enums
 
 <p>The biggest hero spammers: Players who played the most amount of games on a single hero:</p>
 
@@ -16,7 +17,7 @@
             <tr>
                 <td><img class="w-100" src="@e.Friend.Avatar" /></td>
                 <td>@e.Friend.Name</td>
-                <td><img class="w-100" src="@e.HeroThumbnail" /></td>                
+                <td><img class="w-100" src="@e.Hero.GetThumbnailUrl()" /></td>                
                 <td class="text-right">
                     @e.Value
                 </td>
@@ -35,7 +36,7 @@
             Avatar = "http://placehold.it/160x160",
             Playtime = 0
         },
-        HeroThumbnail = "http://placehold.it/59x33",
+        Hero = Hero.Antimage,
         MatchId = x,
         Value = x * 1234
     });

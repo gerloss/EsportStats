@@ -29,7 +29,7 @@ namespace EsportStats.Server.Services
                     Avatar = "http://placehold.it/160x160",
                     Playtime = 0
                 },
-                HeroThumbnail = "http://placehold.it/59x33",
+                Hero = Hero.Antimage,
                 MatchId = (int)metric,
                 Value = x * 1234
             });

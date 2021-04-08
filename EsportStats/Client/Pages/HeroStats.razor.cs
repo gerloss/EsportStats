@@ -27,7 +27,7 @@ namespace EsportStats.Client.Pages
                 Avatar = "http://placehold.it/160x160",
                 Playtime = 0
             },
-            HeroThumbnail = "",
+            Hero = Hero.Antimage,
             MatchId = x,
             Value = x * 17
         });

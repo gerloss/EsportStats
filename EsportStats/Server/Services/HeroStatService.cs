@@ -16,8 +16,8 @@ namespace EsportStats.Server.Services
         public Task<List<KeyValuePair<Hero, int>>> GetHeroStatsAsync(string userId);
         public Task<List<KeyValuePair<Hero, int>>> GetHeroStatsAsync(ulong steamId);
 
-        public Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(string userId);
-        public Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(ulong steamId);
+        public Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(string userId, int take = 25);
+        public Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(ulong steamId, int take = 25);
 
         public Task<IEnumerable<TopListEntryDTO>> GetTopByHeroAsync(string userId, Hero hero);
         public Task<IEnumerable<TopListEntryDTO>> GetTopByHeroAsync(ulong steamId, Hero hero);
@@ -106,19 +106,33 @@ namespace EsportStats.Server.Services
             }
         }
 
-        public async Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(string userId)
+        public async Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(string userId, int take = 25)
         {
             var user = await _unitOfWork.Users.GetAsync(userId);
-            return await GetSpammersAsync(user.SteamId);
-
+            return await GetSpammersAsync(user.SteamId, take);
         }
 
-        public async Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(ulong steamId)
+        public async Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(ulong steamId, int take = 25)
         {
             // Playtime should not be refreshed, as it will not be required and it would take a lot of extra time...
+            // This way this can be done in a single HTTP GET towards Steam API
             var players = await _steamService.GetFriendsAsync(steamId, includePlayer: true, includePlaytime: false);
-            throw new NotImplementedException();
+            
+            var stats = new List<TopListEntryDTO>(); // key: playerId, value: List of HeroStats
+            // Get the hero stats for every player
+            foreach(var player in players)
+            {
+                var heroStatsKVP = await GetHeroStatsAsync(player.SteamId);
+                var heroStatsDTO = heroStatsKVP.Select(stat => new TopListEntryDTO() { 
+                    Friend = player,
+                    Hero = stat.Key,
+                    Value = stat.Value
+                });
 
+                stats.AddRange(heroStatsDTO);
+            }
+
+            return stats.OrderByDescending(s => s.Value).Take(take);
         }
 
         public async Task<IEnumerable<TopListEntryDTO>> GetTopByHeroAsync(string userId, Hero hero)

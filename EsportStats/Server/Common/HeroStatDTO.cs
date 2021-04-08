@@ -12,7 +12,7 @@ namespace EsportStats.Server.Common
         [JsonProperty("hero_id")]
         public Hero Hero { get; set; }
         [JsonProperty("last_played")]
-        public DateTime LastPlayed { get; set; }
+        public int LastPlayed { get; set; } 
         [JsonProperty("games")]
         public int Games { get; set; }
         [JsonProperty("win")]

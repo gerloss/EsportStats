@@ -7,6 +7,10 @@ namespace EsportStats.Shared.DTO
     public class SteamUserDTO
     {
         /// <summary>
+        /// 64 bit Steam Id of the player.
+        /// </summary>
+        public ulong SteamId { get; set; }
+        /// <summary>
         /// Steam username.
         /// </summary>
         public string Name { get; set; }

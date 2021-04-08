@@ -79,7 +79,7 @@ namespace EsportStats.Server.Data.Entities
             this.ProfileUrl = dto.ProfileUrl;
             this.Avatar = dto.Avatar;
             this.AvatarFull = dto.AvatarFull;
-            this.Timestamp = DateTime.Now;
+            this.Timestamp = DateTime.Now;            
         }
 
         public SteamUserDTO ToDTO(bool isCurrentUser = false)
@@ -91,7 +91,8 @@ namespace EsportStats.Server.Data.Entities
                 Avatar = this.Avatar,
                 AvatarFull = this.AvatarFull,
                 Playtime = this.Playtime,                
-                IsCurrentPlayer = isCurrentUser
+                IsCurrentPlayer = isCurrentUser,
+                SteamId = this.SteamId
             };
         }
     }

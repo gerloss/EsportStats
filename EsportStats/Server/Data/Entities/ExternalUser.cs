@@ -105,6 +105,7 @@ namespace EsportStats.Server.Data.Entities
                 Avatar = this.Avatar,
                 AvatarFull = this.AvatarFull,
                 Playtime = this.Playtime,
+                SteamId = this.SteamId
             };
         }
     }

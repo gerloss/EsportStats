@@ -13,6 +13,7 @@ namespace EsportStats.Server.Data
         public ITopListEntryRepository TopListEntries { get; private set; }
         public IUserRepository Users { get; private set; }
         public IExternalUserRepository ExternalUsers { get; private set; }
+        public IHeroStatRepository HeroStatRepository { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -20,6 +21,7 @@ namespace EsportStats.Server.Data
             TopListEntries = new TopListEntryRepository(_context);
             Users = new UserRepository(_context);
             ExternalUsers = new ExternalUserRepository(_context);
+            HeroStatRepository = new HeroStatRepository(_context);
         }
 
         public int SaveChanges() //TODO: Async?

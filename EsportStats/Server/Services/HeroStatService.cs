@@ -8,18 +8,19 @@ using System.Threading.Tasks;
 
 namespace EsportStats.Server.Services
 {
-    public interface IOpenDotaService
+    public interface IHeroStatService
     {
         public Task<Dictionary<Hero, int>> GetHeroStatsAsync(string userId);
         public Task<Dictionary<Hero, int>> GetHeroStatsAsync(ulong steamId);
     }
 
-    public class OpenDotaService : IOpenDotaService
+    public class HeroStatService : IHeroStatService
     {
+
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public OpenDotaService(
+        public HeroStatService(
             IUnitOfWork unitOfWork,
             IHttpClientFactory httpClientFactory)
         {
@@ -27,25 +28,15 @@ namespace EsportStats.Server.Services
             _httpClientFactory = httpClientFactory;
         }
 
-        /// <summary>
-        /// Serves the hero statistics of the user with the given userid.
-        /// </summary>       
         public async Task<Dictionary<Hero, int>> GetHeroStatsAsync(string userId)
         {
             var user = await _unitOfWork.Users.GetAsync(userId);
             return await GetHeroStatsAsync(user.SteamId);
         }
 
-        /// <summary>
-        /// Serves the hero statistics of the user with the given steamid64.
-        /// </summary>    
         public async Task<Dictionary<Hero, int>> GetHeroStatsAsync(ulong steamId)
         {
-            // TODO:
-            // Check database if we have up-to-date hero stats            
-
-            // If not, call OpenDota api (through its service) for fresh stats
-
+            // https://api.opendota.com/api/players/{steamid32}/heroes
             throw new NotImplementedException();
         }
     }

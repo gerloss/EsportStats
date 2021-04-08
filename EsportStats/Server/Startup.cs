@@ -58,6 +58,8 @@ namespace EsportStats.Server
             services.AddScoped<ISteamService, SteamService>();
             services.AddScoped<ITopListService, TopListService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IHeroStatService, HeroStatService>();
+            services.AddScoped<IOpenDotaService, OpenDotaService>();
 
             services.AddHttpClient();
         }

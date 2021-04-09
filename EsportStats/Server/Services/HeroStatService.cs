@@ -140,7 +140,13 @@ namespace EsportStats.Server.Services
                 stats.AddRange(heroStatsDTO);
             }
 
-            return stats.OrderByDescending(s => s.Value).Take(take);
+            var ordered = stats.OrderByDescending(s => s.Value);
+            var topValues = ordered.Take(take);
+            if(!topValues.Any(v => v.Friend.IsCurrentPlayer))
+            {                
+                topValues = topValues.Append(ordered.First(v => v.Friend.IsCurrentPlayer));
+            }
+            return topValues.OrderByDescending(s => s.Value);
         }
 
         public async Task<IEnumerable<TopListEntryDTO>> GetTopByHeroAsync(string userId, Hero hero, int take = 10)
@@ -170,11 +176,14 @@ namespace EsportStats.Server.Services
                 stats.AddRange(heroStatsDTO);
             }
 
-            return stats
-                .Where(s => s.Hero == hero)
-                .Where(s => s.Value > 0)
-                .OrderByDescending(s => s.Value)
-                .Take(take);
+            var filtered = stats.Where(s => s.Hero == hero && s.Value > 0);
+            var ordered = filtered.OrderByDescending(s => s.Value);            
+            var topValues = ordered.Take(take);
+            if (!topValues.Any(v => v.Friend.IsCurrentPlayer))
+            {
+                topValues = topValues.Append(stats.First(v => v.Hero == hero && v.Friend.IsCurrentPlayer));
+            }
+            return topValues.OrderByDescending(s => s.Value);
         }
     }
 }

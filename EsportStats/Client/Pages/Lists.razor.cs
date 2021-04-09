@@ -35,16 +35,19 @@ namespace EsportStats.Client.Pages
         {            
             try
             {
+                isLoading = true;
                 var route = $"/Api/Lists/{(int)selection.Selected}";
                 var result = await _http.GetFromJsonAsync<IEnumerable<TopListEntryDTO>>(route);
                 entries = result;
                 selection.CurrentlyDisplayed = selection.Selected;
+                isLoading = false;
             }
             catch (HttpRequestException ex)
             {
                 // TODO: Logging/Error message
                 entries = new List<TopListEntryDTO>();
                 selection.CurrentlyDisplayed = Metric.PleaseSelect;
+                isLoading = false;
             }
         }
 

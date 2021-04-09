@@ -80,7 +80,7 @@ namespace EsportStats.Server.Services
             }
 
             // Get data for users that need to be updated or created in a single request
-            var updated = await GetSteamProfilesExternalAsync(idsToUpdate);
+            var updated = idsToUpdate.Any() ? await GetSteamProfilesExternalAsync(idsToUpdate) : new List<SteamProfileExtDTO>();
 
             foreach(var appUser in appUsersToUpdate)
             {

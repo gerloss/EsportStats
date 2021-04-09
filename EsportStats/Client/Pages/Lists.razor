@@ -12,9 +12,14 @@
             <div class="input-group">
                 <InputSelect @bind-Value="selection.Selected"
                              class="form-control">
-                    @foreach (var value in Enum.GetValues(typeof(Metric)))
-                    {
-                        <option>@value</option>
+                    @{
+                        List<Metric> enumValues = Enum.GetValues(typeof(Metric)).OfType<Metric>().OrderBy(h => h.GetDisplayName()).ToList();
+                        enumValues.Remove(Metric.PleaseSelect);
+                        enumValues.Insert(0, Metric.PleaseSelect);
+                        foreach (var value in enumValues)
+                        {
+                            <option value="@value">@value.GetDisplayName()</option>
+                        }
                     }
                 </InputSelect>
                 <div class="input-group-append">
@@ -51,7 +56,7 @@ else
                 <th scope="col" colspan="2">Player</th>
                 <th scope="col">Hero</th>
                 <th scope="col" class="text-right">Match ID</th>
-                <th scope="col" class="text-right">@selection.CurrentlyDisplayed</th>
+                <th scope="col" class="text-right">@selection.CurrentlyDisplayed.GetDisplayName()</th>
             </tr>
         </thead>
         <tbody>

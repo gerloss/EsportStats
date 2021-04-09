@@ -119,7 +119,8 @@ namespace EsportStats.Server.Services
                 {
                     Friend = player,
                     Value = entry.Value,
-                    Hero = entry.Hero.HasValue ? entry.Hero.Value : Hero.PleaseSelect
+                    Hero = entry.Hero.HasValue ? entry.Hero.Value : Hero.PleaseSelect,
+                    MatchId = entry.MatchId
                 });
 
                 stats.AddRange(entryDTOs);

@@ -12,7 +12,10 @@ namespace EsportStats.Server.Common
     {
         [JsonProperty("hero_id")]
         public Hero Hero { get; set; }
-        
+
+        [JsonProperty("match_id")]
+        public ulong MatchId { get; set; }
+
         // One of these values will be populated depending on the requested metric
         [Display(Name = "APM", ShortName = "actions_per_min")]
         public int? actions_per_min { get; set; }

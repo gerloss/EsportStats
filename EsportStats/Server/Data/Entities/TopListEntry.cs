@@ -23,6 +23,7 @@ namespace EsportStats.Server.Data.Entities
             Hero = dto.Hero;
             Timestamp = DateTime.Now;
             Value = dto.GetValue(metric);
+            MatchId = dto.MatchId;
         }
 
         public TopListEntry(TopListEntryExtDTO dto, Metric metric, ulong externalUserId)
@@ -32,6 +33,7 @@ namespace EsportStats.Server.Data.Entities
             Hero = dto.Hero;
             Timestamp = DateTime.Now;
             Value = dto.GetValue(metric);
+            MatchId = dto.MatchId;
         }
 
         public int Id { get; set; }
@@ -51,5 +53,7 @@ namespace EsportStats.Server.Data.Entities
         public int Value { get; set; }
 
         public DateTime? Timestamp { get; set; }
+
+        public ulong MatchId { get; set; }
     }
 }

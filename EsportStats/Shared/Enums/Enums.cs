@@ -9,8 +9,6 @@ namespace EsportStats.Shared.Enums
     {
         [Display(Name = "Please select a metric")]
         PleaseSelect = 0,
-        [Display(Name = "Kills", ShortName = "kills")]
-        kills,
         [Display(Name = "APM", ShortName = "actions_per_min")]
         actions_per_min,
         [Display(Name = "Assists", ShortName = "assists")]
@@ -23,10 +21,6 @@ namespace EsportStats.Shared.Enums
         deaths,
         [Display(Name = "Denies", ShortName = "denies")]
         denies,
-        [Display(Name = "Match Duration", ShortName = "duration")]
-        duration,
-        [Display(Name = "Lane Efficiency Pct", ShortName = "lane_efficiency_pct")]
-        lane_efficiency_pct,
         [Display(Name = "Gems Purchased", ShortName = "purchase_gem")]
         purchase_gem,
         [Display(Name = "GPM", ShortName = "gold_per_min")]
@@ -35,16 +29,24 @@ namespace EsportStats.Shared.Enums
         hero_damage,
         [Display(Name = "Hero Healing", ShortName = "hero_healing")]
         hero_healing,
+        [Display(Name = "KDA", ShortName = "kda")]
+        kda,
+        [Display(Name = "Kills", ShortName = "kills")]
+        kills,
+        [Display(Name = "Lane Efficiency Pct", ShortName = "lane_efficiency_pct")]
+        lane_efficiency_pct,
         [Display(Name = "Last Hits", ShortName = "last_hits")]
         last_hits,
         [Display(Name = "Biggest Loss", ShortName = "loss")]        
         loss,
-        [Display(Name = "Amount of Pings", ShortName = "pings")]
-        pings,
+        [Display(Name = "Match Duration", ShortName = "duration")]
+        duration,
         [Display(Name = "Neutral Kills", ShortName = "neutral_kills")]
         neutral_kills,
         [Display(Name = "Observer Wards Purchased", ShortName = "purchase_ward_observer")]
         purchase_ward_observer,
+        [Display(Name = "Amount of Pings", ShortName = "pings")]
+        pings,
         [Display(Name = "Rapiers Purchased", ShortName = "purchase_rapier")]
         purchase_rapier,
         [Display(Name = "Sentry Wards Purchased", ShortName = "purchase_ward_sentry")]        
@@ -60,9 +62,7 @@ namespace EsportStats.Shared.Enums
         [Display(Name = "TP Scrolls Purchased", ShortName = "purchase_tpscroll")]
         purchase_tpscroll,
         [Display(Name = "XPM", ShortName = "xp_per_min")]
-        xp_per_min,
-        [Display(Name = "KDA", ShortName = "kda")]
-        kda 
+        xp_per_min
     }
 
     public enum Hero

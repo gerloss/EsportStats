@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace EsportStats.Server.Api
@@ -26,34 +27,24 @@ namespace EsportStats.Server.Api
         /// Gets the list of values for the selected metric from the Steam friends of the currently authenticated user.
         /// </summary>        
         [HttpGet]
-        [Route("{m:int?}")]
-        public async Task<ActionResult<ICollection<TopListEntryDTO>>> Get(int? m)
+        [Route("{m}")]
+        public async Task<ActionResult<ICollection<TopListEntryDTO>>> Get(int m)
         {
-            if (!m.HasValue)
+            if (m == 0)
             {
-                return BadRequest("You must select a value for the metric.");
+                throw new ArgumentException("m", "There was no metric selected.");
             }
 
-            var metric = (Metric)m.Value;
-
-            if (metric == Metric.PleaseSelect)
+            if (!Enum.IsDefined(typeof(Metric), m))
             {
-                return BadRequest("You must select a value for the metric.");
+                throw new ArgumentOutOfRangeException("m", $"There is no Metric with the id of {m}");
             }
 
-            try
-            {
-                var topList = await _topListService.GetByMetricAsync("", metric);
-                return Ok(topList);
-            }
-            catch
-            {
-                //TODO: Logging/Error message
-                return BadRequest(); // TODO: Proper response depending on what the error is
-            }
+            var metric = (Metric) m;
+
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var topList = await _topListService.GetByMetricAsync(currentUserId, metric);
+            return Ok(topList);
         }
-
-
-
     }
 }

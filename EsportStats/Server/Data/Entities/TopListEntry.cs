@@ -24,5 +24,7 @@ namespace EsportStats.Server.Data.Entities
 
         [Required]
         public double Value { get; set; }
+
+        public DateTime? Timestamp { get; set; }
     }
 }

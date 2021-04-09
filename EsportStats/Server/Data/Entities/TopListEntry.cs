@@ -1,4 +1,5 @@
-﻿using EsportStats.Shared.Enums;
+﻿using EsportStats.Server.Common;
+using EsportStats.Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,6 +10,30 @@ namespace EsportStats.Server.Data.Entities
 {
     public class TopListEntry
     {
+
+        public TopListEntry()
+        {
+
+        }
+
+        public TopListEntry(TopListEntryExtDTO dto, Metric metric, string applicationUserId)
+        {
+            UserId = applicationUserId;
+            Metric = metric;
+            Hero = dto.Hero;
+            Timestamp = DateTime.Now;
+            Value = dto.GetValue(metric);
+        }
+
+        public TopListEntry(TopListEntryExtDTO dto, Metric metric, ulong externalUserId)
+        {
+            ExternalUserId = externalUserId;
+            Metric = metric;
+            Hero = dto.Hero;
+            Timestamp = DateTime.Now;
+            Value = dto.GetValue(metric);
+        }
+
         public int Id { get; set; }
         
         public string UserId { get; set; }
@@ -23,7 +48,7 @@ namespace EsportStats.Server.Data.Entities
         public Metric Metric { get; set; }
 
         [Required]
-        public double Value { get; set; }
+        public int Value { get; set; }
 
         public DateTime? Timestamp { get; set; }
     }

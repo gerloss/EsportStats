@@ -16,6 +16,9 @@ namespace EsportStats.Server.Services
     {
         public Task<IEnumerable<HeroStatDTO>> GetHeroStatsAsync(string userId);
         public Task<IEnumerable<HeroStatDTO>> GetHeroStatsAsync(ulong steamId);
+
+        public Task<IEnumerable<TopListEntryExtDTO>> GetTopListEntriesAsync(string userId, Metric metric);
+        public Task<IEnumerable<TopListEntryExtDTO>> GetTopListEntriesAsync(ulong steamId, Metric metric);
     }
 
     public class OpenDotaService : IOpenDotaService
@@ -53,6 +56,25 @@ namespace EsportStats.Server.Services
             var parsedResponse = JsonConvert.DeserializeObject<List<HeroStatDTO>>(response);
 
             return parsedResponse;            
+        }
+
+        public async Task<IEnumerable<TopListEntryExtDTO>> GetTopListEntriesAsync(string userId, Metric metric)
+        {
+            var user = await _unitOfWork.Users.GetAsync(userId);
+            return await GetTopListEntriesAsync(user.SteamId, metric);
+        }
+
+        public async Task<IEnumerable<TopListEntryExtDTO>> GetTopListEntriesAsync(ulong steamId, Metric metric)
+        {            
+            var entriesUrl = $"https://api.opendota.com/api/players/{steamId.ToSteam32()}/matches?sort={metric.GetShortName()}&limit=10";
+
+            var httpClient = _httpClientFactory.CreateClient();
+            var heroStatsResponse = await httpClient.GetAsync(entriesUrl);
+            var response = await heroStatsResponse.Content.ReadAsStringAsync();
+            var parsedResponse = JsonConvert.DeserializeObject<List<TopListEntryExtDTO>>(response);
+
+            return parsedResponse;
+            throw new NotImplementedException();
         }
     }
 }

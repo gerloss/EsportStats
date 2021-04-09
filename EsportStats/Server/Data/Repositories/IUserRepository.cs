@@ -8,7 +8,7 @@ namespace EsportStats.Server.Data.Repositories
 {
     public interface IUserRepository : IRepository<ApplicationUser, string>
     {
-        Task<ApplicationUser> GetUserBySteamIdAsync(ulong steamId);
+        Task<ApplicationUser> GetUserBySteamIdAsync(ulong steamId, bool includeTopListEntries = false);
         Task<IEnumerable<ApplicationUser>> GetUsersBySteamIdAsync(IEnumerable<ulong> steamIds);
 
     }

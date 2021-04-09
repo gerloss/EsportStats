@@ -18,9 +18,17 @@ namespace EsportStats.Server.Data.Repositories
         {
         }
 
-        public async Task<ApplicationUser> GetUserBySteamIdAsync(ulong steamId)
+        public async Task<ApplicationUser> GetUserBySteamIdAsync(ulong steamId, bool includeTopListEntries = false)
         {
-            return await AppDbContext.Users.SingleOrDefaultAsync(u => u.SteamId == steamId);
+            if (includeTopListEntries)
+            {
+                return await AppDbContext.Users.Include(u => u.TopListEntries).SingleOrDefaultAsync(u => u.SteamId == steamId);
+            }
+            else
+            {
+                return await AppDbContext.Users.SingleOrDefaultAsync(u => u.SteamId == steamId);
+            }
+            
         }
 
         public async Task<IEnumerable<ApplicationUser>> GetUsersBySteamIdAsync(IEnumerable<ulong> steamIds)

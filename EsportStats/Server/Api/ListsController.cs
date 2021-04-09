@@ -43,7 +43,7 @@ namespace EsportStats.Server.Api
 
             try
             {
-                var topList = await _topListService.GetByMetricAsync(metric);
+                var topList = await _topListService.GetByMetricAsync("", metric);
                 return Ok(topList);
             }
             catch

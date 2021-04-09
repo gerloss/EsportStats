@@ -22,5 +22,10 @@ namespace EsportStats.Server.Data.Repositories
         {
             return await AppDbContext.ExternalUsers.Where(u => steamIds.Contains(u.SteamId)).ToListAsync();
         }
+
+        public async Task<ExternalUser> GetWithTopListEntriesAsync(ulong steamId)
+        {
+            return await AppDbContext.ExternalUsers.Include(u => u.TopListEntries).SingleOrDefaultAsync(u => u.SteamId == steamId);
+        }
     }
 }

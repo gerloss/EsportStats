@@ -13,6 +13,8 @@ namespace EsportStats.Server.Services
     {
         public Task<IEnumerable<TopListEntryDTO>> GetByMetricAsync(string userId, Metric metric, int take = 25);
         public Task<IEnumerable<TopListEntryDTO>> GetByMetricAsync(ulong steamId, Metric metric, int take = 25);
+        public Task<List<TopListEntry>> GetByMetricForUser(string userId, Metric metric, bool forceRefresh = false);
+        public Task<List<TopListEntry>> GetByMetricForUser(ulong steamId, Metric metric, bool forceRefresh = false);
     }
 
     public class TopListService : ITopListService
@@ -34,16 +36,16 @@ namespace EsportStats.Server.Services
         /// <summary>
         /// Get the top list entries for a single user by a given metric
         /// </summary>        
-        public async Task<List<TopListEntry>> GetByMetricForUser(string userId, Metric metric)
+        public async Task<List<TopListEntry>> GetByMetricForUser(string userId, Metric metric, bool forceRefresh = false)
         {
             var user = await _unitOfWork.Users.GetAsync(userId);
-            return await GetByMetricForUser(user.SteamId, metric);
+            return await GetByMetricForUser(user.SteamId, metric, forceRefresh);
         }
 
         /// <summary>
         /// Get the top list entries for a single user by a given metric
         /// </summary>        
-        public async Task<List<TopListEntry>> GetByMetricForUser(ulong steamId, Metric metric)
+        public async Task<List<TopListEntry>> GetByMetricForUser(ulong steamId, Metric metric, bool forceRefresh = false)
         {
             var player = await _unitOfWork.Users.GetUserBySteamIdAsync(steamId, includeTopListEntries: true);
             ExternalUser extPlayer = null;
@@ -62,7 +64,7 @@ namespace EsportStats.Server.Services
             stats = stats.Where(e => e.Metric == metric).OrderByDescending(e => e.Value).ToList();
             DateTime? timestamp = stats.FirstOrDefault()?.Timestamp;
 
-            if (!timestamp.HasValue || timestamp < DateTime.Now.AddHours(-24))
+            if (!timestamp.HasValue || timestamp < DateTime.Now.AddHours(-24) || forceRefresh)
             {
                 // Stats are not up to date, replace them with fresh data from the opendota api
                 

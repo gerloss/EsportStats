@@ -142,7 +142,7 @@ namespace EsportStats.Server.Services
 
             var ordered = stats.OrderByDescending(s => s.Value);
             var topValues = ordered.Take(take);
-            if(!topValues.Any(v => v.Friend.IsCurrentPlayer))
+            if(!topValues.Any(v => v.Friend.IsCurrentPlayer) && ordered.Any(v => v.Friend.IsCurrentPlayer))
             {                
                 topValues = topValues.Append(ordered.First(v => v.Friend.IsCurrentPlayer));
             }

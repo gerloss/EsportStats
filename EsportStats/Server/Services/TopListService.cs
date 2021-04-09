@@ -105,7 +105,33 @@ namespace EsportStats.Server.Services
         /// </summary>                
         public async Task<IEnumerable<TopListEntryDTO>> GetByMetricAsync(ulong steamId, Metric metric, int take = 25)
         {
-            throw new NotImplementedException();
+            // Playtime should not be refreshed, as it will not be required and it would take a lot of extra time...
+            // This way this can be done in a single HTTP GET towards Steam API
+            var players = await _steamService.GetFriendsAsync(steamId, includePlayer: true, includePlaytime: false);
+
+            var stats = new List<TopListEntryDTO>();
+            // Get the top list entries for every player
+
+            foreach(var player in players)
+            {
+                var entries = await GetByMetricForUser(player.SteamId, metric);
+                var entryDTOs = entries.Select(entry => new TopListEntryDTO()
+                {
+                    Friend = player,
+                    Value = entry.Value,
+                    Hero = entry.Hero.HasValue ? entry.Hero.Value : Hero.PleaseSelect
+                });
+
+                stats.AddRange(entryDTOs);
+            }
+
+            var ordered = stats.OrderByDescending(e => e.Value);
+            var topValues = ordered.Take(take);
+            if (!topValues.Any(v => v.Friend.IsCurrentPlayer) && ordered.Any(v => v.Friend.IsCurrentPlayer))
+            {
+                topValues = topValues.Append(ordered.First(v => v.Friend.IsCurrentPlayer));
+            }
+            return topValues.OrderByDescending(s => s.Value);
         }
 
     }

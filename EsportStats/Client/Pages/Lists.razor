@@ -87,7 +87,9 @@ else
                         </td>
                         <td><img class="w-100" src="@e.Hero.GetThumbnailUrl()" /></td>
                         <td class="text-right">
-                            @e.MatchId
+                            <a href="https://www.opendota.com/matches/@e.MatchId" title="View match at OpenDota" target="_blank" >
+                                @e.MatchId
+                            </a>
                         </td>
                         <td class="text-right">
                             @e.Value

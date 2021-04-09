@@ -1,4 +1,5 @@
 ﻿@using EsportStats.Shared.Enums
+@using System.Linq 
 
 <div class="text-center">
     <p class="lead">Select a hero to compare by:</p>
@@ -7,9 +8,14 @@
         <div class="form-group">
             <div class="input-group">
                 <InputSelect @bind-Value="selection.SelectedHero" class="form-control">
-                    @foreach (var value in Enum.GetValues(typeof(Hero)))
-                    {
-                        <option>@value</option>
+                    @{
+                        List<Hero> enumValues = Enum.GetValues(typeof(Hero)).OfType<Hero>().OrderBy(h => h.GetDisplayName()).ToList();
+                        enumValues.Remove(Hero.PleaseSelect);
+                        enumValues.Insert(0, Hero.PleaseSelect);
+                        foreach (var value in enumValues)
+                        {
+                            <option value="@value" >@value.GetDisplayName()</option>
+                        }
                     }
                 </InputSelect>
                 <div class="input-group-append">

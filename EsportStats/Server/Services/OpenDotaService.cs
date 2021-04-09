@@ -74,7 +74,6 @@ namespace EsportStats.Server.Services
             var parsedResponse = JsonConvert.DeserializeObject<List<TopListEntryExtDTO>>(response);
 
             return parsedResponse;
-            throw new NotImplementedException();
         }
     }
 }

@@ -30,11 +30,15 @@
                 <tr class="@(f.IsCurrentPlayer ? "font-weight-bold" : "")">
                     <td><img class="w-100" src="@f.Avatar" /></td>
                     <td>
-                        @f.Name 
-                        @if (f.IsCurrentPlayer)
-                        {
-                            <span>(You)</span>
-                        }
+                        <a href="@f.ProfileUrl" target="_blank" title="@f.Name on Steam">
+                            <span> 
+                                @f.Name 
+                            </span>
+                            @if (f.IsCurrentPlayer)
+                            {
+                                <span>(You)</span>
+                            }
+                        </a>
                     </td>
 
                     @{

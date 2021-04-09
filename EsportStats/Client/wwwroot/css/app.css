@@ -46,6 +46,9 @@ app footer {
   flex-direction: column;
   justify-content: space-around;
 }
+table a {
+  color: inherit;
+}
 table.friends thead tr th {
   padding: 10px;
 }

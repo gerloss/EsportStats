@@ -65,9 +65,19 @@ else
             <tbody>
                 @foreach (var e in entries)
                 {
-                    <tr>
+                    <tr class="@(e.Friend.IsCurrentPlayer ? "font-weight-bold" : "")">
                         <td><img class="w-100" src="@e.Friend.Avatar" /></td>
-                        <td>@e.Friend.Name</td>
+                        <td>
+                            <a href="@e.Friend.ProfileUrl" target="_blank" title="@e.Friend.Name on Steam">
+                                <span>
+                                    @e.Friend.Name
+                                </span>
+                                @if (e.Friend.IsCurrentPlayer)
+                                {
+                                    <span>(You)</span>
+                                }
+                            </a>
+                        </td>
                         <td class="text-right">
                             @e.Value
                         </td>

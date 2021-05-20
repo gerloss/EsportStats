@@ -1,4 +1,5 @@
-﻿using EsportStats.Server.Data.Entities;
+﻿using EsportStats.Server.Common;
+using EsportStats.Server.Data.Entities;
 using EsportStats.Server.Services;
 using EsportStats.Shared.DTO;
 using EsportStats.Shared.Enums;
@@ -50,11 +51,11 @@ namespace EsportStats.Server.Api
             {
                 if (heroId == 0)
                 {
-                    throw new ArgumentException("heroId", "There was no hero selected.");
+                    throw new ApiArgumentException("heroId", "There was no hero selected.");                    
                 }
 
                 if (!Enum.IsDefined(typeof(Hero), heroId)) {
-                    throw new ArgumentOutOfRangeException("heroId", $"There is no Hero with the id of {heroId}");
+                    throw new ApiArgumentOutOfRangeException("heroId", $"There is no Hero with the id of {heroId}");
                 }
 
                 var hero = (Hero) heroId;

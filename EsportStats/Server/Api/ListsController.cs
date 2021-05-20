@@ -1,4 +1,5 @@
-﻿using EsportStats.Server.Services;
+﻿using EsportStats.Server.Common;
+using EsportStats.Server.Services;
 using EsportStats.Shared.DTO;
 using EsportStats.Shared.Enums;
 using Microsoft.AspNetCore.Http;
@@ -32,12 +33,12 @@ namespace EsportStats.Server.Api
         {
             if (m == 0)
             {
-                throw new ArgumentException("m", "There was no metric selected.");
+                throw new ApiArgumentException("m", "There was no metric selected.");
             }
 
             if (!Enum.IsDefined(typeof(Metric), m))
             {
-                throw new ArgumentOutOfRangeException("m", $"There is no Metric with the id of {m}");
+                throw new ApiArgumentOutOfRangeException("m", $"There is no Metric with the id of {m}");
             }
 
             var metric = (Metric) m;

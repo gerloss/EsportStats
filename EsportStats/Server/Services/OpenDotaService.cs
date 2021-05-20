@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using EsportStats.Shared.Common;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace EsportStats.Server.Services
 {
@@ -75,9 +76,12 @@ namespace EsportStats.Server.Services
             var entriesUrl = $"https://api.opendota.com/api/players/{steamId.ToSteam32()}/matches?sort={metric.GetShortName()}&limit=10&api_key=" + _apiKey;
 
             var httpClient = _httpClientFactory.CreateClient();
-            var heroStatsResponse = await httpClient.GetAsync(entriesUrl);
+            var heroStatsResponse = await httpClient.GetAsync(entriesUrl);            
 
-            // TODO: Handle if response is error or TooManyRequests, because that will cause error when trying to parse the response contents!
+            if (heroStatsResponse.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            {
+                throw new TooManyRequestsException("OpenDota API is overloaded.");
+            }
 
             var response = await heroStatsResponse.Content.ReadAsStringAsync();
             var parsedResponse = JsonConvert.DeserializeObject<List<TopListEntryExtDTO>>(response);

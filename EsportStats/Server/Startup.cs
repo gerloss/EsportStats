@@ -17,6 +17,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using Hellang.Middleware.ProblemDetails;
+using System;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http;
 
 namespace EsportStats.Server
 {
@@ -54,6 +58,22 @@ namespace EsportStats.Server
             services.AddControllersWithViews();
             services.AddRazorPages();
 
+            services.AddProblemDetails(options =>
+            {
+                options.IncludeExceptionDetails = (context, ex) => 
+                {
+                    return context.RequestServices.GetRequiredService<IHostEnvironment>().IsDevelopment(); // include exception details if its dev env
+                };
+                options.MapToStatusCode<NotImplementedException>(StatusCodes.Status501NotImplemented);
+                options.MapToStatusCode<HttpRequestException>(StatusCodes.Status503ServiceUnavailable);
+                options.MapToStatusCode<TooManyRequestsException>(StatusCodes.Status429TooManyRequests);
+                options.MapToStatusCode<ApiArgumentException>(StatusCodes.Status400BadRequest);
+                options.MapToStatusCode<ApiArgumentNullException>(StatusCodes.Status400BadRequest);
+                options.MapToStatusCode<ApiArgumentOutOfRangeException>(StatusCodes.Status400BadRequest);
+
+
+            });
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ISteamService, SteamService>();
             services.AddScoped<ITopListService, TopListService>();
@@ -80,6 +100,7 @@ namespace EsportStats.Server
                 app.UseHsts();
             }
 
+            app.UseProblemDetails(); // add the error handling middleware to the request processing pipeline
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();

@@ -64,6 +64,7 @@ namespace EsportStats.Server.Services
             stats = stats.Where(e => e.Metric == metric).OrderByDescending(e => e.Value).ToList();
             DateTime? timestamp = stats.FirstOrDefault()?.Timestamp;
 
+            // TODO: check case if someone really has no stats recorded -> a request will possibly be sent here unnecessarily because there will be no timestamp (Timestamp on user by metric instead of inside the TopListEntry entities?)
             if (!timestamp.HasValue || timestamp < DateTime.Now.AddHours(-24) || forceRefresh)
             {
                 // Stats are not up to date, replace them with fresh data from the opendota api

@@ -70,6 +70,9 @@ namespace EsportStats.Server.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var heroStatsResponse = await httpClient.GetAsync(entriesUrl);
+
+            // TODO: Handle if response is error or TooManyRequests, because that will cause error when trying to parse the response contents!
+
             var response = await heroStatsResponse.Content.ReadAsStringAsync();
             var parsedResponse = JsonConvert.DeserializeObject<List<TopListEntryExtDTO>>(response);
 

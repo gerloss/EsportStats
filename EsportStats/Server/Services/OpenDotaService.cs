@@ -3,6 +3,7 @@ using EsportStats.Server.Data;
 using EsportStats.Server.Data.Entities;
 using EsportStats.Shared.Enums;
 using System;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -25,13 +26,18 @@ namespace EsportStats.Server.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpClientFactory _httpClientFactory;        
+        private readonly string _apiKey;
 
         public OpenDotaService(
             IUnitOfWork unitOfWork,
-            IHttpClientFactory httpClientFactory)
+            IHttpClientFactory httpClientFactory,
+            IConfiguration cfg)
         {
             _unitOfWork = unitOfWork;
             _httpClientFactory = httpClientFactory;
+            var apicfg = new OpenDotaOptions();
+            cfg.GetSection(OpenDotaOptions.OpenDota).Bind(apicfg);
+            _apiKey = apicfg.Key;
         }
 
         /// <summary>
@@ -47,8 +53,8 @@ namespace EsportStats.Server.Services
         /// Gets the hero statistics of the user with the given steamid64.
         /// </summary>    
         public async Task<IEnumerable<HeroStatDTO>> GetHeroStatsAsync(ulong steamId)
-        {
-            var heroStatsUrl = $"https://api.opendota.com/api/players/{steamId.ToSteam32()}/heroes";
+        {            
+            var heroStatsUrl = $"https://api.opendota.com/api/players/{steamId.ToSteam32()}/heroes?api_key=" + _apiKey;
 
             var httpClient = _httpClientFactory.CreateClient();
             var heroStatsResponse = await httpClient.GetAsync(heroStatsUrl);
@@ -66,7 +72,7 @@ namespace EsportStats.Server.Services
 
         public async Task<IEnumerable<TopListEntryExtDTO>> GetTopListEntriesAsync(ulong steamId, Metric metric)
         {            
-            var entriesUrl = $"https://api.opendota.com/api/players/{steamId.ToSteam32()}/matches?sort={metric.GetShortName()}&limit=10";
+            var entriesUrl = $"https://api.opendota.com/api/players/{steamId.ToSteam32()}/matches?sort={metric.GetShortName()}&limit=10&api_key=" + _apiKey;
 
             var httpClient = _httpClientFactory.CreateClient();
             var heroStatsResponse = await httpClient.GetAsync(entriesUrl);

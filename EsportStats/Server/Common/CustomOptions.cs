@@ -20,4 +20,14 @@ namespace EsportStats.Server.Common
         /// </summary>
         public int AppId { get; set; }
     }
+
+    public class OpenDotaOptions
+    {
+        public const string OpenDota = "OpenDota";
+
+        /// <summary>
+        /// Api Key for the OpenDota Api.
+        /// </summary>
+        public string Key { get; set; }
+    }
 }

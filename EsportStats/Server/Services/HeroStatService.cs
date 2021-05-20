@@ -74,10 +74,9 @@ namespace EsportStats.Server.Services
             {
                 // Stats are not up to date, so we refresh them from opendota api
                 var updatedStats = await _openDotaService.GetHeroStatsAsync(steamId);
-
+                var createdStats = new List<HeroStat>();
                 if (!timestamp.HasValue && !stats.Any())
                 {
-                    var createdStats = new List<HeroStat>();
                     // No hero stats recorded yet, new entities should be created
                     foreach(var dto in updatedStats)
                     {
@@ -90,8 +89,21 @@ namespace EsportStats.Server.Services
                     // Hero stats already exist, only update the already existing entities
                     foreach (var dto in updatedStats)
                     {
-                        stats.First(stat => stat.Hero == dto.Hero).Games = dto.Games;
-                    }                    
+                        var stat = stats.FirstOrDefault(stat => stat.Hero == dto.Hero);
+                        if (stat != null)
+                        {
+                            stat.Games = dto.Games;
+                        }
+                        else
+                        {
+                            // there was no statistics for this specific hero yet, so this must be added
+                            createdStats.Add(new HeroStat(dto, steamId));
+                        }
+                    }
+                    if (createdStats.Any())
+                    {
+                        await _unitOfWork.HeroStats.AddRangeAsync(createdStats);
+                    }
                 }
 
                 if (player != null)

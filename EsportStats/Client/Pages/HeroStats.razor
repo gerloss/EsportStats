@@ -28,18 +28,18 @@
 
 @if (selection.SelectedHero == Hero.PleaseSelect)
 {
-    <table class="hero-stats table table-striped table-hover">
-        <thead>
-            <tr>
-                <th scope="col" colspan="2">Player</th>
-                <th scope="col" class="text-right">Matches</th>
-            </tr>
-        </thead>
-        @if (isLoading)
-        {
-            <LoadingBody />
-        }
-    </table>
+<table class="hero-stats table table-striped table-hover">
+    <thead>
+        <tr>
+            <th scope="col" colspan="2">Player</th>
+            <th scope="col" class="text-right">Matches</th>
+        </tr>
+    </thead>
+    @if (isLoading)
+    {
+        <LoadingBody />
+    }
+</table>
     
     @if (!isLoading)
     {
@@ -62,28 +62,38 @@ else
         }
         else 
         { 
-            <tbody>
-                @foreach (var e in entries)
-                {
-                    <tr class="@(e.Friend.IsCurrentPlayer ? "font-weight-bold" : "")">
-                        <td><img class="w-100" src="@e.Friend.Avatar" /></td>
-                        <td>
-                            <a href="@e.Friend.ProfileUrl" target="_blank" title="@e.Friend.Name on Steam">
-                                <span>
-                                    @e.Friend.Name
-                                </span>
-                                @if (e.Friend.IsCurrentPlayer)
-                                {
-                                    <span>(You)</span>
-                                }
-                            </a>
-                        </td>
-                        <td class="text-right">
-                            @e.Value
-                        </td>
-                    </tr>
-                }
-            </tbody>
+            @if (isError)
+            {
+                <ErrorBody />
+            }
+            @if (isServiceDown)
+            {
+                <ServiceDownBody />
+            } else
+            {
+                <tbody>
+                    @foreach (var e in entries)
+                    {
+                        <tr class="@(e.Friend.IsCurrentPlayer ? "font-weight-bold" : "")">
+                            <td><img class="w-100" src="@e.Friend.Avatar" /></td>
+                            <td>
+                                <a href="@e.Friend.ProfileUrl" target="_blank" title="@e.Friend.Name on Steam">
+                                    <span>
+                                        @e.Friend.Name
+                                    </span>
+                                    @if (e.Friend.IsCurrentPlayer)
+                                    {
+                                        <span>(You)</span>
+                                    }
+                                </a>
+                            </td>
+                            <td class="text-right">
+                                @e.Value
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            }
         }        
     </table>
 }

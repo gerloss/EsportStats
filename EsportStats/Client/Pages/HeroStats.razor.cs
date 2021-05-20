@@ -29,6 +29,8 @@ namespace EsportStats.Client.Pages
 
         IEnumerable<TopListEntryDTO> entries = new List<TopListEntryDTO>();
         bool isLoading = false;
+        bool isError = false;
+        bool isServiceDown = false;
 
         private async Task HandleChanges()
         {
@@ -36,17 +38,37 @@ namespace EsportStats.Client.Pages
             {
                 isLoading = true;
                 var route = $"/Api/Heroes/{(int)selection.SelectedHero}";
-                var result = await _http.GetFromJsonAsync<IEnumerable<TopListEntryDTO>>(route);
-                entries = result;
-                selection.CurrentlyDisplayed = selection.SelectedHero;
-                isLoading = false;
+
+                var response = await _http.GetAsync(route);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<IEnumerable<TopListEntryDTO>>();
+
+                    entries = result;
+                    selection.CurrentlyDisplayed = selection.SelectedHero;
+                    isLoading = false;
+                    isServiceDown = false;
+                    isError = false;
+                }
+                else
+                {
+                    if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                    {
+                        isServiceDown = true;
+                    }
+                    else
+                    {
+                        isError = true;
+                    }
+                    isLoading = false;
+                    entries = new List<TopListEntryDTO>();                    
+                }
             }
             catch (HttpRequestException ex)
             {
-                // TODO: Logging/Error message
-                entries = new List<TopListEntryDTO>();
-                selection.CurrentlyDisplayed = Hero.PleaseSelect;
+                entries = new List<TopListEntryDTO>();                
                 isLoading = false;
+                isError = true;
             }
         }
     }

@@ -16,11 +16,42 @@ namespace EsportStats.Client.Pages
 
         IEnumerable<TopListEntryDTO> entries = new List<TopListEntryDTO>();
         bool isLoaded = false;
+        bool isError = false;
+        bool isServiceDown = false;
 
         protected override async Task OnInitializedAsync()
         {
-            entries = await _http.GetFromJsonAsync<IEnumerable<TopListEntryDTO>>("/Api/Spammers");
-            isLoaded = true;
+            try
+            {
+                var route = "/Api/Spammers";
+                var response = await _http.GetAsync(route);
+                if (response.IsSuccessStatusCode)
+                {
+                    entries = await response.Content.ReadFromJsonAsync<IEnumerable<TopListEntryDTO>>();
+                    isServiceDown = false;
+                    isError = false;
+                    isLoaded = true;
+                }
+                else
+                {
+                    if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                    {
+                        isServiceDown = true;
+                    }
+                    else
+                    {
+                        isError = true;
+                    }                    
+                    entries = new List<TopListEntryDTO>();
+                    isLoaded = true;
+                }
+            } catch (HttpRequestException ex)
+            {
+                entries = new List<TopListEntryDTO>();                
+                isError = true;
+                isLoaded = true;
+            }
+
         }
     }
 }

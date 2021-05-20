@@ -115,7 +115,7 @@ namespace EsportStats.Server
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapFallbackToFile("index.html");
+                endpoints.MapFallbackToFile(env.IsDevelopment() ? "index.html" : "wwwroot/index.html"); // after a -release deployment the client wwwroot is nested inside the server wwwroot
             });
         }
     }

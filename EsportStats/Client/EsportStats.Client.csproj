@@ -33,5 +33,9 @@
   <ItemGroup>
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Content Update="wwwroot\*" CopyToPublishDirectory="Always"/>
+  </ItemGroup>
 
 </Project>

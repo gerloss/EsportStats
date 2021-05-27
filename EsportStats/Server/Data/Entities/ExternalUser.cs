@@ -109,7 +109,7 @@ namespace EsportStats.Server.Data.Entities
             };
         }
 
-        public void SetPlayTime(int minutes)
+        public void SetPlaytime(int minutes)
         {
             this.Playtime = minutes;
             this.PlaytimeTimestamp = DateTime.Now;

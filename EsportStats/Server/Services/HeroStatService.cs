@@ -1,7 +1,9 @@
-﻿using EsportStats.Server.Data;
+﻿using EsportStats.Server.Common;
+using EsportStats.Server.Data;
 using EsportStats.Server.Data.Entities;
 using EsportStats.Shared.DTO;
 using EsportStats.Shared.Enums;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,15 +30,20 @@ namespace EsportStats.Server.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOpenDotaService _openDotaService;
         private readonly ISteamService _steamService;
+        private readonly SteamOptions _steamOptions;
+        private readonly OpenDotaOptions _openDotaOptions;
 
         public HeroStatService(
             IUnitOfWork unitOfWork,
             IOpenDotaService openDotaService,
-            ISteamService steamService)
+            ISteamService steamService,
+            IConfiguration cfg)
         {
             _unitOfWork = unitOfWork;
             _openDotaService = openDotaService;
             _steamService = steamService;
+            cfg.GetSection(SteamOptions.Steam).Bind(_steamOptions);
+            cfg.GetSection(OpenDotaOptions.OpenDota).Bind(_openDotaOptions);
         }
 
         /// <summary>

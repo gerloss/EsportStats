@@ -19,6 +19,11 @@ namespace EsportStats.Server.Common
         /// App Id of the Dota 2 application within Steams database
         /// </summary>
         public int AppId { get; set; }
+
+        /// <summary>
+        /// The amount of (parallel) requests initiated in a single batch
+        /// </summary>
+        public int BatchSize { get; set; }
     }
 
     public class OpenDotaOptions
@@ -29,5 +34,10 @@ namespace EsportStats.Server.Common
         /// Api Key for the OpenDota Api.
         /// </summary>
         public string Key { get; set; }
+
+        /// <summary>
+        /// The amount of (parallel) requests initiated in a single batch
+        /// </summary>
+        public int BatchSize { get; set; }
     }
 }

@@ -25,8 +25,8 @@ namespace EsportStats.Server.Services
     public class SteamService : ISteamService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IConfiguration _cfg;
+        private readonly IHttpClientFactory _httpClientFactory;        
+        private readonly SteamOptions _steamOptions;
 
         public SteamService(
             IHttpClientFactory httpClientFactory,
@@ -34,7 +34,7 @@ namespace EsportStats.Server.Services
             IUnitOfWork unitOfWork)
         {
             _httpClientFactory = httpClientFactory;
-            _cfg = cfg;
+            cfg.GetSection(SteamOptions.Steam).Bind(_steamOptions);
             _unitOfWork = unitOfWork;
         }
 
@@ -131,15 +131,13 @@ namespace EsportStats.Server.Services
                 {
                     tasks.Add(GetSteamPlaytimeMinutesAsync(steamId));
                 }
-
-                var steamOptions = new SteamOptions();
-                _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);
-                var numberOfBatches = (int)Math.Ceiling((double)tasks.Count() / steamOptions.BatchSize);
+                
+                var numberOfBatches = (int)Math.Ceiling((double)tasks.Count() / _steamOptions.BatchSize);
                 var playTimes = new List<KeyValuePair<ulong, int>>();
 
                 for (int i = 0; i < numberOfBatches; i++)
                 {
-                    var batch = tasks.Skip(i * steamOptions.BatchSize).Take(steamOptions.BatchSize);
+                    var batch = tasks.Skip(i * _steamOptions.BatchSize).Take(_steamOptions.BatchSize);
                     playTimes.AddRange(await Task.WhenAll(batch));
                 }
 
@@ -182,10 +180,8 @@ namespace EsportStats.Server.Services
         /// </summary>        
         public async Task<IEnumerable<ulong>> GetSteamFriendsExternalAsync(ulong steamId)
         {
-            var steamOptions = new SteamOptions();
-            _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);
-
-            var friendsListUrl = $"https://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key={steamOptions.Key}&steamid={steamId}&relationship=friend";
+            
+            var friendsListUrl = $"https://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key={_steamOptions.Key}&steamid={steamId}&relationship=friend";
 
             var httpClient = _httpClientFactory.CreateClient();
             var friendsListResponse = await httpClient.GetAsync(friendsListUrl);
@@ -199,14 +195,11 @@ namespace EsportStats.Server.Services
         /// Gets the amount of playtime spent on Dota2 for the user.
         /// </summary>        
         public async Task<KeyValuePair<ulong, int>> GetSteamPlaytimeMinutesAsync(ulong steamId)
-        {
-            var steamOptions = new SteamOptions();
-            _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);
-
+        {            
             var playtimeUrl = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/"
-                            + "?key=" + steamOptions.Key
+                            + "?key=" + _steamOptions.Key
                             + "&steamid=" + steamId
-                            + "&appids_filter=" + steamOptions.AppId
+                            + "&appids_filter=" + _steamOptions.AppId
                             + "&include_played_free_games=true&include_appinfo=false";
 
             var httpClient = _httpClientFactory.CreateClient();
@@ -220,7 +213,7 @@ namespace EsportStats.Server.Services
             }
             else
             {
-                var gameStat = parsedResponse.Response.Games.SingleOrDefault(g => g.AppId == steamOptions.AppId);
+                var gameStat = parsedResponse.Response.Games.SingleOrDefault(g => g.AppId == _steamOptions.AppId);
                 if (gameStat != null)
                 {
                     return new KeyValuePair<ulong, int>(steamId, gameStat.PlaytimeForeverMinutes);
@@ -237,11 +230,8 @@ namespace EsportStats.Server.Services
         /// Gets the user profile from the Steam API.
         /// </summary>
         public async Task<SteamProfileExtDTO> GetSteamProfileExternalAsync(ulong steamId)
-        {
-
-            var steamOptions = new SteamOptions();
-            _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);
-            var key = steamOptions.Key;
+        {            
+            var key = _steamOptions.Key;
             var playerInfoUrl = $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={steamId}";
 
             var httpClient = _httpClientFactory.CreateClient();
@@ -257,11 +247,8 @@ namespace EsportStats.Server.Services
         /// Gets the users profiles from the Steam API.
         /// </summary>
         public async Task<IEnumerable<SteamProfileExtDTO>> GetSteamProfilesExternalAsync(IEnumerable<ulong> steamIds)
-        {
-
-            var steamOptions = new SteamOptions();
-            _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);
-            var key = steamOptions.Key;
+        {            
+            var key = _steamOptions.Key;
             var joinedIds = String.Join(',', steamIds);
             var playerInfoUrl = $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={joinedIds}";
 

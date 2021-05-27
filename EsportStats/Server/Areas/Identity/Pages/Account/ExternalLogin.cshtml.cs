@@ -155,7 +155,7 @@ namespace EsportStats.Server.Areas.Identity.Pages.Account
                         _unitOfWork.SaveChanges();
                     }
 
-                    user.Playtime = await _steamService.GetSteamPlaytimeMinutesAsync(user.SteamId);
+                    user.Playtime = (await _steamService.GetSteamPlaytimeMinutesAsync(user.SteamId)).Value;
                     user.PlaytimeTimestamp = DateTime.Now;
                     await _userManager.UpdateAsync(user);                    
 

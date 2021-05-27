@@ -19,7 +19,7 @@ namespace EsportStats.Server.Services
         public Task<SteamProfileExtDTO> GetSteamProfileExternalAsync(ulong steamId);
         public Task<IEnumerable<SteamProfileExtDTO>> GetSteamProfilesExternalAsync(IEnumerable<ulong> steamIds);
         public Task<IEnumerable<ulong>> GetSteamFriendsExternalAsync(ulong steamId);
-        public Task<int> GetSteamPlaytimeMinutesAsync(ulong steamId);
+        public Task<KeyValuePair<ulong, int>> GetSteamPlaytimeMinutesAsync(ulong steamId);
     }
 
     public class SteamService : ISteamService
@@ -111,29 +111,58 @@ namespace EsportStats.Server.Services
 
             if (includePlaytime)
             {
-                // Playtime values can only be handled individually
-                // TODO: display friend list on front end, and update these values later asynchronously, because this can take ~250ms
-                foreach(var user in applicationUsers.Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
-                {
-                    user.Playtime = await GetSteamPlaytimeMinutesAsync(user.SteamId);
-                    user.PlaytimeTimestamp = DateTime.Now;                
-                }
-                foreach (var user in externalFriends.Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
-                {
-                    user.Playtime = await GetSteamPlaytimeMinutesAsync(user.SteamId);
-                    user.PlaytimeTimestamp = DateTime.Now;
-                }
-                foreach (var user in createdExternalUsers.Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
-                {
-                    user.Playtime = await GetSteamPlaytimeMinutesAsync(user.SteamId);
-                    user.PlaytimeTimestamp = DateTime.Now;
-                }
+                // Playtime values can only be handled in individual requests
+                // Gather all the Tasks for the requests and then send them in parallel in batches
+                var tasks = applicationUsers
+                    .Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24))
+                    .Select(u => GetSteamPlaytimeMinutesAsync(u.SteamId))
+                    .ToList();
+
+                tasks.AddRange(externalFriends
+                    .Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24))
+                    .Select(u => GetSteamPlaytimeMinutesAsync(u.SteamId)));
+
+                tasks.AddRange(createdExternalUsers
+                    .Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24))
+                    .Select(u => GetSteamPlaytimeMinutesAsync(u.SteamId)));                
+                
+
                 if (includePlayer && (!currentUserProfile.PlaytimeTimestamp.HasValue || currentUserProfile.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
                 {
-                    currentUserProfile.Playtime = await GetSteamPlaytimeMinutesAsync(steamId);
-                    currentUserProfile.PlaytimeTimestamp = DateTime.Now;
+                    tasks.Add(GetSteamPlaytimeMinutesAsync(steamId));
                 }
-            }
+
+                var steamOptions = new SteamOptions();
+                _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);
+                var numberOfBatches = (int)Math.Ceiling((double)tasks.Count() / steamOptions.BatchSize);
+                var playTimes = new List<KeyValuePair<ulong, int>>();
+
+                for (int i = 0; i < numberOfBatches; i++)
+                {
+                    var batch = tasks.Skip(i * steamOptions.BatchSize).Take(steamOptions.BatchSize);
+                    playTimes.AddRange(await Task.WhenAll(batch));
+                }
+
+                foreach (var time in playTimes)
+                {
+                    if (applicationUsers.Any(u => u.SteamId == time.Key))
+                    {
+                        applicationUsers.Single(u => u.SteamId == time.Key).SetPlaytime(time.Value);
+                    }
+                    else if (externalFriends.Any(u => u.SteamId == time.Key))
+                    {
+                        externalFriends.Single(u => u.SteamId == time.Key).SetPlaytime(time.Value);
+                    }
+                    else if (createdExternalUsers.Any(u => u.SteamId == time.Key))
+                    {
+                        createdExternalUsers.Single(u => u.SteamId == time.Key).SetPlaytime(time.Value);
+                    }
+                    else if (includePlayer && (!currentUserProfile.PlaytimeTimestamp.HasValue || currentUserProfile.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
+                    {
+                        currentUserProfile.SetPlaytime(time.Value);
+                    }
+                }
+            }            
 
             var friends = new List<SteamUserDTO>();
             friends.AddRange(applicationUsers.Select(u => u.ToDTO()));
@@ -169,7 +198,7 @@ namespace EsportStats.Server.Services
         /// <summary>
         /// Gets the amount of playtime spent on Dota2 for the user.
         /// </summary>        
-        public async Task<int> GetSteamPlaytimeMinutesAsync(ulong steamId)
+        public async Task<KeyValuePair<ulong, int>> GetSteamPlaytimeMinutesAsync(ulong steamId)
         {
             var steamOptions = new SteamOptions();
             _cfg.GetSection(SteamOptions.Steam).Bind(steamOptions);
@@ -187,11 +216,20 @@ namespace EsportStats.Server.Services
             
             if (parsedResponse.Response.GameCount == 0)
             {
-                return 0;
+                return new KeyValuePair<ulong, int>(steamId, 0);
             }
             else
             {
-                return parsedResponse.Response.Games.SingleOrDefault(g => g.AppId == steamOptions.AppId)?.PlaytimeForeverMinutes ?? 0;
+                var gameStat = parsedResponse.Response.Games.SingleOrDefault(g => g.AppId == steamOptions.AppId);
+                if (gameStat != null)
+                {
+                    return new KeyValuePair<ulong, int>(steamId, gameStat.PlaytimeForeverMinutes);
+                }
+                else
+                {
+
+                }
+                return new KeyValuePair<ulong, int>(steamId, 0);
             }
         }
 

@@ -95,5 +95,11 @@ namespace EsportStats.Server.Data.Entities
                 SteamId = this.SteamId
             };
         }
+
+        public void SetPlayTime(int minutes)
+        {
+            this.Playtime = minutes;
+            this.PlaytimeTimestamp = DateTime.Now;
+        }
     }
 }

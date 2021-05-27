@@ -178,7 +178,7 @@ namespace EsportStats.Server.Services
         }
 
         /// <summary>
-        /// Gets the lost of the user's steam friends' ids.
+        /// Gets the list of the user's steam friends' ids.
         /// </summary>        
         public async Task<IEnumerable<ulong>> GetSteamFriendsExternalAsync(ulong steamId)
         {

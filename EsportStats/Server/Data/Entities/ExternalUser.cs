@@ -86,6 +86,7 @@ namespace EsportStats.Server.Data.Entities
         /// </summary>
         public DateTime? HeroStatsTimestamp { get; set; }
 
+        public string Guid { get { return null; } }
 
         public void UpdateFromExternalProfile(SteamProfileExtDTO dto)
         {
@@ -114,6 +115,11 @@ namespace EsportStats.Server.Data.Entities
         {
             this.Playtime = minutes;
             this.PlaytimeTimestamp = DateTime.Now;
+        }
+
+        public string GetGuid()
+        {
+            return null;
         }
     }
 }

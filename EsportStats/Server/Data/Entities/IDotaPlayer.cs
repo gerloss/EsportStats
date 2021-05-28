@@ -12,6 +12,9 @@ namespace EsportStats.Server.Data.Entities
         void UpdateFromExternalProfile(SteamProfileExtDTO dto);
         SteamUserDTO ToDTO(bool isCurrentUser = false);
         void SetPlaytime(int minutes);
+        
+        
+        public string Guid { get; }
 
 
         /// <summary>

@@ -1,8 +1,10 @@
 ﻿using EsportStats.Server.Common;
+using EsportStats.Server.Data.Entities;
 using EsportStats.Server.Services;
 using EsportStats.Shared.DTO;
 using EsportStats.Shared.Enums;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -17,11 +19,15 @@ namespace EsportStats.Server.Api
     [ApiController]
     public class ListsController : ControllerBase
     {
-        private ITopListService _topListService { get; }
+        private readonly ITopListService _topListService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ListsController(ITopListService topListService)
+        public ListsController(
+            ITopListService topListService, 
+            UserManager<ApplicationUser> userManager)
         {
             _topListService = topListService;
+            _userManager = userManager;
         }        
 
         /// <summary>
@@ -42,9 +48,11 @@ namespace EsportStats.Server.Api
             }
 
             var metric = (Metric) m;
-
+            
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var topList = await _topListService.GetByMetricAsync(currentUserId, metric);
+            var currentUser = await _userManager.FindByIdAsync(currentUserId);
+
+            var topList = await _topListService.GetByMetricForUser(currentUser.SteamId, metric);
             return Ok(topList);
         }
     }

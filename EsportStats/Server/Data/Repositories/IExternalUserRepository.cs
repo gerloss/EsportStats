@@ -9,6 +9,6 @@ namespace EsportStats.Server.Data.Repositories
     public interface IExternalUserRepository : IRepository<ExternalUser, ulong>
     {
         Task<ExternalUser> GetWithTopListEntriesAsync(ulong steamId);
-        Task<IEnumerable<ExternalUser>> GetExternalUsersBySteamIdAsync(IEnumerable<ulong> steamIds);
+        Task<IEnumerable<ExternalUser>> GetExternalUsersBySteamIdAsync(IEnumerable<ulong> steamIds, bool includeTopListEntries = false);
     }
 }

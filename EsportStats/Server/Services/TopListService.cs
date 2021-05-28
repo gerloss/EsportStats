@@ -10,11 +10,8 @@ using EsportStats.Server.Data.Entities;
 namespace EsportStats.Server.Services
 {
     public interface ITopListService
-    {
-        public Task<IEnumerable<TopListEntryDTO>> GetByMetricAsync(string userId, Metric metric, int take = 25);
-        public Task<IEnumerable<TopListEntryDTO>> GetByMetricAsync(ulong steamId, Metric metric, int take = 25);
-        public Task<List<TopListEntry>> GetByMetricForUser(string userId, Metric metric, bool forceRefresh = false);
-        public Task<List<TopListEntry>> GetByMetricForUser(ulong steamId, Metric metric, bool forceRefresh = false);
+    {         
+        public Task<IEnumerable<TopListEntryDTO>> GetByMetricForUser(ulong steamId, Metric metric, int take = 25);
     }
 
     public class TopListService : ITopListService
@@ -36,107 +33,67 @@ namespace EsportStats.Server.Services
         /// <summary>
         /// Get the top list entries for a single user by a given metric
         /// </summary>        
-        public async Task<List<TopListEntry>> GetByMetricForUser(string userId, Metric metric, bool forceRefresh = false)
-        {
-            var user = await _unitOfWork.Users.GetAsync(userId);
-            return await GetByMetricForUser(user.SteamId, metric, forceRefresh);
-        }
+        public async Task<IEnumerable<TopListEntryDTO>> GetByMetricForUser(ulong steamId, Metric metric, int take = 25)
+        {            
+            var playerDTOs = await _steamService.GetFriendsAsync(steamId, includePlayer: true, includePlaytime: false);
 
-        /// <summary>
-        /// Get the top list entries for a single user by a given metric
-        /// </summary>        
-        public async Task<List<TopListEntry>> GetByMetricForUser(ulong steamId, Metric metric, bool forceRefresh = false)
-        {
-            var player = await _unitOfWork.Users.GetUserBySteamIdAsync(steamId, includeTopListEntries: true);
-            ExternalUser extPlayer = null;
-            if (player == null)
-            {
-                extPlayer = await _unitOfWork.ExternalUsers.GetWithTopListEntriesAsync(steamId);
-                if (extPlayer == null)
-                {
-                    // If there are any valid toplist entries for this user, then the user should already exist, because they have been persisted during loading the front page.
-                    // So this probably means that no entries were available externally.
-                    return new List<TopListEntry>();
-                }
-            }
+            var players = new List<IDotaPlayer>();
+            players.AddRange(await _unitOfWork.Users.GetUsersBySteamIdAsync(playerDTOs.Select(p => p.SteamId), includeTopListEntries: true));
+            players.AddRange(await _unitOfWork.ExternalUsers.GetExternalUsersBySteamIdAsync(playerDTOs.Select(p => p.SteamId), includeTopListEntries: true));
+            // ids that were not found in either should not exists: they should have all been created at the landing page
 
-            var stats = player != null ? player.TopListEntries : extPlayer.TopListEntries;
-            stats = stats.Where(e => e.Metric == metric).OrderByDescending(e => e.Value).ToList();
-            DateTime? timestamp = stats.FirstOrDefault()?.Timestamp;
+            var playersToUpdate = new List<IDotaPlayer>();
 
-            // TODO: check case if someone really has no stats recorded -> a request will possibly be sent here unnecessarily because there will be no timestamp (Timestamp on user by metric instead of inside the TopListEntry entities?)
-            if (!timestamp.HasValue || timestamp < DateTime.Now.AddHours(-24) || forceRefresh)
-            {
-                // Stats are not up to date, replace them with fresh data from the opendota api
-                
-                // Remove the outdated entries
-                _unitOfWork.TopListEntries.RemoveRange(stats);
-
-                // Create fresh entities for the newly requested entries
-                var upToDateStats = await _openDotaService.GetTopListEntriesAsync(steamId, metric);
-                var createdStats = new List<TopListEntry>();                
-                foreach(var dto in upToDateStats)
-                {
-                    var entity = player != null ? new TopListEntry(dto, metric, player.Id)  : new TopListEntry(dto, metric, extPlayer.SteamId);
-                    createdStats.Add(entity);
-                }
-
-                await _unitOfWork.TopListEntries.AddRangeAsync(createdStats);
-
-                _unitOfWork.SaveChanges();
-
-                return createdStats;
-            }
-            else
-            {
-                return stats;
-            }
-        }
-
-
-        /// <summary>
-        /// Serves a list of the top values achieved by the selected metric from the given authenticated user's friends.
-        /// </summary>                
-        public async Task<IEnumerable<TopListEntryDTO>> GetByMetricAsync(string userId, Metric metric, int take = 25)
-        {
-            var user = await _unitOfWork.Users.GetAsync(userId);
-            return await GetByMetricAsync(user.SteamId, metric, take);
-        }
-
-        /// <summary>
-        /// Serves a list of the top values achieved by the selected metric from the given authenticated user's friends.
-        /// </summary>                
-        public async Task<IEnumerable<TopListEntryDTO>> GetByMetricAsync(ulong steamId, Metric metric, int take = 25)
-        {
-            // Playtime should not be refreshed, as it will not be required and it would take a lot of extra time...
-            // This way this can be done in a single HTTP GET towards Steam API
-            var players = await _steamService.GetFriendsAsync(steamId, includePlayer: true, includePlaytime: false);
-
-            var stats = new List<TopListEntryDTO>();
-            // Get the top list entries for every player
-
+            var upToDateStats = new List<TopListEntryDTO>();
             foreach(var player in players)
             {
-                var entries = await GetByMetricForUser(player.SteamId, metric);
-                var entryDTOs = entries.Select(entry => new TopListEntryDTO()
-                {
-                    Friend = player,
-                    Value = entry.Value,
-                    Hero = entry.Hero.HasValue ? entry.Hero.Value : Hero.PleaseSelect,
-                    MatchId = entry.MatchId
-                });
+                var requiredEntries = player.TopListEntries.Where(e => e.Metric == metric);
+                var timestamp = requiredEntries.FirstOrDefault()?.Timestamp; // TODO: is this always null ?????
 
-                stats.AddRange(entryDTOs);
+                if (!requiredEntries.Any() || !timestamp.HasValue || timestamp.Value < DateTime.Now.AddDays(-24))
+                {
+                    playersToUpdate.Add(player);
+                    
+                    _unitOfWork.TopListEntries.RemoveRange(requiredEntries); // remove the old entries, new ones in the response will be saved later
+                }
+                else 
+                {
+                    upToDateStats.AddRange(requiredEntries.Select(e =>  new TopListEntryDTO { 
+                        Friend = player.ToDTO(player.SteamId == steamId),
+                        Hero = e.Hero.Value,
+                        Value = e.Value,
+                        MatchId = e.MatchId
+                    }));                    
+                }
             }
 
-            var ordered = stats.OrderByDescending(e => e.Value);
+            var updatedEntriesGroupedByPlayer = (await _openDotaService.GetTopListEntriesAsync(playersToUpdate, metric)).GroupBy(e => e.User);
+
+            foreach(var group in updatedEntriesGroupedByPlayer)
+            {
+                IDotaPlayer player = group.First().User; // TODO: is the user in here?????
+                var createdEntries = group.Select(e => String.IsNullOrEmpty(player.Guid) ? new TopListEntry(e, metric, player.SteamId) : new TopListEntry(e, metric, player.Guid));
+                await _unitOfWork.TopListEntries.AddRangeAsync(createdEntries);
+                upToDateStats.AddRange(createdEntries.Select(e => new TopListEntryDTO
+                {
+                    Friend = player.ToDTO(player.SteamId == steamId),
+                    Hero = e.Hero.Value,
+                    Value = e.Value,
+                    MatchId = e.MatchId
+                }));
+            }
+
+            _unitOfWork.SaveChanges();
+
+            var ordered = upToDateStats.OrderByDescending(e => e.Value);
             var topValues = ordered.Take(take);
+
             if (!topValues.Any(v => v.Friend.IsCurrentPlayer) && ordered.Any(v => v.Friend.IsCurrentPlayer))
             {
                 topValues = topValues.Append(ordered.First(v => v.Friend.IsCurrentPlayer));
             }
-            return topValues.OrderByDescending(s => s.Value);
-        }
 
+            return topValues.OrderByDescending(e => e.Value);
+        }
     }
 }

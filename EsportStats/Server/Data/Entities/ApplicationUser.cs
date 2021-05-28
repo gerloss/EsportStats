@@ -72,6 +72,7 @@ namespace EsportStats.Server.Data.Entities
         /// </summary>
         public DateTime? HeroStatsTimestamp { get; set; }
 
+        public string Guid { get { return this.Id; } }
 
         public void UpdateFromExternalProfile(SteamProfileExtDTO dto)
         {

@@ -309,6 +309,8 @@ namespace EsportStats.Shared.Enums
         Snapfire = 128,
         [Display(Name = "Mars", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/mars_sb.png")]
         Mars = 129,
+        [Display(Name = "Dawnbreaker", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/dawnbreaker_sb.png")]
+        Dawnbreaker = 135
 
     }
 }

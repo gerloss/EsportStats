@@ -38,13 +38,14 @@ namespace EsportStats.Server.Services
             IUnitOfWork unitOfWork,
             IOpenDotaService openDotaService,
             ISteamService steamService,
-            IConfiguration cfg)
+            SteamOptions steamOptions,
+            OpenDotaOptions openDotaOptions)
         {
             _unitOfWork = unitOfWork;
             _openDotaService = openDotaService;
             _steamService = steamService;
-            cfg.GetSection(SteamOptions.Steam).Bind(_steamOptions);
-            cfg.GetSection(OpenDotaOptions.OpenDota).Bind(_openDotaOptions);
+            _steamOptions = steamOptions;
+            _openDotaOptions = openDotaOptions;
         }
 
         /// <summary>

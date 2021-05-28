@@ -32,13 +32,11 @@ namespace EsportStats.Server.Services
         public OpenDotaService(
             IUnitOfWork unitOfWork,
             IHttpClientFactory httpClientFactory,
-            IConfiguration cfg)
+            OpenDotaOptions openDotaOptions)
         {
             _unitOfWork = unitOfWork;
-            _httpClientFactory = httpClientFactory;
-            var apicfg = new OpenDotaOptions();
-            cfg.GetSection(OpenDotaOptions.OpenDota).Bind(apicfg);
-            _apiKey = apicfg.Key;
+            _httpClientFactory = httpClientFactory;            
+            _apiKey = openDotaOptions.Key;
         }
 
         /// <summary>

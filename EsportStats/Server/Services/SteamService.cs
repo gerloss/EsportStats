@@ -30,11 +30,11 @@ namespace EsportStats.Server.Services
 
         public SteamService(
             IHttpClientFactory httpClientFactory,
-            IConfiguration cfg,
+            SteamOptions steamOptions,
             IUnitOfWork unitOfWork)
         {
             _httpClientFactory = httpClientFactory;
-            cfg.GetSection(SteamOptions.Steam).Bind(_steamOptions);
+            _steamOptions = steamOptions;
             _unitOfWork = unitOfWork;
         }
 

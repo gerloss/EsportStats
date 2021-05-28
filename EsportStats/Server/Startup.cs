@@ -74,6 +74,14 @@ namespace EsportStats.Server
 
             });
 
+            var steamOptions = new SteamOptions();
+            Configuration.Bind(SteamOptions.Steam, steamOptions);
+            services.AddSingleton(steamOptions);
+
+            var openDotaOptions = new OpenDotaOptions();
+            Configuration.Bind(OpenDotaOptions.OpenDota, openDotaOptions);
+            services.AddSingleton(openDotaOptions);
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ISteamService, SteamService>();
             services.AddScoped<ITopListService, TopListService>();

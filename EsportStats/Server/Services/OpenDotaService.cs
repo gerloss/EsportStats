@@ -16,36 +16,21 @@ namespace EsportStats.Server.Services
 {
     public interface IOpenDotaService
     {
-        public Task<IEnumerable<HeroStatDTO>> GetHeroStatsAsync(string userId);
         public Task<IEnumerable<HeroStatDTO>> GetHeroStatsAsync(ulong steamId);
-
-        public Task<IEnumerable<TopListEntryExtDTO>> GetTopListEntriesAsync(string userId, Metric metric);
         public Task<IEnumerable<TopListEntryExtDTO>> GetTopListEntriesAsync(ulong steamId, Metric metric);
     }
 
     public class OpenDotaService : IOpenDotaService
-    {
-        private readonly IUnitOfWork _unitOfWork;
+    {        
         private readonly IHttpClientFactory _httpClientFactory;        
         private readonly string _apiKey;
 
         public OpenDotaService(
-            IUnitOfWork unitOfWork,
             IHttpClientFactory httpClientFactory,
             OpenDotaOptions openDotaOptions)
-        {
-            _unitOfWork = unitOfWork;
+        {            
             _httpClientFactory = httpClientFactory;            
             _apiKey = openDotaOptions.Key;
-        }
-
-        /// <summary>
-        /// Gets the hero statistics of the user with the given userid.
-        /// </summary>       
-        public async Task<IEnumerable<HeroStatDTO>> GetHeroStatsAsync(string userId)
-        {
-            var user = await _unitOfWork.Users.GetAsync(userId);
-            return await GetHeroStatsAsync(user.SteamId);
         }
 
         /// <summary>
@@ -63,11 +48,6 @@ namespace EsportStats.Server.Services
             return parsedResponse;            
         }
 
-        public async Task<IEnumerable<TopListEntryExtDTO>> GetTopListEntriesAsync(string userId, Metric metric)
-        {
-            var user = await _unitOfWork.Users.GetAsync(userId);
-            return await GetTopListEntriesAsync(user.SteamId, metric);
-        }
 
         public async Task<IEnumerable<TopListEntryExtDTO>> GetTopListEntriesAsync(ulong steamId, Metric metric)
         {            

@@ -15,13 +15,10 @@ namespace EsportStats.Server.Services
     public interface IHeroStatService
     {
         // Since Dictionary is not sorted, we use a List of KeyValuePairs instead        
-        public Task<List<HeroStatsResult>> GetHeroStatsAsync(string userId);
         public Task<List<HeroStatsResult>> GetHeroStatsAsync(ulong steamId);
 
-        public Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(string userId, int take = 25);
         public Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(ulong steamId, int take = 25);
 
-        public Task<IEnumerable<TopListEntryDTO>> GetTopByHeroAsync(string userId, Hero hero, int take = 10);
         public Task<IEnumerable<TopListEntryDTO>> GetTopByHeroAsync(ulong steamId, Hero hero, int take = 10);
     }
 
@@ -45,15 +42,6 @@ namespace EsportStats.Server.Services
             _steamService = steamService;
             _steamOptions = steamOptions;
             _openDotaOptions = openDotaOptions;
-        }
-
-        /// <summary>
-        /// Gets all the hero statistics of the user with the given userid.
-        /// </summary>    
-        public async Task<List<HeroStatsResult>> GetHeroStatsAsync(string userId)
-        {
-            var user = await _unitOfWork.Users.GetAsync(userId);
-            return await GetHeroStatsAsync(user.SteamId);
         }
 
         /// <summary>
@@ -146,12 +134,6 @@ namespace EsportStats.Server.Services
             }
         }
 
-        public async Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(string userId, int take = 25)
-        {
-            var user = await _unitOfWork.Users.GetAsync(userId);
-            return await GetSpammersAsync(user.SteamId, take);
-        }
-
         public async Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(ulong steamId, int take = 25)
         {
             // Playtime should not be refreshed, as it will not be required and it would take a lot of extra time...
@@ -194,11 +176,6 @@ namespace EsportStats.Server.Services
             return topValues.OrderByDescending(s => s.Value);
         }
 
-        public async Task<IEnumerable<TopListEntryDTO>> GetTopByHeroAsync(string userId, Hero hero, int take = 10)
-        {
-            var user = await _unitOfWork.Users.GetAsync(userId);
-            return await GetTopByHeroAsync(user.SteamId, hero, take);
-        }
 
         public async Task<IEnumerable<TopListEntryDTO>> GetTopByHeroAsync(ulong steamId, Hero hero, int take = 10)
         {

@@ -39,7 +39,9 @@ namespace EsportStats.Server.Api
             public async Task<ActionResult<ICollection<TopListEntryDTO>>> GetSpammers()
             {
                 var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var entries = await _heroStatService.GetSpammersAsync(currentUserId);
+                var currentUser = await _userManager.FindByIdAsync(currentUserId);
+
+                var entries = await _heroStatService.GetSpammersAsync(currentUser.SteamId);
                 return Ok(entries.OrderByDescending(r => r.Value));
             }
 
@@ -61,7 +63,9 @@ namespace EsportStats.Server.Api
                 var hero = (Hero) heroId;
 
                 var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var entries = await _heroStatService.GetTopByHeroAsync(currentUserId, hero);
+                var currentUser = await _userManager.FindByIdAsync(currentUserId);
+
+                var entries = await _heroStatService.GetTopByHeroAsync(currentUser.SteamId, hero);
                 return Ok(entries.OrderByDescending(r => r.Value));
             }
         }

@@ -14,10 +14,9 @@ namespace EsportStats.Server.Services
 {
     public interface IHeroStatService
     {
-        // Since Dictionary is not sorted, we use a List of KeyValuePairs instead
-        // TODO: refactor into proper classes
-        public Task<KeyValuePair<ulong, List<KeyValuePair<Hero, int>>>> GetHeroStatsAsync(string userId);
-        public Task<KeyValuePair<ulong, List<KeyValuePair<Hero, int>>>> GetHeroStatsAsync(ulong steamId);
+        // Since Dictionary is not sorted, we use a List of KeyValuePairs instead        
+        public Task<List<HeroStatsResult>> GetHeroStatsAsync(string userId);
+        public Task<List<HeroStatsResult>> GetHeroStatsAsync(ulong steamId);
 
         public Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(string userId, int take = 25);
         public Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(ulong steamId, int take = 25);
@@ -51,7 +50,7 @@ namespace EsportStats.Server.Services
         /// <summary>
         /// Gets all the hero statistics of the user with the given userid.
         /// </summary>    
-        public async Task<KeyValuePair<ulong, List<KeyValuePair<Hero, int>>>> GetHeroStatsAsync(string userId)
+        public async Task<List<HeroStatsResult>> GetHeroStatsAsync(string userId)
         {
             var user = await _unitOfWork.Users.GetAsync(userId);
             return await GetHeroStatsAsync(user.SteamId);
@@ -60,7 +59,7 @@ namespace EsportStats.Server.Services
         /// <summary>
         /// Gets all the hero statistics of the user with the given steamId.
         /// </summary>    
-        public async Task<KeyValuePair<ulong, List<KeyValuePair<Hero, int>>>> GetHeroStatsAsync(ulong steamId)
+        public async Task<List<HeroStatsResult>> GetHeroStatsAsync(ulong steamId)
         {
             var player = await _unitOfWork.Users.GetUserBySteamIdAsync(steamId);
             ExternalUser extPlayer = null;
@@ -70,9 +69,8 @@ namespace EsportStats.Server.Services
                 if (extPlayer == null)
                 {
                     // If there is any valid data about this user, then the user should already exist, because they have been persisted during loading the front page.
-                    // So this probably means that no statistics are available.
-                    var emptyList = new List<KeyValuePair<Hero, int>>();
-                    return new KeyValuePair<ulong, List<KeyValuePair<Hero, int>>>(steamId, emptyList);
+                    // So this probably means that no statistics are available.                    
+                    return new List<HeroStatsResult>();
                 }
             }
 
@@ -127,16 +125,24 @@ namespace EsportStats.Server.Services
                 
                 _unitOfWork.SaveChanges();
 
-                var returnedStats = updatedStats.Select(stat => new KeyValuePair<Hero, int>(stat.Hero, stat.Games)).ToList();
-
-                return new KeyValuePair<ulong, List<KeyValuePair<Hero, int>>>(steamId, returnedStats);
+                return updatedStats.Select(stat => new HeroStatsResult 
+                { 
+                    SteamId = steamId,
+                    Hero = stat.Hero,
+                    Value = stat.Games
+                }).ToList();
+                 
             }
             else
             {
-                var returnedStats = stats.Select(stat => new KeyValuePair<Hero, int>(stat.Hero, stat.Games)).ToList();
+                // stats are up to date, return from db:                
+                return stats.Select(stat => new HeroStatsResult 
+                {
+                    SteamId = steamId,
+                    Hero = stat.Hero,
+                    Value = stat.Games
+                }).ToList();
 
-                // stats are up to date, return from db:
-                return new KeyValuePair<ulong, List<KeyValuePair<Hero, int>>>(steamId, returnedStats);
             }
         }
 
@@ -164,16 +170,18 @@ namespace EsportStats.Server.Services
                 var results = (await Task.WhenAll(batch));
                 foreach(var playerResult in results)
                 {
-                    var player = players.Single(p => p.SteamId == playerResult.Key);
-                    var playerHeroStats = playerResult.Value;
-
-                    heroStats.AddRange(playerHeroStats.Select(stat => new TopListEntryDTO
+                    if (playerResult.Any())
                     {
-                        Friend = player,
-                        Hero = stat.Key,
-                        Value = stat.Value,
-                        MatchId = null
-                    }));
+                        var player = players.Single(p => p.SteamId == playerResult.First().SteamId);                        
+
+                        heroStats.AddRange(playerResult.Select(stat => new TopListEntryDTO
+                        {
+                            Friend = player,
+                            Hero = stat.Hero,
+                            Value = stat.Value,
+                            MatchId = null
+                        }));
+                    }
                 }                
             }
 
@@ -209,16 +217,17 @@ namespace EsportStats.Server.Services
                 var results = (await Task.WhenAll(batch));
                 foreach (var playerResult in results)
                 {
-                    var player = players.Single(p => p.SteamId == playerResult.Key);
-                    var playerHeroStats = playerResult.Value;
-
-                    heroStats.AddRange(playerHeroStats.Select(stat => new TopListEntryDTO
+                    if (playerResult.Any())
                     {
-                        Friend = player,
-                        Hero = stat.Key,
-                        Value = stat.Value,
-                        MatchId = null
-                    }));
+                        var player = players.Single(p => p.SteamId == playerResult.First().SteamId);                        
+                        heroStats.AddRange(playerResult.Select(stat => new TopListEntryDTO
+                        {
+                            Friend = player,
+                            Hero = stat.Hero,
+                            Value = stat.Value,
+                            MatchId = null
+                        }));
+                    }
                 }
             }
 

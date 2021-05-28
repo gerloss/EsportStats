@@ -69,247 +69,247 @@ namespace EsportStats.Shared.Enums
     {
         [Display(Name = "Please select a hero...")]
         PleaseSelect = 0,
-        [Display(Name = "Anti-Mage", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/antimage_sb.png")]
+        [Display(Name = "Anti-Mage", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/antimage.png")]
         Antimage = 1,
-        [Display(Name = "Axe", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/axe_sb.png")]
+        [Display(Name = "Axe", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/axe.png")]
         Axe = 2,
-        [Display(Name = "Bane", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/bane_sb.png")]
+        [Display(Name = "Bane", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/bane.png")]
         Bane = 3,
-        [Display(Name = "Bloodseeker", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/bloodseeker_sb.png")]
+        [Display(Name = "Bloodseeker", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/bloodseeker.png")]
         Bloodseeker = 4,
-        [Display(Name = "Crystal Maiden", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/crystal_maiden_sb.png")]
+        [Display(Name = "Crystal Maiden", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/crystal_maiden.png")]
         CrystalMaiden = 5,
-        [Display(Name = "Drow Ranger", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/drow_ranger_sb.png")]
+        [Display(Name = "Drow Ranger", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/drow_ranger.png")]
         DrowRanger = 6,
-        [Display(Name = "Earthshaker", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/earthshaker_sb.png")]
+        [Display(Name = "Earthshaker", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/earthshaker.png")]
         Earthshaker = 7,
-        [Display(Name = "Juggernaut", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/juggernaut_sb.png")]
+        [Display(Name = "Juggernaut", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/juggernaut.png")]
         Juggernaut = 8,
-        [Display(Name = "Mirana", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/mirana_sb.png")]
+        [Display(Name = "Mirana", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/mirana.png")]
         Mirana = 9,
-        [Display(Name = "Morphling", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/morphling_sb.png")]
+        [Display(Name = "Morphling", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/morphling.png")]
         Morphling = 10,
-        [Display(Name = "Shadow Fiend", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/nevermore_sb.png")]
+        [Display(Name = "Shadow Fiend", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nevermore.png")]
         ShadowFiend = 11,
-        [Display(Name = "Phantom Lancer", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/phantom_lancer_sb.png")]
+        [Display(Name = "Phantom Lancer", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/phantom_lancer.png")]
         PhantomLancer = 12,
-        [Display(Name = "Puck", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/puck_sb.png")]
+        [Display(Name = "Puck", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/puck.png")]
         Puck = 13,
-        [Display(Name = "Pudge", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/pudge_sb.png")]
+        [Display(Name = "Pudge", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png")]
         Pudge = 14,
-        [Display(Name = "Razor", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/razor_sb.png")]
+        [Display(Name = "Razor", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/razor.png")]
         Razor = 15,
-        [Display(Name = "Sand King", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/sand_king_sb.png")]
+        [Display(Name = "Sand King", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/sand_king.png")]
         SandKing = 16,
-        [Display(Name = "Storm Spirit", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/storm_spirit_sb.png")]
+        [Display(Name = "Storm Spirit", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/storm_spirit.png")]
         StormSpirit = 17,
-        [Display(Name = "Sven", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/sven_sb.png")]
+        [Display(Name = "Sven", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/sven.png")]
         Sven = 18,
-        [Display(Name = "Tiny", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/tiny_sb.png")]
+        [Display(Name = "Tiny", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/tiny.png")]
         Tiny = 19,
-        [Display(Name = "Vengeful Spirit", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/vengefulspirit_sb.png")]
+        [Display(Name = "Vengeful Spirit", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/vengefulspirit.png")]
         VengefulSpirit = 20,
-        [Display(Name = "Windranger", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/windrunner_sb.png")]
+        [Display(Name = "Windranger", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/windrunner.png")]
         Windranger = 21,
-        [Display(Name = "Zeus", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/zuus_sb.png")]
+        [Display(Name = "Zeus", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/zuus.png")]
         Zeus = 22,
-        [Display(Name = "Kunkka", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/kunkka_sb.png")]
+        [Display(Name = "Kunkka", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/kunkka.png")]
         Kunkka = 23,
-        [Display(Name = "Lina", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/lina_sb.png")]
+        [Display(Name = "Lina", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/lina.png")]
         Lina = 25,
-        [Display(Name = "Lion", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/lion_sb.png")]
+        [Display(Name = "Lion", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/lion.png")]
         Lion = 26,
-        [Display(Name = "Shadow Shaman", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/shadow_shaman_sb.png")]
+        [Display(Name = "Shadow Shaman", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/shadow_shaman.png")]
         ShadowShaman = 27,
-        [Display(Name = "Slardar", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/slardar_sb.png")]
+        [Display(Name = "Slardar", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/slardar.png")]
         Slardar = 28,
-        [Display(Name = "Tidehunter", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/tidehunter_sb.png")]
+        [Display(Name = "Tidehunter", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/tidehunter.png")]
         Tidehunter = 29,
-        [Display(Name = "Witch Doctor", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/witch_doctor_sb.png")]
+        [Display(Name = "Witch Doctor", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/witch_doctor.png")]
         WitchDoctor = 30,
-        [Display(Name = "Lich", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/lich_sb.png")]
+        [Display(Name = "Lich", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/lich.png")]
         Lich = 31,
-        [Display(Name = "Riki", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/riki_sb.png")]
+        [Display(Name = "Riki", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/riki.png")]
         Riki = 32,
-        [Display(Name = "Enigma", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/enigma_sb.png")]
+        [Display(Name = "Enigma", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/enigma.png")]
         Enigma = 33,
-        [Display(Name = "Tinker", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/tinker_sb.png")]
+        [Display(Name = "Tinker", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/tinker.png")]
         Tinker = 34,
-        [Display(Name = "Sniper", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/sniper_sb.png")]
+        [Display(Name = "Sniper", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/sniper.png")]
         Sniper = 35,
-        [Display(Name = "Necrophos", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/necrolyte_sb.png")]
+        [Display(Name = "Necrophos", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/necrolyte.png")]
         Necrophos = 36,
-        [Display(Name = "Warlock", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/warlock_sb.png")]
+        [Display(Name = "Warlock", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/warlock.png")]
         Warlock = 37,
-        [Display(Name = "Beastmaster", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/beastmaster_sb.png")]
+        [Display(Name = "Beastmaster", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/beastmaster.png")]
         Beastmaster = 38,
-        [Display(Name = "Queen of Pain", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/queenofpain_sb.png")]
+        [Display(Name = "Queen of Pain", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/queenofpain.png")]
         QueenofPain = 39,
-        [Display(Name = "Venomancer", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/venomancer_sb.png")]
+        [Display(Name = "Venomancer", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/venomancer.png")]
         Venomancer = 40,
-        [Display(Name = "Faceless Void", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/faceless_void_sb.png")]
+        [Display(Name = "Faceless Void", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/faceless_void.png")]
         FacelessVoid = 41,
-        [Display(Name = "Wraith King", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/skeleton_king_sb.png")]
+        [Display(Name = "Wraith King", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/skeleton_king.png")]
         WraithKing = 42,
-        [Display(Name = "Death Prophet", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/death_prophet_sb.png")]
+        [Display(Name = "Death Prophet", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/death_prophet.png")]
         DeathProphet = 43,
-        [Display(Name = "Phantom Assassin", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/phantom_assassin_sb.png")]
+        [Display(Name = "Phantom Assassin", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/phantom_assassin.png")]
         PhantomAssassin = 44,
-        [Display(Name = "Pugna", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/pugna_sb.png")]
+        [Display(Name = "Pugna", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pugna.png")]
         Pugna = 45,
-        [Display(Name = "Templar Assassin", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/templar_assassin_sb.png")]
+        [Display(Name = "Templar Assassin", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/templar_assassin.png")]
         TemplarAssassin = 46,
-        [Display(Name = "Viper", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/viper_sb.png")]
+        [Display(Name = "Viper", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/viper.png")]
         Viper = 47,
-        [Display(Name = "Luna", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/luna_sb.png")]
+        [Display(Name = "Luna", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/luna.png")]
         Luna = 48,
-        [Display(Name = "Dragon Knight", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/dragon_knight_sb.png")]
+        [Display(Name = "Dragon Knight", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/dragon_knight.png")]
         DragonKnight = 49,
-        [Display(Name = "Dazzle", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/dazzle_sb.png")]
+        [Display(Name = "Dazzle", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/dazzle.png")]
         Dazzle = 50,
-        [Display(Name = "Clockwerk", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/rattletrap_sb.png")]
+        [Display(Name = "Clockwerk", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/rattletrap.png")]
         Clockwerk = 51,
-        [Display(Name = "Leshrac", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/leshrac_sb.png")]
+        [Display(Name = "Leshrac", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/leshrac.png")]
         Leshrac = 52,
-        [Display(Name = "Nature's Prophet", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/furion_sb.png")]
+        [Display(Name = "Nature's Prophet", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/furion.png")]
         NaturesProphet = 53,
-        [Display(Name = "Lifestealer", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/life_stealer_sb.png")]
+        [Display(Name = "Lifestealer", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/life_stealer.png")]
         Lifestealer = 54,
-        [Display(Name = "Dark Seer", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/dark_seer_sb.png")]
+        [Display(Name = "Dark Seer", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/dark_seer.png")]
         DarkSeer = 55,
-        [Display(Name = "Clinkz", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/clinkz_sb.png")]
+        [Display(Name = "Clinkz", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/clinkz.png")]
         Clinkz = 56,
-        [Display(Name = "Omniknight", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/omniknight_sb.png")]
+        [Display(Name = "Omniknight", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/omniknight.png")]
         Omniknight = 57,
-        [Display(Name = "Enchantress", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/enchantress_sb.png")]
+        [Display(Name = "Enchantress", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/enchantress.png")]
         Enchantress = 58,
-        [Display(Name = "Huskar", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/huskar_sb.png")]
+        [Display(Name = "Huskar", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/huskar.png")]
         Huskar = 59,
-        [Display(Name = "Night Stalker", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/night_stalker_sb.png")]
+        [Display(Name = "Night Stalker", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/night_stalker.png")]
         NightStalker = 60,
-        [Display(Name = "Broodmother", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/broodmother_sb.png")]
+        [Display(Name = "Broodmother", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/broodmother.png")]
         Broodmother = 61,
-        [Display(Name = "Bounty Hunter", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/bounty_hunter_sb.png")]
+        [Display(Name = "Bounty Hunter", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/bounty_hunter.png")]
         BountyHunter = 62,
-        [Display(Name = "Weaver", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/weaver_sb.png")]
+        [Display(Name = "Weaver", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/weaver.png")]
         Weaver = 63,
-        [Display(Name = "Jakiro", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/jakiro_sb.png")]
+        [Display(Name = "Jakiro", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/jakiro.png")]
         Jakiro = 64,
-        [Display(Name = "Batrider", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/batrider_sb.png")]
+        [Display(Name = "Batrider", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/batrider.png")]
         Batrider = 65,
-        [Display(Name = "Chen", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/chen_sb.png")]
+        [Display(Name = "Chen", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/chen.png")]
         Chen = 66,
-        [Display(Name = "Spectre", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/spectre_sb.png")]
+        [Display(Name = "Spectre", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/spectre.png")]
         Spectre = 67,
-        [Display(Name = "Ancient Apparition", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/ancient_apparition_sb.png")]
+        [Display(Name = "Ancient Apparition", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/ancient_apparition.png")]
         AncientApparition = 68,
-        [Display(Name = "Doom", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/doom_bringer_sb.png")]
+        [Display(Name = "Doom", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/doom_bringer.png")]
         Doom = 69,
-        [Display(Name = "Ursa", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/ursa_sb.png")]
+        [Display(Name = "Ursa", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/ursa.png")]
         Ursa = 70,
-        [Display(Name = "Spirit Breaker", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/spirit_breaker_sb.png")]
+        [Display(Name = "Spirit Breaker", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/spirit_breaker.png")]
         SpiritBreaker = 71,
-        [Display(Name = "Gyrocopter", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/gyrocopter_sb.png")]
+        [Display(Name = "Gyrocopter", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/gyrocopter.png")]
         Gyrocopter = 72,
-        [Display(Name = "Alchemist", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/alchemist_sb.png")]
+        [Display(Name = "Alchemist", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/alchemist.png")]
         Alchemist = 73,
-        [Display(Name = "Invoker", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/invoker_sb.png")]
+        [Display(Name = "Invoker", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/invoker.png")]
         Invoker = 74,
-        [Display(Name = "Silencer", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/silencer_sb.png")]
+        [Display(Name = "Silencer", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/silencer.png")]
         Silencer = 75,
-        [Display(Name = "Outworld Destroyer", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/obsidian_destroyer_sb.png")]
+        [Display(Name = "Outworld Destroyer", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/obsidian_destroyer.png")]
         OutworldDestroyer = 76,
-        [Display(Name = "Lycan", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/lycan_sb.png")]
+        [Display(Name = "Lycan", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/lycan.png")]
         Lycan = 77,
-        [Display(Name = "Brewmaster", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/brewmaster_sb.png")]
+        [Display(Name = "Brewmaster", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/brewmaster.png")]
         Brewmaster = 78,
-        [Display(Name = "Shadow Demon", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/shadow_demon_sb.png")]
+        [Display(Name = "Shadow Demon", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/shadow_demon.png")]
         ShadowDemon = 79,
-        [Display(Name = "Lone Druid", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/lone_druid_sb.png")]
+        [Display(Name = "Lone Druid", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/lone_druid.png")]
         LoneDruid = 80,
-        [Display(Name = "Chaos Knight", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/chaos_knight_sb.png")]
+        [Display(Name = "Chaos Knight", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/chaos_knight.png")]
         ChaosKnight = 81,
-        [Display(Name = "Meepo", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/meepo_sb.png")]
+        [Display(Name = "Meepo", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/meepo.png")]
         Meepo = 82,
-        [Display(Name = "Treant Protector", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/treant_sb.png")]
+        [Display(Name = "Treant Protector", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/treant.png")]
         TreantProtector = 83,
-        [Display(Name = "Ogre Magi", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/ogre_magi_sb.png")]
+        [Display(Name = "Ogre Magi", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/ogre_magi.png")]
         OgreMagi = 84,
-        [Display(Name = "Undying", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/undying_sb.png")]
+        [Display(Name = "Undying", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/undying.png")]
         Undying = 85,
-        [Display(Name = "Rubick", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/rubick_sb.png")]
+        [Display(Name = "Rubick", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/rubick.png")]
         Rubick = 86,
-        [Display(Name = "Disruptor", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/disruptor_sb.png")]
+        [Display(Name = "Disruptor", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/disruptor.png")]
         Disruptor = 87,
-        [Display(Name = "Nyx Assassin", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/nyx_assassin_sb.png")]
+        [Display(Name = "Nyx Assassin", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nyx_assassin.png")]
         NyxAssassin = 88,
-        [Display(Name = "Naga Siren", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/naga_siren_sb.png")]
+        [Display(Name = "Naga Siren", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/naga_siren.png")]
         NagaSiren = 89,
-        [Display(Name = "Keeper of the Light", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/keeper_of_the_light_sb.png")]
+        [Display(Name = "Keeper of the Light", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/keeper_of_the_light.png")]
         KeeperoftheLight = 90,
-        [Display(Name = "Io", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/wisp_sb.png")]
+        [Display(Name = "Io", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/wisp.png")]
         Io = 91,
-        [Display(Name = "Visage", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/visage_sb.png")]
+        [Display(Name = "Visage", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/visage.png")]
         Visage = 92,
-        [Display(Name = "Slark", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/slark_sb.png")]
+        [Display(Name = "Slark", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/slark.png")]
         Slark = 93,
-        [Display(Name = "Medusa", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/medusa_sb.png")]
+        [Display(Name = "Medusa", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/medusa.png")]
         Medusa = 94,
-        [Display(Name = "Troll Warlord", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/troll_warlord_sb.png")]
+        [Display(Name = "Troll Warlord", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/troll_warlord.png")]
         TrollWarlord = 95,
-        [Display(Name = "Centaur Warrunner", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/centaur_sb.png")]
+        [Display(Name = "Centaur Warrunner", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/centaur.png")]
         CentaurWarrunner = 96,
-        [Display(Name = "Magnus", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/magnataur_sb.png")]
+        [Display(Name = "Magnus", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/magnataur.png")]
         Magnus = 97,
-        [Display(Name = "Timbersaw", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/shredder_sb.png")]
+        [Display(Name = "Timbersaw", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/shredder.png")]
         Timbersaw = 98,
-        [Display(Name = "Bristleback", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/bristleback_sb.png")]
+        [Display(Name = "Bristleback", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/bristleback.png")]
         Bristleback = 99,
-        [Display(Name = "Tusk", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/tusk_sb.png")]
+        [Display(Name = "Tusk", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/tusk.png")]
         Tusk = 100,
-        [Display(Name = "Skywrath Mage", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/skywrath_mage_sb.png")]
+        [Display(Name = "Skywrath Mage", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/skywrath_mage.png")]
         SkywrathMage = 101,
-        [Display(Name = "Abaddon", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/abaddon_sb.png")]
+        [Display(Name = "Abaddon", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/abaddon.png")]
         Abaddon = 102,
-        [Display(Name = "Elder Titan", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/elder_titan_sb.png")]
+        [Display(Name = "Elder Titan", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/elder_titan.png")]
         ElderTitan = 103,
-        [Display(Name = "Legion Commander", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/legion_commander_sb.png")]
+        [Display(Name = "Legion Commander", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/legion_commander.png")]
         LegionCommander = 104,
-        [Display(Name = "Techies", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/techies_sb.png")]
+        [Display(Name = "Techies", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/techies.png")]
         Techies = 105,
-        [Display(Name = "Ember Spirit", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/ember_spirit_sb.png")]
+        [Display(Name = "Ember Spirit", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/ember_spirit.png")]
         EmberSpirit = 106,
-        [Display(Name = "Earth Spirit", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/earth_spirit_sb.png")]
+        [Display(Name = "Earth Spirit", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/earth_spirit.png")]
         EarthSpirit = 107,
-        [Display(Name = "Underlord", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/abyssal_underlord_sb.png")]
+        [Display(Name = "Underlord", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/abyssal_underlord.png")]
         Underlord = 108,
-        [Display(Name = "Terrorblade", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/terrorblade_sb.png")]
+        [Display(Name = "Terrorblade", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/terrorblade.png")]
         Terrorblade = 109,
-        [Display(Name = "Phoenix", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/phoenix_sb.png")]
+        [Display(Name = "Phoenix", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/phoenix.png")]
         Phoenix = 110,
-        [Display(Name = "Oracle", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/oracle_sb.png")]
+        [Display(Name = "Oracle", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/oracle.png")]
         Oracle = 111,
-        [Display(Name = "Winter Wyvern", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/winter_wyvern_sb.png")]
+        [Display(Name = "Winter Wyvern", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/winter_wyvern.png")]
         WinterWyvern = 112,
-        [Display(Name = "Arc Warden", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/arc_warden_sb.png")]
+        [Display(Name = "Arc Warden", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/arc_warden.png")]
         ArcWarden = 113,
-        [Display(Name = "Monkey King", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/monkey_king_sb.png")]
+        [Display(Name = "Monkey King", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/monkey_king.png")]
         MonkeyKing = 114,
-        [Display(Name = "Dark Willow", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/dark_willow_sb.png")]
+        [Display(Name = "Dark Willow", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/dark_willow.png")]
         DarkWillow = 119,
-        [Display(Name = "Pangolier", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/pangolier_sb.png")]
+        [Display(Name = "Pangolier", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pangolier.png")]
         Pangolier = 120,
-        [Display(Name = "Grimstroke", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/grimstroke_sb.png")]
+        [Display(Name = "Grimstroke", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/grimstroke.png")]
         Grimstroke = 121,
-        [Display(Name = "Hoodwink", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/hoodwink_sb.png")]
+        [Display(Name = "Hoodwink", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/hoodwink.png")]
         Hoodwink = 123,
-        [Display(Name = "Void Spirit", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/void_spirit_sb.png")]
+        [Display(Name = "Void Spirit", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/void_spirit.png")]
         VoidSpirit = 126,
-        [Display(Name = "Snapfire", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/snapfire_sb.png")]
+        [Display(Name = "Snapfire", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/snapfire.png")]
         Snapfire = 128,
-        [Display(Name = "Mars", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/mars_sb.png")]
+        [Display(Name = "Mars", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/mars.png")]
         Mars = 129,
-        [Display(Name = "Dawnbreaker", Description = "https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/dawnbreaker_sb.png")]
+        [Display(Name = "Dawnbreaker", Description = "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/dawnbreaker.png")]
         Dawnbreaker = 135
 
     }

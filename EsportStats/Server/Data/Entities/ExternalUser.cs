@@ -11,7 +11,7 @@ namespace EsportStats.Server.Data.Entities
     /// <summary>
     /// Contains Steam User data for players that DO NOT have a user created in this app.
     /// </summary>
-    public class ExternalUser
+    public class ExternalUser : IDotaPlayer
     {
         public ExternalUser()
         {
@@ -96,7 +96,7 @@ namespace EsportStats.Server.Data.Entities
             this.Timestamp = DateTime.Now;                      
         }
 
-        public SteamUserDTO ToDTO()
+        public SteamUserDTO ToDTO(bool isCurrentUser = false)
         {
             return new SteamUserDTO
             {
@@ -105,7 +105,8 @@ namespace EsportStats.Server.Data.Entities
                 Avatar = this.Avatar,
                 AvatarFull = this.AvatarFull,
                 Playtime = this.Playtime,
-                SteamId = this.SteamId
+                SteamId = this.SteamId,
+                IsCurrentPlayer = isCurrentUser
             };
         }
 

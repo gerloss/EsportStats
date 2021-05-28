@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace EsportStats.Server.Data.Entities
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser, IDotaPlayer
     {
         // Additional public data scraped from the Steam Api 
         // More info at: https://developer.valvesoftware.com/wiki/Steam_Web_API#Public_Data

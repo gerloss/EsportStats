@@ -10,7 +10,7 @@ namespace EsportStats.Server.Data.Entities
     public interface IDotaPlayer
     {
         void UpdateFromExternalProfile(SteamProfileExtDTO dto);
-        SteamUserDTO ToDTO(bool isCurrentUser);
+        SteamUserDTO ToDTO(bool isCurrentUser = false);
         void SetPlaytime(int minutes);
 
 

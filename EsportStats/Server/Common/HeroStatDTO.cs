@@ -1,4 +1,5 @@
-﻿using EsportStats.Shared.Enums;
+﻿using EsportStats.Server.Data.Entities;
+using EsportStats.Shared.Enums;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,8 @@ namespace EsportStats.Server.Common
 {
     public class HeroStatDTO
     {
-        public ulong SteamId { get; set; }
+        [JsonIgnore]
+        public IDotaPlayer User { get; set; }
 
         [JsonProperty("hero_id")]
         public Hero Hero { get; set; }

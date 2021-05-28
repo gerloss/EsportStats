@@ -7,8 +7,10 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace EsportStats.Server.Services
 {
@@ -20,6 +22,7 @@ namespace EsportStats.Server.Services
         public Task<IEnumerable<SteamProfileExtDTO>> GetSteamProfilesExternalAsync(IEnumerable<ulong> steamIds);
         public Task<IEnumerable<ulong>> GetSteamFriendsExternalAsync(ulong steamId);
         public Task<KeyValuePair<ulong, int>> GetSteamPlaytimeMinutesAsync(ulong steamId);
+        public Task<Dictionary<ulong, int>> GetSteamPlaytimesMinutesAsync(IEnumerable<ulong> steamIds);
     }
 
     public class SteamService : ISteamService
@@ -112,34 +115,27 @@ namespace EsportStats.Server.Services
             if (includePlaytime)
             {
                 // Playtime values can only be handled in individual requests
-                // Gather all the Tasks for the requests and then send them in parallel in batches
-                var tasks = applicationUsers
+                // Get all the ids for the people whose playtime must be refreshed
+                var outdatedPlaytimeUserIds = applicationUsers
                     .Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24))
-                    .Select(u => GetSteamPlaytimeMinutesAsync(u.SteamId))
+                    .Select(u => u.SteamId)
                     .ToList();
 
-                tasks.AddRange(externalFriends
+                outdatedPlaytimeUserIds.AddRange(externalFriends
                     .Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24))
-                    .Select(u => GetSteamPlaytimeMinutesAsync(u.SteamId)));
+                    .Select(u => u.SteamId));
 
-                tasks.AddRange(createdExternalUsers
+                outdatedPlaytimeUserIds.AddRange(createdExternalUsers
                     .Where(u => !u.PlaytimeTimestamp.HasValue || u.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24))
-                    .Select(u => GetSteamPlaytimeMinutesAsync(u.SteamId)));                
+                    .Select(u => u.SteamId));                
                 
 
                 if (includePlayer && (!currentUserProfile.PlaytimeTimestamp.HasValue || currentUserProfile.PlaytimeTimestamp.Value < DateTime.Now.AddHours(-24)))
                 {
-                    tasks.Add(GetSteamPlaytimeMinutesAsync(steamId));
+                    outdatedPlaytimeUserIds.Add(steamId);
                 }
-                
-                var numberOfBatches = (int)Math.Ceiling((double)tasks.Count() / _steamOptions.BatchSize);
-                var playTimes = new List<KeyValuePair<ulong, int>>();
 
-                for (int i = 0; i < numberOfBatches; i++)
-                {
-                    var batch = tasks.Skip(i * _steamOptions.BatchSize).Take(_steamOptions.BatchSize);
-                    playTimes.AddRange(await Task.WhenAll(batch));
-                }
+                var playTimes = await GetSteamPlaytimesMinutesAsync(outdatedPlaytimeUserIds);                
 
                 foreach (var time in playTimes)
                 {
@@ -185,6 +181,12 @@ namespace EsportStats.Server.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var friendsListResponse = await httpClient.GetAsync(friendsListUrl);
+
+            if (!friendsListResponse.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException("Unsuccessful request towards the Steam API: https://api.steampowered.com/ISteamUser/GetFriendList/v0001/");
+            }
+
             var response = await friendsListResponse.Content.ReadAsStringAsync();
             var parsedResponse = JsonConvert.DeserializeObject<SteamFriendsListExtDTO>(response);
 
@@ -204,6 +206,12 @@ namespace EsportStats.Server.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var playtimeResponse = await httpClient.GetAsync(playtimeUrl);
+
+            if (!playtimeResponse.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException("Unsuccessful request towards the Steam API: https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/");
+            }
+
             var response = await playtimeResponse.Content.ReadAsStringAsync();
             var parsedResponse = JsonConvert.DeserializeObject<SteamGameStatsExtDTO>(response);
             
@@ -220,10 +228,67 @@ namespace EsportStats.Server.Services
                 }
                 else
                 {
-
+                    return new KeyValuePair<ulong, int>(steamId, 0);
                 }
-                return new KeyValuePair<ulong, int>(steamId, 0);
             }
+        }
+
+        public async Task<Dictionary<ulong, int>> GetSteamPlaytimesMinutesAsync(IEnumerable<ulong> steamIds)
+        {
+            var playtimeBaseUrl = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/";
+            var steamIdQueryKey = "steamid";
+
+            var urls = steamIds.Select(id => playtimeBaseUrl
+                + "?key=" + _steamOptions.Key
+                + "&" + steamIdQueryKey + "=" + id
+                + "&appids_filter=" + _steamOptions.AppId
+                + "&include_played_free_games=true&include_appinfo=false"
+            );
+
+            var httpClient = _httpClientFactory.CreateClient();
+            SetMaxConcurrency(playtimeBaseUrl, _steamOptions.BatchSize);
+
+            var numberOfBatches = (int)Math.Ceiling((double)urls.Count() / _steamOptions.BatchSize); // run the parallel requests in batches            
+
+            var results = new Dictionary<ulong, int>();
+
+            for (int i = 0; i < numberOfBatches; i++)
+            {
+                var batchOfUrls = urls.Skip(i * _steamOptions.BatchSize).Take(_steamOptions.BatchSize);
+                var batchOfRequests = batchOfUrls.Select(url => httpClient.GetAsync(url));
+                var httpResponses = await Task.WhenAll(batchOfRequests);
+
+                foreach(var response in httpResponses)
+                {
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        throw new HttpRequestException("Unsuccessful request towards the Steam API: https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/");
+                    }
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var parsedResponse = JsonConvert.DeserializeObject<SteamGameStatsExtDTO>(responseString);
+                    ulong steamId = Convert.ToUInt64(HttpUtility.ParseQueryString(response.RequestMessage.RequestUri.Query).Get(steamIdQueryKey)); // there must always be a steamId query parameter, its put in the request a couple of lines above...
+
+                    if (parsedResponse.Response.GameCount == 0)
+                    {
+                        results.Add(steamId, 0);
+                    }
+                    else
+                    {
+                        var gameStat = parsedResponse.Response.Games.SingleOrDefault(g => g.AppId == _steamOptions.AppId);
+                        if (gameStat != null)
+                        {
+                            results.Add(steamId, gameStat.PlaytimeForeverMinutes);
+                        }
+                        else
+                        {
+                            results.Add(steamId, 0);
+                        }
+                    }
+                }
+            }
+
+            return results;
         }
 
         /// <summary>
@@ -237,6 +302,11 @@ namespace EsportStats.Server.Services
             var httpClient = _httpClientFactory.CreateClient();
             var steamInfoResponse = await httpClient.GetAsync(playerInfoUrl);
 
+            if (!steamInfoResponse.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException("Unsuccessful request towards the Steam API: https://api.steampowered.com/ISteamUser/GetPlayerSummaries/");
+            }
+            
             var response = await steamInfoResponse.Content.ReadAsStringAsync();
             var parsedResponse = JsonConvert.DeserializeObject<SteamExtDTO>(response);
 
@@ -255,10 +325,20 @@ namespace EsportStats.Server.Services
             var httpClient = _httpClientFactory.CreateClient();
             var steamInfoResponse = await httpClient.GetAsync(playerInfoUrl);
 
+            if (!steamInfoResponse.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException("Unsuccessful request towards the Steam API: https://api.steampowered.com/ISteamUser/GetPlayerSummaries/");
+            }
+
             var response = await steamInfoResponse.Content.ReadAsStringAsync();
             var parsedResponse = JsonConvert.DeserializeObject<SteamExtDTO>(response);
 
             return parsedResponse.Response.Players;
+        }
+
+        private void SetMaxConcurrency(string url, int maxConcurrentRequests)
+        {
+            ServicePointManager.FindServicePoint(new Uri(url)).ConnectionLimit = maxConcurrentRequests;
         }
     }
 }

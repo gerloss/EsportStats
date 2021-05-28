@@ -13,10 +13,7 @@ using System.Threading.Tasks;
 namespace EsportStats.Server.Services
 {
     public interface IHeroStatService
-    {
-        // Since Dictionary is not sorted, we use a List of KeyValuePairs instead        
-        public Task<List<HeroStatsResult>> GetHeroStatsAsync(ulong steamId);
-
+    {            
         public Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(ulong steamId, int take = 25);
 
         public Task<IEnumerable<TopListEntryDTO>> GetTopByHeroAsync(ulong steamId, Hero hero, int take = 10);
@@ -45,120 +42,82 @@ namespace EsportStats.Server.Services
         }
 
         /// <summary>
-        /// Gets all the hero statistics of the user with the given steamId.
-        /// </summary>    
-        public async Task<List<HeroStatsResult>> GetHeroStatsAsync(ulong steamId)
-        {
-            IDotaPlayer player = await _unitOfWork.Users.GetUserBySteamIdAsync(steamId);            
-            if (player == null)
-            {
-                player = await _unitOfWork.ExternalUsers.GetAsync(steamId);
-                if (player == null)
-                {
-                    // If there is any valid data about this user, then the user should already exist, because they have been persisted during loading the front page.
-                    // So this probably means that no statistics are available.                    
-                    return new List<HeroStatsResult>();
-                }
-            }
-
-            // From here we don't care if its an ApplicationUser or an ExternalUser, we only need their HeroStats regardless
-            var stats = await _unitOfWork.HeroStats.GetHeroStatsBySteamIdAsync(steamId);            
-
-            if (!player.HeroStatsTimestamp.HasValue || player.HeroStatsTimestamp < DateTime.Now.AddHours(-24))
-            {
-                // Stats are not up to date, so we refresh them from opendota api
-                var updatedStats = await _openDotaService.GetHeroStatsAsync(steamId);
-                var createdStats = new List<HeroStat>();
-                if (!player.HeroStatsTimestamp.HasValue && !stats.Any())
-                {
-                    // No hero stats recorded yet, new entities should be created
-                    foreach(var dto in updatedStats)
-                    {
-                        createdStats.Add(new HeroStat(dto, steamId));
-                    }
-                    await _unitOfWork.HeroStats.AddRangeAsync(createdStats);
-                }
-                else
-                {
-                    // Hero stats already exist, only update the already existing entities
-                    foreach (var dto in updatedStats)
-                    {
-                        var stat = stats.FirstOrDefault(stat => stat.Hero == dto.Hero);
-                        if (stat != null)
-                        {
-                            stat.Games = dto.Games;
-                        }
-                        else
-                        {
-                            // there was no statistics for this specific hero yet, so this must be added
-                            createdStats.Add(new HeroStat(dto, steamId));
-                        }
-                    }
-                    if (createdStats.Any())
-                    {
-                        await _unitOfWork.HeroStats.AddRangeAsync(createdStats);
-                    }
-                }
-
-                player.HeroStatsTimestamp = DateTime.Now;
-                
-                _unitOfWork.SaveChanges();
-
-                return updatedStats.Select(stat => new HeroStatsResult 
-                { 
-                    SteamId = steamId,
-                    Hero = stat.Hero,
-                    Value = stat.Games
-                }).ToList();
-                 
-            }
-            else
-            {
-                // stats are up to date, return from db:                
-                return stats.Select(stat => new HeroStatsResult 
-                {
-                    SteamId = steamId,
-                    Hero = stat.Hero,
-                    Value = stat.Games
-                }).ToList();
-
-            }
-        }
-
+        /// Gets the list of top spammers from a single player's friends list
+        /// </summary>        
         public async Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(ulong steamId, int take = 25)
         {
             // Playtime should not be refreshed, as it will not be required and it would take a lot of extra time...
             // This way this can be done in a single HTTP GET towards Steam API
-            var players = await _steamService.GetFriendsAsync(steamId, includePlayer: true, includePlaytime: false);
-            
-            var stats = new List<TopListEntryDTO>();
-            // Get the hero stats for every player                        
-            var tasks = players.Select(p => GetHeroStatsAsync(p.SteamId)); // complete tasks in batches
-            var numberOfBatches = (int)Math.Ceiling((double)tasks.Count() / _openDotaOptions.BatchSize);
-            var heroStats = new List<TopListEntryDTO>();
+            var playerDTOs = await _steamService.GetFriendsAsync(steamId, includePlayer: true, includePlaytime: false);
+            var tasks = new List<Task<IEnumerable<HeroStatDTO>>>();
 
-            for (int i = 0; i < numberOfBatches; i++)
+            var players = new List<IDotaPlayer>();
+            var playersToUpdate = new List<IDotaPlayer>();
+
+            players.AddRange(await _unitOfWork.Users.GetUsersBySteamIdAsync(playerDTOs.Select(p => p.SteamId)));
+            players.AddRange(await _unitOfWork.ExternalUsers.GetExternalUsersBySteamIdAsync(playerDTOs.Select(p => p.SteamId)));
+            // ids that were not found in either should not exists: they should have all been created at the landing page
+
+            var upToDateStats = new List<TopListEntryDTO>();
+            foreach(var player in players)
             {
-                var batch = tasks.Skip(i * _openDotaOptions.BatchSize).Take(_openDotaOptions.BatchSize);
-                var results = (await Task.WhenAll(batch));
-                foreach(var playerResult in results)
+                // get their hero stats                    
+                if (!player.HeroStatsTimestamp.HasValue || player.HeroStatsTimestamp < DateTime.Now.AddHours(-24))
                 {
-                    if (playerResult.Any())
+                    // if they are up-to-date, they will be in the database
+                    var stats = await _unitOfWork.HeroStats.GetHeroStatsBySteamIdAsync(player.SteamId);
+                    upToDateStats.AddRange(stats.Select(s => new TopListEntryDTO
                     {
-                        var player = players.Single(p => p.SteamId == playerResult.First().SteamId);                        
-
-                        heroStats.AddRange(playerResult.Select(stat => new TopListEntryDTO
-                        {
-                            Friend = player,
-                            Hero = stat.Hero,
-                            Value = stat.Value,
-                            MatchId = null
-                        }));
-                    }
-                }                
+                        Friend = player.ToDTO(),
+                        Hero = s.Hero,
+                        Value = s.Games,
+                        MatchId = null
+                    }));
+                }
+                else
+                {
+                    // else they shall be updated
+                    playersToUpdate.Add(player);
+                }
             }
 
-            var ordered = stats.OrderByDescending(s => s.Value);
+            var updatedStatsGroupedByPlayer = (await _openDotaService.GetHeroStatsAsync(playersToUpdate)).GroupBy(stat => stat.User.SteamId);
+
+            foreach(var group in updatedStatsGroupedByPlayer)
+            {
+                IDotaPlayer player = group.First().User;
+                var availableHeroStats = await _unitOfWork.HeroStats.GetHeroStatsBySteamIdAsync(player.SteamId);
+                var createdHeroStats = new List<HeroStat>();
+                foreach(var stat in group)
+                {
+                    if(availableHeroStats.Any(s => s.Hero == stat.Hero))
+                    {
+                        // we already had an entity for this hero, update that entity with the fresh value
+                        availableHeroStats.Single(s => s.Hero == stat.Hero).Games = stat.Games;
+                    }
+                    else
+                    {
+                        // we had no entity for this hero, so create a new one
+                        createdHeroStats.Add(new HeroStat(stat, player.SteamId));
+                    }
+                }
+
+                await _unitOfWork.HeroStats.AddRangeAsync(createdHeroStats);
+                player.HeroStatsTimestamp = DateTime.Now;
+
+                // Then add these statistics to the list of statistics to be returned
+                upToDateStats.AddRange(group.Select(stat => new TopListEntryDTO
+                {
+                    Friend = stat.User.ToDTO(),
+                    Hero = stat.Hero,
+                    Value = stat.Games,
+                    MatchId = null
+                }));
+            }
+                       
+            _unitOfWork.SaveChanges();
+
+            var ordered = upToDateStats.OrderByDescending(s => s.Value);
             var topValues = ordered.Take(take);
             if(!topValues.Any(v => v.Friend.IsCurrentPlayer) && ordered.Any(v => v.Friend.IsCurrentPlayer))
             {                
@@ -167,17 +126,51 @@ namespace EsportStats.Server.Services
             return topValues.OrderByDescending(s => s.Value);
         }
 
-
+        /// <summary>
+        /// Gets the list of top players for a single Hero, from a single player's friends list
+        /// </summary>        
         public async Task<IEnumerable<TopListEntryDTO>> GetTopByHeroAsync(ulong steamId, Hero hero, int take = 10)
         {
             // Playtime should not be refreshed, as it will not be required and it would take a lot of extra time...
             // This way this can be done in a single HTTP GET towards Steam API
-            var players = await _steamService.GetFriendsAsync(steamId, includePlayer: true, includePlaytime: false);
-            // Get the hero stats for every player
-            var tasks = players.Select(p => GetHeroStatsAsync(p.SteamId));
-
-            var numberOfBatches = (int)Math.Ceiling((double)tasks.Count() / _openDotaOptions.BatchSize);
+            var playerDTOs = await _steamService.GetFriendsAsync(steamId, includePlayer: true, includePlaytime: false);
             var heroStats = new List<TopListEntryDTO>();
+            var tasks = new List<Task<IEnumerable<HeroStatDTO>>>();
+
+            foreach (var playerDTO in playerDTOs)
+            {
+                IDotaPlayer player = await _unitOfWork.Users.GetUserBySteamIdAsync(steamId);
+                if (player == null)
+                {
+                    player = await _unitOfWork.ExternalUsers.GetAsync(steamId);
+                }
+
+                if (player != null)
+                {
+                    // get their hero stats                    
+                    if (!player.HeroStatsTimestamp.HasValue || player.HeroStatsTimestamp < DateTime.Now.AddHours(-24))
+                    {
+                        // if they are up-to-date, they will be in the database
+                        var upToDateStats = await _unitOfWork.HeroStats.GetHeroStatsBySteamIdAsync(player.SteamId);
+                        heroStats.AddRange(upToDateStats.Select(s => new TopListEntryDTO
+                        {
+                            Friend = player.ToDTO(),
+                            Hero = s.Hero,
+                            Value = s.Games,
+                            MatchId = null
+                        }));
+                    }
+                    else
+                    {
+                        // they are not up-to-date, so we need this player's hero stats from opendota!
+                        tasks.Add(_openDotaService.GetHeroStatsAsync(player));
+                    }
+
+                }
+            }
+
+            // Get the hero stats for the players who were not up-to-date 
+            var numberOfBatches = (int)Math.Ceiling((double)tasks.Count() / _openDotaOptions.BatchSize); // run the parallel requests in batches            
 
             for (int i = 0; i < numberOfBatches; i++)
             {
@@ -187,17 +180,41 @@ namespace EsportStats.Server.Services
                 {
                     if (playerResult.Any())
                     {
-                        var player = players.Single(p => p.SteamId == playerResult.First().SteamId);                        
+                        // We have fresh hero statistics from OpenDota
+                        // First save these up-to-date values to the local database
+                        IDotaPlayer player = playerResult.First().User;
+                        var availableStats = await _unitOfWork.HeroStats.GetHeroStatsBySteamIdAsync(player.SteamId);
+                        var createdStats = new List<HeroStat>();
+
+                        foreach (var stat in playerResult)
+                        {
+                            if (availableStats.Any(s => s.Hero == stat.Hero))
+                            {
+                                // we already had an entity for this hero, update that entity with the fresh value
+                                availableStats.Single(s => s.Hero == stat.Hero).Games = stat.Games;
+                            }
+                            else
+                            {
+                                // we had no entity for this hero, so create a new one
+                                createdStats.Add(new HeroStat(stat, player.SteamId));
+                            }
+                        }
+
+                        await _unitOfWork.HeroStats.AddRangeAsync(createdStats);
+                        player.HeroStatsTimestamp = DateTime.Now;
+
+                        // Then add these statistics to the list of statistics to be returned
                         heroStats.AddRange(playerResult.Select(stat => new TopListEntryDTO
                         {
-                            Friend = player,
+                            Friend = stat.User.ToDTO(),
                             Hero = stat.Hero,
-                            Value = stat.Value,
+                            Value = stat.Games,
                             MatchId = null
                         }));
                     }
                 }
             }
+            _unitOfWork.SaveChanges();
 
             var filtered = heroStats.Where(stat => stat.Hero == hero && stat.Value > 0);
             var ordered = heroStats.OrderByDescending(s => s.Value);            
@@ -205,10 +222,16 @@ namespace EsportStats.Server.Services
             if (!topValues.Any(v => v.Friend.IsCurrentPlayer))
             {
                 var currentPlayerStat = heroStats.SingleOrDefault(stat => stat.Friend.IsCurrentPlayer && stat.Hero == hero);
-                if (currentPlayerStat != null)
+                if (currentPlayerStat == null)
                 {
-                    topValues = topValues.Append(currentPlayerStat);
-                }                
+                    currentPlayerStat = new TopListEntryDTO
+                    {
+                        Friend = playerDTOs.Single(p => p.IsCurrentPlayer = true), // must exist, because earlier we set includePlayer: true
+                        Hero = hero,
+                        Value = 0
+                    };
+                }
+                topValues = topValues.Append(currentPlayerStat);
             }
             return topValues.OrderByDescending(s => s.Value);
         }

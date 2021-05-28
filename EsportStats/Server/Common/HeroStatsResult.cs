@@ -1,4 +1,5 @@
-﻿using EsportStats.Shared.DTO;
+﻿using EsportStats.Server.Data.Entities;
+using EsportStats.Shared.DTO;
 using EsportStats.Shared.Enums;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace EsportStats.Server.Common
     {
         public ulong SteamId { get; set; }
 
-        public SteamUserDTO Player { get; set; }
+        public SteamUserDTO Player { get; set; }        
 
         public Hero Hero { get; set; }
 

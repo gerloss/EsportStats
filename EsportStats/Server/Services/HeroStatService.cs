@@ -49,12 +49,11 @@ namespace EsportStats.Server.Services
         /// </summary>    
         public async Task<List<HeroStatsResult>> GetHeroStatsAsync(ulong steamId)
         {
-            var player = await _unitOfWork.Users.GetUserBySteamIdAsync(steamId);
-            ExternalUser extPlayer = null;
+            IDotaPlayer player = await _unitOfWork.Users.GetUserBySteamIdAsync(steamId);            
             if (player == null)
             {
-                extPlayer = await _unitOfWork.ExternalUsers.GetAsync(steamId);
-                if (extPlayer == null)
+                player = await _unitOfWork.ExternalUsers.GetAsync(steamId);
+                if (player == null)
                 {
                     // If there is any valid data about this user, then the user should already exist, because they have been persisted during loading the front page.
                     // So this probably means that no statistics are available.                    
@@ -64,14 +63,13 @@ namespace EsportStats.Server.Services
 
             // From here we don't care if its an ApplicationUser or an ExternalUser, we only need their HeroStats regardless
             var stats = await _unitOfWork.HeroStats.GetHeroStatsBySteamIdAsync(steamId);            
-            var timestamp = player != null ? player.HeroStatsTimestamp : extPlayer.HeroStatsTimestamp;            
 
-            if (!timestamp.HasValue || timestamp < DateTime.Now.AddHours(-24))
+            if (!player.HeroStatsTimestamp.HasValue || player.HeroStatsTimestamp < DateTime.Now.AddHours(-24))
             {
                 // Stats are not up to date, so we refresh them from opendota api
                 var updatedStats = await _openDotaService.GetHeroStatsAsync(steamId);
                 var createdStats = new List<HeroStat>();
-                if (!timestamp.HasValue && !stats.Any())
+                if (!player.HeroStatsTimestamp.HasValue && !stats.Any())
                 {
                     // No hero stats recorded yet, new entities should be created
                     foreach(var dto in updatedStats)
@@ -102,14 +100,7 @@ namespace EsportStats.Server.Services
                     }
                 }
 
-                if (player != null)
-                {
-                    player.HeroStatsTimestamp = DateTime.Now;
-                }
-                else
-                {
-                    extPlayer.HeroStatsTimestamp = DateTime.Now;
-                }
+                player.HeroStatsTimestamp = DateTime.Now;
                 
                 _unitOfWork.SaveChanges();
 

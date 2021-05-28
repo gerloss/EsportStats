@@ -15,8 +15,9 @@ namespace EsportStats.Server.Services
     public interface IHeroStatService
     {
         // Since Dictionary is not sorted, we use a List of KeyValuePairs instead
-        public Task<List<KeyValuePair<Hero, int>>> GetHeroStatsAsync(string userId);
-        public Task<List<KeyValuePair<Hero, int>>> GetHeroStatsAsync(ulong steamId);
+        // TODO: refactor into proper classes
+        public Task<KeyValuePair<ulong, List<KeyValuePair<Hero, int>>>> GetHeroStatsAsync(string userId);
+        public Task<KeyValuePair<ulong, List<KeyValuePair<Hero, int>>>> GetHeroStatsAsync(ulong steamId);
 
         public Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(string userId, int take = 25);
         public Task<IEnumerable<TopListEntryDTO>> GetSpammersAsync(ulong steamId, int take = 25);
@@ -49,7 +50,7 @@ namespace EsportStats.Server.Services
         /// <summary>
         /// Gets all the hero statistics of the user with the given userid.
         /// </summary>    
-        public async Task<List<KeyValuePair<Hero, int>>> GetHeroStatsAsync(string userId)
+        public async Task<KeyValuePair<ulong, List<KeyValuePair<Hero, int>>>> GetHeroStatsAsync(string userId)
         {
             var user = await _unitOfWork.Users.GetAsync(userId);
             return await GetHeroStatsAsync(user.SteamId);
@@ -58,7 +59,7 @@ namespace EsportStats.Server.Services
         /// <summary>
         /// Gets all the hero statistics of the user with the given steamId.
         /// </summary>    
-        public async Task<List<KeyValuePair<Hero, int>>> GetHeroStatsAsync(ulong steamId)
+        public async Task<KeyValuePair<ulong, List<KeyValuePair<Hero, int>>>> GetHeroStatsAsync(ulong steamId)
         {
             var player = await _unitOfWork.Users.GetUserBySteamIdAsync(steamId);
             ExternalUser extPlayer = null;
@@ -69,7 +70,8 @@ namespace EsportStats.Server.Services
                 {
                     // If there is any valid data about this user, then the user should already exist, because they have been persisted during loading the front page.
                     // So this probably means that no statistics are available.
-                    return new List<KeyValuePair<Hero, int>>();
+                    var emptyList = new List<KeyValuePair<Hero, int>>();
+                    return new KeyValuePair<ulong, List<KeyValuePair<Hero, int>>>(steamId, emptyList);
                 }
             }
 
@@ -124,12 +126,16 @@ namespace EsportStats.Server.Services
                 
                 _unitOfWork.SaveChanges();
 
-                return updatedStats.Select(stat => new KeyValuePair<Hero, int>(stat.Hero, stat.Games)).ToList();
+                var returnedStats = updatedStats.Select(stat => new KeyValuePair<Hero, int>(stat.Hero, stat.Games)).ToList();
+
+                return new KeyValuePair<ulong, List<KeyValuePair<Hero, int>>>(steamId, returnedStats);
             }
             else
             {
+                var returnedStats = stats.Select(stat => new KeyValuePair<Hero, int>(stat.Hero, stat.Games)).ToList();
+
                 // stats are up to date, return from db:
-                return stats.Select(stat => new KeyValuePair<Hero, int>(stat.Hero, stat.Games)).ToList();
+                return new KeyValuePair<ulong, List<KeyValuePair<Hero, int>>>(steamId, returnedStats);
             }
         }
 
@@ -146,17 +152,28 @@ namespace EsportStats.Server.Services
             var players = await _steamService.GetFriendsAsync(steamId, includePlayer: true, includePlaytime: false);
             
             var stats = new List<TopListEntryDTO>();
-            // Get the hero stats for every player
-            foreach(var player in players)
-            {
-                var heroStatsKVP = await GetHeroStatsAsync(player.SteamId);
-                var heroStatsDTO = heroStatsKVP.Select(stat => new TopListEntryDTO() { 
-                    Friend = player,
-                    Hero = stat.Key,
-                    Value = stat.Value
-                });
+            // Get the hero stats for every player                        
+            var tasks = players.Select(p => GetHeroStatsAsync(p.SteamId)); // complete tasks in batches
+            var numberOfBatches = (int)Math.Ceiling((double)tasks.Count() / _openDotaOptions.BatchSize);
+            var heroStats = new List<TopListEntryDTO>();
 
-                stats.AddRange(heroStatsDTO);
+            for (int i = 0; i < numberOfBatches; i++)
+            {
+                var batch = tasks.Skip(i * _openDotaOptions.BatchSize).Take(_openDotaOptions.BatchSize);
+                var results = (await Task.WhenAll(batch));
+                foreach(var playerResult in results)
+                {
+                    var player = players.Single(p => p.SteamId == playerResult.Key);
+                    var playerHeroStats = playerResult.Value;
+
+                    heroStats.AddRange(playerHeroStats.Select(stat => new TopListEntryDTO
+                    {
+                        Friend = player,
+                        Hero = stat.Key,
+                        Value = stat.Value,
+                        MatchId = null
+                    }));
+                }                
             }
 
             var ordered = stats.OrderByDescending(s => s.Value);
@@ -179,28 +196,41 @@ namespace EsportStats.Server.Services
             // Playtime should not be refreshed, as it will not be required and it would take a lot of extra time...
             // This way this can be done in a single HTTP GET towards Steam API
             var players = await _steamService.GetFriendsAsync(steamId, includePlayer: true, includePlaytime: false);
-
-            var stats = new List<TopListEntryDTO>(); 
             // Get the hero stats for every player
-            foreach (var player in players)
-            {
-                var heroStatsKVP = await GetHeroStatsAsync(player.SteamId);
-                var heroStatsDTO = heroStatsKVP.Select(stat => new TopListEntryDTO()
-                {
-                    Friend = player,
-                    Hero = stat.Key,
-                    Value = stat.Value
-                });
+            var tasks = players.Select(p => GetHeroStatsAsync(p.SteamId));
 
-                stats.AddRange(heroStatsDTO);
+            var numberOfBatches = (int)Math.Ceiling((double)tasks.Count() / _openDotaOptions.BatchSize);
+            var heroStats = new List<TopListEntryDTO>();
+
+            for (int i = 0; i < numberOfBatches; i++)
+            {
+                var batch = tasks.Skip(i * _openDotaOptions.BatchSize).Take(_openDotaOptions.BatchSize);
+                var results = (await Task.WhenAll(batch));
+                foreach (var playerResult in results)
+                {
+                    var player = players.Single(p => p.SteamId == playerResult.Key);
+                    var playerHeroStats = playerResult.Value;
+
+                    heroStats.AddRange(playerHeroStats.Select(stat => new TopListEntryDTO
+                    {
+                        Friend = player,
+                        Hero = stat.Key,
+                        Value = stat.Value,
+                        MatchId = null
+                    }));
+                }
             }
 
-            var filtered = stats.Where(s => s.Hero == hero && s.Value > 0);
-            var ordered = filtered.OrderByDescending(s => s.Value);            
+            var filtered = heroStats.Where(stat => stat.Hero == hero && stat.Value > 0);
+            var ordered = heroStats.OrderByDescending(s => s.Value);            
             var topValues = ordered.Take(take);
             if (!topValues.Any(v => v.Friend.IsCurrentPlayer))
             {
-                topValues = topValues.Append(stats.First(v => v.Hero == hero && v.Friend.IsCurrentPlayer));
+                var currentPlayerStat = heroStats.SingleOrDefault(stat => stat.Friend.IsCurrentPlayer && stat.Hero == hero);
+                if (currentPlayerStat != null)
+                {
+                    topValues = topValues.Append(currentPlayerStat);
+                }                
             }
             return topValues.OrderByDescending(s => s.Value);
         }

@@ -9,7 +9,7 @@ namespace EsportStats.Shared.DTO
     {
         public SteamUserDTO Friend { get; set; }
         public Hero Hero { get; set; }
-        public ulong MatchId { get; set; }
+        public ulong? MatchId { get; set; }
         public int Value{ get; set; }
     }
 }

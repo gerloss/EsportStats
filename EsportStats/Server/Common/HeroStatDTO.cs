@@ -9,6 +9,8 @@ namespace EsportStats.Server.Common
 {
     public class HeroStatDTO
     {
+        public ulong SteamId { get; set; }
+
         [JsonProperty("hero_id")]
         public Hero Hero { get; set; }
         [JsonProperty("last_played")]

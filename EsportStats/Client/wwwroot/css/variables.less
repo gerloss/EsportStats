@@ -3,3 +3,24 @@
 @text-color: #333;
 @gray-light: #f7f7f7;
 @gray: #555;
+
+
+// Fonts
+
+// Mixin for importing fonts
+.font-face(@font-family, @filepath, @font-weight, @font-style) {
+    @font-face {
+        font-family: @font-family;
+        src: url('@{filepath}.eot');
+        src: url('@{filepath}.eot?#iefix') format('embedded-opentype'), url('@{filepath}.woff2') format('woff2'), url('@{filepath}.woff') format('woff'), url('@{filepath}.ttf') format('truetype'), url('@{filepath}.svg#svgFontName') format('svg');
+        font-weight: @font-weight;
+        font-style: @font-style;
+    }
+}
+
+// Used fonts
+
+.font-face('Reaver', 'https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-Bold.woff', bold, normal);
+.font-face('Reaver', 'https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-SemiBold.woff', normal, normal);
+.font-face('Radiance', 'https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance-semibold.woff', bold, normal);
+.font-face('Radiance', 'https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance.woff', normal, normal);

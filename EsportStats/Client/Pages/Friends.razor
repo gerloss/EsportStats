@@ -4,10 +4,10 @@
 <AuthorizeView>
     <Authorized>
         <div class="row">
-            <div class="col-md-1">
+            <div class="d-none d-lg-inline-block col-lg-1">
                 <img class="w-100" src="@context.User.FindFirst("picture")?.Value" />
             </div>
-            <div class="col-md-6">
+            <div class="col-md-12 col-lg-10 col-xl-5">
                 <h3>Hello @context.User.FindFirst("name")?.Value!</h3>
                 <p>You have the following friends who play Dota 2, you will be able to compare your statistics against theirs!</p>
             </div>

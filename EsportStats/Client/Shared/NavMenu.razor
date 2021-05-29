@@ -1,43 +1,52 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
-<nav class="navbar navbar-expand-lg">
-    <div class="container">
+<nav class="navbar navbar-expand-lg container">
+    <button class="navbar-toggler dropdown-menu-right" type="button" data-toggle="collapse" data-target="#navbar" @onclick="HandleChanges">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <AuthorizeView>
-            <Authorized>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </Authorized>
-        </AuthorizeView>
+    <div class="collapse navbar-collapse @(isMenuOpen ? "show" : "")" id="navbar">
+        <ul class="navbar-nav mr-auto">
+            <AuthorizeView>
+                <NotAuthorized>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                            Home
+                        </NavLink>
+                    </li>
+                </NotAuthorized>
+                <Authorized>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                            Your Friends
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="lists">
+                            Top Lists
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="heroes">
+                            Heroes
+                        </NavLink>
+                    </li>
+                </Authorized>
+            </AuthorizeView>
+        </ul>
 
-        <div class="collapse navbar-collapse" id="navbar">
-            <ul class="navbar-nav mr-auto">
-                <AuthorizeView>
-                    <Authorized>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                                Your Friends
-                            </NavLink>
-                        </li>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="lists">
-                                Top Lists
-                            </NavLink>
-                        </li>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="heroes">
-                                Heroes
-                            </NavLink>
-                        </li>
-                    </Authorized>
-                </AuthorizeView>
-            </ul>
-
-            <ul class="navbar-nav ml-auto">
-                <LoginDisplay />
-            </ul>
-        </div>
+        <ul class="navbar-nav ml-auto">
+            <LoginDisplay />
+        </ul>
     </div>
 </nav>
+
+@code{
+    bool isMenuOpen = false;
+
+    private async Task HandleChanges()
+    {
+        isMenuOpen = !isMenuOpen;        
+    }
+}

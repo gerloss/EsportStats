@@ -1,6 +1,12 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 @import url('variables.less');
 
+*::selection{
+    color: white;
+    background-color: @text-flavor;
+
+}
+
 html, body {
     font-family: 'Radiance', Helvetica, Arial, sans-serif;
     color: @text-color;
@@ -74,29 +80,57 @@ app {
     flex-direction: column;
 
     header {
-        nav {
-            display: block;
-            background-image: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/backgrounds/featured.jpg');
-            background-repeat: repeat-y;
-            background-color: #151618;
-            background-position: center;
-            background-size: cover;
-            box-shadow: 0 0 7px black;
-            font-family: 'Reaver', Arial, Helvetica, sans-serif;
-            color: @text-color;
+        display: block;
+        background-image: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/backgrounds/featured.jpg');
+        background-repeat: repeat-y;
+        background-color: #151618;
+        background-position: center;
+        background-size: cover;
+        box-shadow: 0 0 7px black;
+        font-family: 'Reaver', Arial, Helvetica, sans-serif;
+        color: @text-color;
 
+        nav {
             .current-user {
                 img {
                     width: 32px;
                     height: 32px;
                 }
             }
+
+            .navbar-toggler {
+                border: solid 1px @text-url;
+                border-radius: 4px;
+                padding: .5em;
+                margin-left: auto;
+
+                &:focus{
+                    outline-color: @text-flavor;                    
+                }
+
+                .navbar-toggler-icon {
+                    position: relative;
+
+                    &:before {
+                        content: "";
+                        display: block;
+                        position: absolute;
+                        top: 4px;
+                        left: 0;
+                        right: 0;
+                        height: 2px;
+                        background-color: @text-url;
+                        @offset: 10px;
+                        box-shadow: 0px @offset 0px @text-url, 0px 2*@offset 0px @text-url;
+                    }
+                }
+            }
         }
 
-        .logout{
+        .logout {
             font-weight: normal;
 
-            &:hover{
+            &:hover {
                 text-decoration: underline;
                 cursor: pointer;
                 color: @text-url-hover;
@@ -111,7 +145,7 @@ app {
 
     footer {
         min-height: 3em;
-        font-size: 12px;        
+        font-size: 12px;
         display: flex;
         flex-direction: column;
         justify-content: space-around;
@@ -127,7 +161,7 @@ app {
             color: @flavor;
         }
 
-        .separation{
+        .separation {
             margin: 0 8px;
         }
     }

@@ -23,6 +23,10 @@
   font-weight: normal;
   font-style: normal;
 }
+*::selection {
+  color: white;
+  background-color: #cc5436;
+}
 html,
 body {
   font-family: 'Radiance', Helvetica, Arial, sans-serif;
@@ -43,10 +47,10 @@ a:visited {
   color: #fff;
 }
 a:hover {
-  color: #aaa;
+  color: #bbb;
 }
 a:active {
-  color: #999;
+  color: #aaa;
 }
 h1,
 h2,
@@ -91,7 +95,7 @@ app {
   display: flex;
   flex-direction: column;
 }
-app header nav {
+app header {
   display: block;
   background-image: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/backgrounds/featured.jpg');
   background-repeat: repeat-y;
@@ -106,13 +110,36 @@ app header nav .current-user img {
   width: 32px;
   height: 32px;
 }
+app header nav .navbar-toggler {
+  border: solid 1px #fff;
+  border-radius: 4px;
+  padding: 0.5em;
+  margin-left: auto;
+}
+app header nav .navbar-toggler:focus {
+  outline-color: #cc5436;
+}
+app header nav .navbar-toggler .navbar-toggler-icon {
+  position: relative;
+}
+app header nav .navbar-toggler .navbar-toggler-icon:before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #fff;
+  box-shadow: 0px 10px 0px #fff, 0px 20px 0px #fff;
+}
 app header .logout {
   font-weight: normal;
 }
 app header .logout:hover {
   text-decoration: underline;
   cursor: pointer;
-  color: #aaa;
+  color: #bbb;
 }
 app main {
   padding: 30px 0;

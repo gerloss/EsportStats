@@ -12,7 +12,7 @@
         <li class="current-user">
             <img src="@context.User.FindFirst("picture")?.Value" /> 
             <a href="@context.User.FindFirst("profile")?.Value" target="_blank">@context.User.FindFirst("name")?.Value</a>
-            <span @onclick="BeginSignOut">(Log out)</span>
+            <span class="logout" @onclick="BeginSignOut">(Log out)</span>
         </li>
     </Authorized>
     <NotAuthorized>

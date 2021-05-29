@@ -39,6 +39,10 @@ h1, h2, h3 {
     font-weight: bold;
 }
 
+hr {
+    border-color: @flavor;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
@@ -81,6 +85,16 @@ app {
                     width: 32px;
                     height: 32px;
                 }
+            }
+        }
+
+        .logout{
+            font-weight: normal;
+
+            &:hover{
+                text-decoration: underline;
+                cursor: pointer;
+                color: @text-url-hover;
             }
         }
     }

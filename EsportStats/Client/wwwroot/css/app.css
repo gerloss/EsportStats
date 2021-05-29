@@ -64,6 +64,10 @@ h3 {
 hr {
   border-color: #653b34;
 }
+.lead {
+  font-size: 1.5em;
+  font-weight: normal;
+}
 #blazor-error-ui {
   background: lightyellow;
   bottom: 0;
@@ -117,7 +121,6 @@ app main {
 app footer {
   min-height: 3em;
   font-size: 12px;
-  font-style: italic;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -130,13 +133,22 @@ app footer {
   color: #bbb;
 }
 app footer a {
-  color: #bbb;
+  color: #653b34;
+}
+app footer .separation {
+  margin: 0 8px;
 }
 .text-secondary {
   color: #bbb !important;
 }
-table a {
-  color: inherit;
+.text-flavor {
+  color: #cc5436 !important;
+}
+table {
+  color: #eee;
+}
+table thead {
+  color: #cc5436;
 }
 table.friends thead tr th {
   padding: 10px;

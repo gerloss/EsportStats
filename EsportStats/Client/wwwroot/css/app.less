@@ -43,6 +43,11 @@ hr {
     border-color: @flavor;
 }
 
+.lead{
+    font-size: 1.5em;
+    font-weight: normal;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
@@ -106,8 +111,7 @@ app {
 
     footer {
         min-height: 3em;
-        font-size: 12px;
-        font-style: italic;
+        font-size: 12px;        
         display: flex;
         flex-direction: column;
         justify-content: space-around;
@@ -120,7 +124,11 @@ app {
         color: @text-secondary;
 
         a {
-            color: @text-secondary;
+            color: @flavor;
+        }
+
+        .separation{
+            margin: 0 8px;
         }
     }
 }
@@ -128,6 +136,10 @@ app {
 
 .text-secondary{
     color: @text-secondary!important; //override bootstrap
+}
+
+.text-flavor{
+    color: @text-flavor!important;
 }
 
 // table and column sizes
@@ -139,8 +151,12 @@ app {
 @col-last-online-w: 200px;
 @col-matchid-w: 150px;
 
-table a{
-    color: inherit;
+table {
+    color: @text-color;
+
+    thead {
+        color: @text-flavor;
+    }
 }
 
 table.friends {

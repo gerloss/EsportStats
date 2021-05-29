@@ -212,7 +212,7 @@ namespace EsportStats.Server.Services
                 {
                     currentPlayerStat = new TopListEntryDTO
                     {
-                        Friend = playerDTOs.First(p => p.IsCurrentPlayer = true), // must exist, because earlier we set includePlayer: true
+                        Friend = playerDTOs.First(p => p.IsCurrentPlayer), // must exist, because earlier we set includePlayer: true
                         Hero = hero,
                         Value = 0
                     };

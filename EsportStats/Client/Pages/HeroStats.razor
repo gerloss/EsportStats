@@ -75,7 +75,7 @@ else
                     @foreach (var e in entries)
                     {
                         <tr class="@(e.Friend.IsCurrentPlayer ? "you" : "")">
-                            <td><img class="w-100" src="@e.Friend.Avatar" /></td>
+                            <td><img class="w-100 profile-pic" src="@e.Friend.Avatar" /></td>
                             <td>
                                 <a href="@e.Friend.ProfileUrl" target="_blank" title="@e.Friend.Name on Steam">
                                     <span>

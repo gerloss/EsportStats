@@ -1,9 +1,8 @@
 ﻿@using EsportStats.Shared.Enums
-@using System.Linq 
+@using System.Linq
 
 <div class="text-center">
-    <p class="lead">Select a hero to compare by:</p>
-
+    <p class="lead">Select a hero to compare the amount of games played.</p>
     <EditForm Model="selection" id="metric-selection">
         <div class="form-group">
             <div class="input-group">
@@ -14,7 +13,7 @@
                         enumValues.Insert(0, Hero.PleaseSelect);
                         foreach (var value in enumValues)
                         {
-                            <option value="@value" >@value.GetDisplayName()</option>
+                            <option value="@value">@value.GetDisplayName()</option>
                         }
                     }
                 </InputSelect>
@@ -28,28 +27,7 @@
 
 @if (selection.SelectedHero == Hero.PleaseSelect)
 {
-<table class="hero-stats table table-striped table-hover">
-    <thead>
-        <tr>
-            <th scope="col" colspan="2">Player</th>
-            <th scope="col" class="text-right">Matches</th>
-        </tr>
-    </thead>
-    @if (isLoading)
-    {
-        <LoadingBody />
-    }
-</table>
-    
-    @if (!isLoading)
-    {
-        <p class="text-center text-muted font-italic">No hero has been selected yet!</p>
-    }
-   
-}
-else
-{
-    <table class="hero-stats table table-striped table-hover">
+    <table class="hero-stats table">
         <thead>
             <tr>
                 <th scope="col" colspan="2">Player</th>
@@ -60,8 +38,29 @@ else
         {
             <LoadingBody />
         }
-        else 
-        { 
+    </table>
+
+    @if (!isLoading)
+    {
+        <p class="text-center text-muted font-italic">No hero has been selected yet!</p>
+    }
+
+}
+else
+{
+    <table class="hero-stats table">
+        <thead>
+            <tr>
+                <th scope="col" colspan="2">Player</th>
+                <th scope="col" class="text-right">Matches</th>
+            </tr>
+        </thead>
+        @if (isLoading)
+        {
+            <LoadingBody />
+        }
+        else
+        {
             @if (isError)
             {
                 <ErrorBody />
@@ -69,12 +68,13 @@ else
             @if (isServiceDown)
             {
                 <ServiceDownBody />
-            } else
+            }
+            else
             {
                 <tbody>
                     @foreach (var e in entries)
                     {
-                        <tr class="@(e.Friend.IsCurrentPlayer ? "font-weight-bold" : "")">
+                        <tr class="@(e.Friend.IsCurrentPlayer ? "you" : "")">
                             <td><img class="w-100" src="@e.Friend.Avatar" /></td>
                             <td>
                                 <a href="@e.Friend.ProfileUrl" target="_blank" title="@e.Friend.Name on Steam">
@@ -94,7 +94,7 @@ else
                     }
                 </tbody>
             }
-        }        
+        }
     </table>
 }
 

@@ -5,7 +5,7 @@
     <Authorized>
         <div class="row">
             <div class="d-none d-lg-inline-block col-lg-1">
-                <img class="w-100" src="@context.User.FindFirst("picture")?.Value" />
+                <img class="w-100 profile-pic" src="@context.User.FindFirst("picture")?.Value" />
             </div>
             <div class="col-md-12 col-lg-10 col-xl-5">
                 <h3>Hello @context.User.FindFirst("name")?.Value!</h3>
@@ -15,11 +15,11 @@
     </Authorized>    
 </AuthorizeView>
 
-<table class="friends table table-striped table-hover">
+<table class="friends table">
     <thead>
         <tr>
             <th scope="col" colspan="2">Player</th>
-            <th scope="col">Hours played</th>
+            <th scope="col">Time spent in Dota 2</th>
         </tr>
     </thead>
     @if (isLoaded)
@@ -27,25 +27,61 @@
         <tbody>
             @foreach (var f in friends)
             {
-                <tr class="@(f.IsCurrentPlayer ? "font-weight-bold" : "")">
-                    <td><img class="w-100" src="@f.Avatar" /></td>
-                    <td>
-                        <a href="@f.ProfileUrl" target="_blank" title="@f.Name on Steam">
-                            <span> 
-                                @f.Name 
-                            </span>
-                            @if (f.IsCurrentPlayer)
-                            {
-                                <span>(You)</span>
-                            }
-                        </a>
-                    </td>
+            <tr class="@(f.IsCurrentPlayer ? "you" : "")">
+                <td><img class="w-100 profile-pic" src="@f.Avatar" /></td>
+                <td>
+                    <a href="@f.ProfileUrl" target="_blank" title="@f.Name on Steam">
+                        <span>
+                            @f.Name
+                        </span>
+                        @if (f.IsCurrentPlayer)
+                        {
+                            <span>(You)</span>
+                        }
+                    </a>
+                </td>
 
-                    @{
-                        int hours = f.Playtime.Value / 60;
+                @{
+
+                    if (f.Playtime.HasValue)
+                    {
+                        int totalHours = f.Playtime.Value / 60;
+                        // 8760 hours in a year
+                        int daysHours = totalHours % 8760;
+                        int years = (totalHours - daysHours) / 8760;
+                        int hours = daysHours % 24;
+                        int days = (daysHours - hours) / 24;
+
+                        string output = string.Empty;
+
+                        if (years > 0)
+                        {
+                            output += years.ToString() + " year";
+                            output += years == 1 ? " " : "s ";
+                        }
+                        if (years > 0 || days > 0)
+                        {
+                            output += days.ToString() + " day";
+                            output += days == 1 ? " " : "s ";
+                        }
+                        if (years > 0 || days > 0 || hours > 0)
+                        {
+                            output += hours.ToString() + " hour";
+                            output += hours == 1 ? "" : "s";
+                        }
+                        else
+                        {
+                            output = "0 hours";
+                        }
+
+                        <td class="text-right">@output</td>
                     }
-                    <td class="text-right"> @(f.Playtime.HasValue ? $"{hours} h" : "Unknown")</td>
-                </tr>
+                    else
+                    {
+                        <td class="text-right">Unknown</td>
+                    }
+                }
+            </tr>
             }
         </tbody>      
     }

@@ -32,7 +32,7 @@
 
 @if (selection.CurrentlyDisplayed == Metric.PleaseSelect)
 {
-    <table class="toplist table table-striped table-hover">
+    <table class="toplist table">
         <thead>
             <tr>
                 <th scope="col" colspan="2">Player</th>
@@ -55,7 +55,7 @@
 }
 else
 {
-    <table class="toplist table table-striped table-hover">
+    <table class="toplist table">
         <thead>
             <tr>
                 <th scope="col" colspan="2">Player</th>
@@ -82,8 +82,8 @@ else
                 <tbody>
                     @foreach (var e in entries)
                     {
-                        <tr class="@(e.Friend.IsCurrentPlayer ? "font-weight-bold" : "")">
-                            <td><img class="w-100" src="@e.Friend.Avatar" /></td>
+                        <tr class="@(e.Friend.IsCurrentPlayer ? "you" : "")">
+                            <td><img class="w-100 pőrofile-pic" src="@e.Friend.Avatar" /></td>
                             <td>
                                 <a href="@e.Friend.ProfileUrl" target="_blank" title="@e.Friend.Name on Steam">
                                     <span>
@@ -95,14 +95,24 @@ else
                                     }
                                 </a>
                             </td>
-                            <td><img class="w-100" src="@e.Hero.GetThumbnailUrl()" /></td>
+                            <td><img class="w-100 profile-pic" src="@e.Hero.GetThumbnailUrl()" /></td>
                             <td class="text-right">
                                 <a href="https://www.opendota.com/matches/@e.MatchId" title="View match at OpenDota" target="_blank" >
                                     @e.MatchId
                                 </a>
                             </td>
                             <td class="text-right">
-                                @e.Value
+                                @if (selection.CurrentlyDisplayed == Metric.duration)
+                                {
+                                    var seconds = e.Value % 60;
+                                    var minutes = (e.Value - seconds) / 60;
+
+                                    <span>@(minutes.ToString("#00") + ":" + seconds.ToString("00"))</span>
+                                }
+                                else
+                                {
+                                    <span>@e.Value</span>
+                                }
                             </td>
                         </tr>
                     }

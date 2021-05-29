@@ -72,6 +72,9 @@ hr {
   font-size: 1.5em;
   font-weight: normal;
 }
+img.profile-pic {
+  border: solid 1px #653b34;
+}
 #blazor-error-ui {
   background: lightyellow;
   bottom: 0;
@@ -106,23 +109,32 @@ app header {
   font-family: 'Reaver', Arial, Helvetica, sans-serif;
   color: #eee;
 }
-app header nav .current-user img {
+app header nav.navbar {
+  padding: 0.75em;
+}
+app header nav.navbar .current-user img {
   width: 32px;
   height: 32px;
+  margin-right: 8px;
 }
-app header nav .navbar-toggler {
+app header nav.navbar .current-user a.nav-link {
+  display: inline-block;
+  margin-left: -4px;
+  margin-right: -4px;
+}
+app header nav.navbar .navbar-toggler {
   border: solid 1px #fff;
   border-radius: 4px;
   padding: 0.5em;
   margin-left: auto;
 }
-app header nav .navbar-toggler:focus {
+app header nav.navbar .navbar-toggler:focus {
   outline-color: #cc5436;
 }
-app header nav .navbar-toggler .navbar-toggler-icon {
+app header nav.navbar .navbar-toggler .navbar-toggler-icon {
   position: relative;
 }
-app header nav .navbar-toggler .navbar-toggler-icon:before {
+app header nav.navbar .navbar-toggler .navbar-toggler-icon:before {
   content: "";
   display: block;
   position: absolute;
@@ -132,6 +144,9 @@ app header nav .navbar-toggler .navbar-toggler-icon:before {
   height: 2px;
   background-color: #fff;
   box-shadow: 0px 10px 0px #fff, 0px 20px 0px #fff;
+}
+app header nav.navbar a.nav-link.active {
+  color: #bbb;
 }
 app header .logout {
   font-weight: normal;
@@ -171,6 +186,26 @@ app footer .separation {
 .text-flavor {
   color: #cc5436 !important;
 }
+button.btn.btn-primary {
+  background-color: #cc5436;
+  border-color: #653b34 !important;
+  outline-color: #653b34 !important;
+}
+button.btn.btn-primary:active {
+  background-color: #653b34 !important;
+}
+button.btn.btn-primary:focus {
+  box-shadow: 0 0 0 0.2rem rgba(204, 84, 54, 0.5) !important;
+}
+input.form-control,
+select.form-control {
+  outline-color: #653b34 !important;
+  border-color: #653b34 !important;
+}
+input.form-control:focus,
+select.form-control:focus {
+  box-shadow: 0 0 0 0.2rem rgba(204, 84, 54, 0.5);
+}
 table.table {
   color: #eee;
 }
@@ -186,6 +221,26 @@ table.table thead tr th {
 table.table thead tr th:first-of-type {
   padding: 10px 4px;
 }
+table.table thead tr th:last-of-type {
+  text-align: right;
+  padding-right: 4px;
+}
+table.table tbody tr:nth-of-type(odd) {
+  background-color: rgba(100, 100, 100, 0.1);
+}
+table.table tbody tr:nth-of-type(even) {
+  background-color: rgba(100, 100, 100, 0.2);
+}
+table.table tbody tr:hover {
+  background-color: rgba(101, 59, 52, 0.5);
+}
+table.table tbody tr.you {
+  background-color: rgba(101, 59, 52, 0.5);
+  font-weight: bold;
+}
+table.table tbody tr td:last-of-type {
+  font-weight: bold;
+}
 table.friends tbody tr td {
   padding: 4px 10px;
   vertical-align: middle;
@@ -195,7 +250,7 @@ table.friends tbody tr td:first-of-type {
   width: 45px;
 }
 table.friends tbody tr td:nth-of-type(3) {
-  width: 140px;
+  width: 220px;
 }
 table.friends tbody tr td:nth-of-type(4) {
   width: 200px;
@@ -255,8 +310,20 @@ form#metric-selection .form-group {
   margin-left: auto;
   margin-right: auto;
 }
-ul#heroes-tabs-selector span:hover {
+ul#heroes-tabs-selector {
+  border-color: #653b34;
+}
+ul#heroes-tabs-selector span.nav-link {
+  font-family: 'Reaver', Arial, Helvetica, sans-serif;
+}
+ul#heroes-tabs-selector span.nav-link.active {
+  background-color: #cc5436;
+  border-color: #cc5436;
+  color: #eee;
+}
+ul#heroes-tabs-selector span.nav-link:hover {
   cursor: pointer;
+  border-color: #653b34;
 }
 #heroes-tabs {
   padding-top: 20px;

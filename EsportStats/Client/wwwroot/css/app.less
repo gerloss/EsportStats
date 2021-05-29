@@ -54,6 +54,10 @@ hr {
     font-weight: normal;
 }
 
+img.profile-pic{
+    border: solid 1px @flavor;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
@@ -90,11 +94,20 @@ app {
         font-family: 'Reaver', Arial, Helvetica, sans-serif;
         color: @text-color;
 
-        nav {
+        nav.navbar {
+            padding: 0.75em;
+
             .current-user {
                 img {
                     width: 32px;
                     height: 32px;
+                    margin-right: 8px;
+                }
+
+                a.nav-link {
+                    display: inline-block;
+                    margin-left: -4px;
+                    margin-right: -4px;
                 }
             }
 
@@ -104,8 +117,8 @@ app {
                 padding: .5em;
                 margin-left: auto;
 
-                &:focus{
-                    outline-color: @text-flavor;                    
+                &:focus {
+                    outline-color: @text-flavor;
                 }
 
                 .navbar-toggler-icon {
@@ -124,6 +137,10 @@ app {
                         box-shadow: 0px @offset 0px @text-url, 0px 2*@offset 0px @text-url;
                     }
                 }
+            }
+
+            a.nav-link.active{
+                color: @text-url-hover;
             }
         }
 
@@ -168,12 +185,40 @@ app {
 }
 
 
+// some ugly !important rules here to quickly override bootstrap
 .text-secondary{
-    color: @text-secondary!important; //override bootstrap
+    color: @text-secondary!important; 
 }
 
 .text-flavor{
     color: @text-flavor!important;
+}
+
+button.btn {
+    &.btn-primary {
+        background-color: @text-flavor;
+        border-color: @flavor !important;
+        outline-color: @flavor !important;
+
+        &:active {
+            background-color: @flavor !important;            
+        }
+
+        &:focus {
+            box-shadow: 0 0 0 0.2rem fadeout(@text-flavor, 50%) !important;
+        }
+    }
+}
+
+input, select {
+    &.form-control {
+        outline-color: @flavor !important;
+        border-color: @flavor !important;
+
+        &:focus {
+            box-shadow: 0 0 0 0.2rem fadeout(@text-flavor, 50%);
+        }
+    }
 }
 
 // table and column sizes
@@ -181,7 +226,7 @@ app {
 @table-pad-sm: 4px;
 @col-image-w: 45px;
 @col-hero-w: 59px;
-@col-hours-w: 140px;
+@col-hours-w: 220px;
 @col-last-online-w: 200px;
 @col-matchid-w: 150px;
 
@@ -199,6 +244,36 @@ table.table {
 
             &:first-of-type {
                 padding: @table-pad @table-pad-sm;
+            }
+
+            &:last-of-type {
+                text-align: right;
+                padding-right: @table-pad-sm;
+            }
+        }
+    }
+
+    tbody {
+        tr {
+            &:nth-of-type(odd) {
+                background-color: @table-bg;
+            }
+
+            &:nth-of-type(even) {
+                background-color: @table-bg-alt;
+            }
+
+            &:hover {
+                background-color: @table-bg-hover;
+            }
+
+            &.you {
+                background-color: @table-bg-hover;
+                font-weight: bold;
+            }
+
+            td:last-of-type {
+                font-weight: bold;
             }
         }
     }
@@ -315,8 +390,21 @@ form#metric-selection{
 }
 
 ul#heroes-tabs-selector {
-    span:hover {
-        cursor: pointer;
+    border-color: @flavor;
+
+    span.nav-link {        
+        font-family: 'Reaver', Arial, Helvetica, sans-serif;
+
+        &.active {
+            background-color: @text-flavor;
+            border-color: @text-flavor;
+            color: @text-color;
+        }
+
+        &:hover {
+            cursor: pointer;
+            border-color: @flavor;
+        }
     }
 }
 

@@ -46,6 +46,7 @@ namespace EsportStats.Client.Pages
                     entries = result;
                     selection.CurrentlyDisplayed = selection.Selected;
                     isLoading = false;
+                    isError = false;
                 }
                 else
                 {

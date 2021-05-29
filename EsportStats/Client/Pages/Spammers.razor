@@ -1,9 +1,11 @@
 ﻿@using EsportStats.Shared.DTO
 @using EsportStats.Shared.Enums
 
-<p>The biggest hero spammers: Players who played the most amount of games on a single hero:</p>
 
-<table class="spammers table table-striped table-hover">
+<div class="text-center">
+    <p class="lead">The biggest hero spammers: Players who played the most amount of games on a single hero.</p>
+</div>
+<table class="spammers table">
     <thead>
         <tr>
             <th scope="col" colspan="2">Player</th>
@@ -26,7 +28,7 @@
             <tbody>
                 @foreach (var e in entries)
                 {
-                    <tr class="@(e.Friend.IsCurrentPlayer ? "font-weight-bold" : "")">
+                    <tr class="@(e.Friend.IsCurrentPlayer ? "you" : "")">
                         <td><img class="w-100" src="@e.Friend.Avatar" /></td>
                         <td>
                             <a href="@e.Friend.ProfileUrl" target="_blank" title="@e.Friend.Name on Steam">

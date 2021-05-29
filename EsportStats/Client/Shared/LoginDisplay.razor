@@ -9,15 +9,15 @@
 
 <AuthorizeView>
     <Authorized>
-        <li class="current-user">
-            <img class="d-none d-lg-inline" src="@context.User.FindFirst("picture")?.Value" /> 
-            <a href="@context.User.FindFirst("profile")?.Value" target="_blank">@context.User.FindFirst("name")?.Value</a>
+        <li class="nav-item current-user">
+            <img class="d-none d-lg-inline profile-pic" src="@context.User.FindFirst("picture")?.Value" /> 
+            <a class="nav-link" href="@context.User.FindFirst("profile")?.Value" target="_blank">@context.User.FindFirst("name")?.Value</a>
             <span class="logout" @onclick="BeginSignOut">(Log out)</span>
         </li>
     </Authorized>
     <NotAuthorized>
-        <li>
-            <a href="authentication/login"><img src="https://steamcdn-a.akamaihd.net/steamcommunity/public/images/steamworks_docs/english/sits_small.png" alt="Sign in through Steam" title="Sign in through Steam" /></a>
+        <li class="nav-item">
+            <a class="nav-link" href="authentication/login"><img src="https://steamcdn-a.akamaihd.net/steamcommunity/public/images/steamworks_docs/english/sits_small.png" alt="Sign in through Steam" title="Sign in through Steam" /></a>
         </li>
     </NotAuthorized>
 </AuthorizeView>

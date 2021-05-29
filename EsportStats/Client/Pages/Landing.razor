@@ -1,4 +1,6 @@
-﻿<div class="row">
+﻿@inject IJSRuntime JSRuntime
+
+<div class="row">
     <div class="col-md-7">
         <h1>Dota 2 Friend Stats</h1>
 
@@ -30,3 +32,17 @@
         </p>
     </div>
 </div>
+
+@code{
+
+    private async void WriteCookie(string name, string value, int days)
+    {
+        var ret = await JSRuntime.InvokeAsync<string>("methods.WriteCookie", name, value, days);
+    }
+
+    private async Task<string> ReadCookie(string cname)
+    {
+        var ret = await JSRuntime.InvokeAsync<string>("methods.ReadCookie", cname);
+        return ret;
+    }
+}

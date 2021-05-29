@@ -1,38 +1,53 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 @font-face {
   font-family: 'Reaver';
-  src: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-Bold.woff.eot');
-  src: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-Bold.woff.eot?#iefix') format('embedded-opentype'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-Bold.woff.woff2') format('woff2'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-Bold.woff.woff') format('woff'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-Bold.woff.ttf') format('truetype'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-Bold.woff.svg#svgFontName') format('svg');
+  src: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-Bold.woff');
   font-weight: bold;
   font-style: normal;
 }
 @font-face {
   font-family: 'Reaver';
-  src: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-SemiBold.woff.eot');
-  src: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-SemiBold.woff.eot?#iefix') format('embedded-opentype'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-SemiBold.woff.woff2') format('woff2'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-SemiBold.woff.woff') format('woff'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-SemiBold.woff.ttf') format('truetype'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-SemiBold.woff.svg#svgFontName') format('svg');
+  src: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/Reaver-SemiBold.woff');
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
   font-family: 'Radiance';
-  src: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance-semibold.woff.eot');
-  src: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance-semibold.woff.eot?#iefix') format('embedded-opentype'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance-semibold.woff.woff2') format('woff2'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance-semibold.woff.woff') format('woff'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance-semibold.woff.ttf') format('truetype'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance-semibold.woff.svg#svgFontName') format('svg');
+  src: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance-semibold.woff');
   font-weight: bold;
   font-style: normal;
 }
 @font-face {
   font-family: 'Radiance';
-  src: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance.woff.eot');
-  src: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance.woff.eot?#iefix') format('embedded-opentype'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance.woff.woff2') format('woff2'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance.woff.woff') format('woff'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance.woff.ttf') format('truetype'), url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance.woff.svg#svgFontName') format('svg');
+  src: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/fonts/radiance.woff');
   font-weight: normal;
   font-style: normal;
 }
 html,
 body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  color: #333;
+  font-family: 'Radiance', Helvetica, Arial, sans-serif;
+  color: #eee;
   height: 100vh;
   position: relative;
+}
+body {
+  background-image: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/backgrounds/featured.jpg');
+  background-repeat: repeat-y;
+  background-color: #151618;
+  background-position: center;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Reaver', Arial, Helvetica, sans-serif;
+}
+h1,
+h2,
+h3 {
+  font-weight: bold;
 }
 #blazor-error-ui {
   background: lightyellow;
@@ -57,6 +72,17 @@ app {
   display: flex;
   flex-direction: column;
 }
+app header nav {
+  display: block;
+  background-image: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/backgrounds/featured.jpg');
+  background-repeat: repeat-y;
+  background-color: #151618;
+  background-position: center;
+  background-size: cover;
+  box-shadow: 0 0 7px black;
+  font-family: 'Reaver', Arial, Helvetica, sans-serif;
+  color: #eee;
+}
 app header nav .current-user img {
   width: 32px;
   height: 32px;
@@ -73,6 +99,9 @@ app footer {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+}
+.text-secondary {
+  color: #bbb !important;
 }
 table a {
   color: inherit;

@@ -1,6 +1,8 @@
 ﻿// Variables like reused colors and sizes should be here.
 
-@text-color: #333;
+@text-color: #eee;
+@text-secondary: #bbb;
+
 @gray-light: #f7f7f7;
 @gray: #555;
 
@@ -11,8 +13,7 @@
 .font-face(@font-family, @filepath, @font-weight, @font-style) {
     @font-face {
         font-family: @font-family;
-        src: url('@{filepath}.eot');
-        src: url('@{filepath}.eot?#iefix') format('embedded-opentype'), url('@{filepath}.woff2') format('woff2'), url('@{filepath}.woff') format('woff'), url('@{filepath}.ttf') format('truetype'), url('@{filepath}.svg#svgFontName') format('svg');
+        src: url('@{filepath}');        
         font-weight: @font-weight;
         font-style: @font-style;
     }

@@ -2,10 +2,25 @@
 @import url('variables.less');
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Radiance', Helvetica, Arial, sans-serif;
     color: @text-color;
     height: 100vh;
     position: relative;
+}
+
+body {
+    background-image: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/backgrounds/featured.jpg');
+    background-repeat: repeat-y;
+    background-color: #151618;
+    background-position: center;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Reaver', Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3 {
+    font-weight: bold;
 }
 
 #blazor-error-ui {
@@ -34,13 +49,25 @@ app {
     flex-direction: column;
 
     header {
-        nav .current-user{
-            img{
-                width: 32px;
-                height: 32px;
+        nav {
+            display: block;
+            background-image: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/backgrounds/featured.jpg');
+            background-repeat: repeat-y;
+            background-color: #151618;
+            background-position: center;
+            background-size: cover;
+            box-shadow: 0 0 7px black;
+
+            font-family: 'Reaver', Arial, Helvetica, sans-serif;
+            color: @text-color;
+
+            .current-user {
+                img {
+                    width: 32px;
+                    height: 32px;
+                }
             }
         }
-        
     }
 
     main {
@@ -55,8 +82,13 @@ app {
         background-color: @gray-light;
         display: flex;
         flex-direction: column;
-        justify-content: space-around;        
+        justify-content: space-around;
     }
+}
+
+
+.text-secondary{
+    color: @text-secondary!important; //override bootstrap
 }
 
 // table and column sizes

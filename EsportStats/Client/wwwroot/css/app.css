@@ -144,16 +144,19 @@ app footer .separation {
 .text-flavor {
   color: #cc5436 !important;
 }
-table {
+table.table {
   color: #eee;
 }
-table thead {
+table.table thead {
   color: #cc5436;
+  font-size: 1.1em;
 }
-table.friends thead tr th {
+table.table thead tr th {
   padding: 10px;
+  border-top: none;
+  border-bottom-color: #653b34;
 }
-table.friends thead tr th:first-of-type {
+table.table thead tr th:first-of-type {
   padding: 10px 4px;
 }
 table.friends tbody tr td {
@@ -169,12 +172,6 @@ table.friends tbody tr td:nth-of-type(3) {
 }
 table.friends tbody tr td:nth-of-type(4) {
   width: 200px;
-}
-table.toplist thead tr th {
-  padding: 10px;
-}
-table.toplist thead tr th:first-of-type {
-  padding: 10px 4px;
 }
 table.toplist thead tr th:nth-of-type(2) {
   padding: 10px 0;
@@ -198,12 +195,6 @@ table.toplist tbody tr td:nth-of-type(3) {
 table.toplist tbody tr td:nth-of-type(4) {
   width: 150px;
 }
-table.spammers thead tr th {
-  padding: 10px;
-}
-table.spammers thead tr th:first-of-type {
-  padding: 10px 4px;
-}
 table.spammers thead tr th:nth-of-type(2) {
   padding: 10px 0;
   width: 59px;
@@ -223,12 +214,6 @@ table.spammers tbody tr td:first-of-type {
 table.spammers tbody tr td:nth-of-type(3) {
   padding: 4px 0;
   width: 59px;
-}
-table.hero-stats thead tr th {
-  padding: 10px;
-}
-table.hero-stats thead tr th:first-of-type {
-  padding: 10px 4px;
 }
 table.hero-stats tbody tr td {
   padding: 4px 10px;

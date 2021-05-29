@@ -151,23 +151,26 @@ app {
 @col-last-online-w: 200px;
 @col-matchid-w: 150px;
 
-table {
+table.table {
     color: @text-color;
 
     thead {
         color: @text-flavor;
+        font-size: 1.1em;
+
+        tr th {
+            padding: @table-pad;
+            border-top: none;
+            border-bottom-color: @flavor;
+
+            &:first-of-type {
+                padding: @table-pad @table-pad-sm;
+            }
+        }
     }
 }
 
 table.friends {
-    thead tr th {
-        padding: @table-pad;
-
-        &:first-of-type {
-            padding: @table-pad @table-pad-sm;
-        }
-    }
-
     tbody tr {
         td {
             padding: @table-pad-sm @table-pad;
@@ -191,11 +194,6 @@ table.friends {
 
 table.toplist {
     thead tr th {
-        padding: @table-pad;
-
-        &:first-of-type {
-            padding: @table-pad @table-pad-sm;
-        }
 
         &:nth-of-type(2) {
             padding: @table-pad 0;
@@ -231,12 +229,6 @@ table.toplist {
 
 table.spammers {
     thead tr th {
-        padding: @table-pad;
-
-        &:first-of-type {
-            padding: @table-pad @table-pad-sm;
-        }
-
         &:nth-of-type(2) {
             padding: @table-pad 0;
             width: @col-hero-w;
@@ -267,14 +259,6 @@ table.spammers {
 }
 
 table.hero-stats {
-    thead tr th {
-        padding: @table-pad;
-
-        &:first-of-type {
-            padding: @table-pad @table-pad-sm;
-        }
-    }
-
     tbody tr {
         td {
             padding: @table-pad-sm @table-pad;

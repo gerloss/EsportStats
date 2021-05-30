@@ -411,3 +411,58 @@ ul#heroes-tabs-selector {
 #heroes-tabs{
     padding-top: 20px;
 }
+
+
+.modal-wrapper {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    background-color: rgba(60,60,60,0.5);
+    z-index: 9999;
+
+    &.show {
+        display: block;
+    }
+
+    &.hide {
+        display: none;
+    }
+
+
+    #modal {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #151618;
+        background-image: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/backgrounds/featured.jpg');
+        background-repeat: repeat-y;
+        background-position: center;
+        padding: 20px;
+        box-shadow: 0px 3px 7px fadeout(black, 50%);
+        border: solid 1px @flavor;
+        max-width: 700px;
+        min-width: 380px;
+
+        h4, .lead {
+            text-align: center;
+        }
+
+        p {
+            margin-bottom: 0.5em;
+            text-align: justify;
+
+            &.text-secondary {
+                margin: 2em 0;
+                text-align: center;
+            }
+        }
+
+        div:last-of-type {
+            text-align: center;
+        }
+    }
+}

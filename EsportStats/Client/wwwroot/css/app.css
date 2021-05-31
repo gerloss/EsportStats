@@ -174,8 +174,9 @@ app footer {
   box-shadow: inset 0 0 7px black;
   color: #bbb;
 }
-app footer a {
-  color: #653b34;
+app footer a,
+app footer a:visited {
+  color: #cc5436;
 }
 app footer .separation {
   margin: 0 8px;

@@ -21,6 +21,8 @@ using Hellang.Middleware.ProblemDetails;
 using System;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace EsportStats.Server
 {
@@ -59,9 +61,25 @@ namespace EsportStats.Server
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
+            // Setup custom data format to reduce size of the state token by caching claims on the server for every token
+            // TODO: move this into Configure
+            var schemeName = "EsportStats";
+            var serviceProvider = services.BuildServiceProvider();
+            var dataProtectionProvider = serviceProvider.GetRequiredService<IDataProtectionProvider>();
+            var distributedCache = serviceProvider.GetRequiredService<IDistributedCache>();
+
+            var dataProtector = dataProtectionProvider.CreateProtector(
+                SteamAuthenticationDefaults.AuthenticationScheme,
+                typeof(string).FullName, schemeName,
+                "v1");
+
+            var dataFormat = new CachedPropertiesDataFormat(distributedCache, dataProtector);
+
             services.AddAuthentication()
                 .AddIdentityServerJwt()
-                .AddSteam();
+                .AddSteam( opt => {
+                    opt.StateDataFormat = dataFormat;
+                });
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -78,8 +96,6 @@ namespace EsportStats.Server
                 options.MapToStatusCode<ApiArgumentException>(StatusCodes.Status400BadRequest);
                 options.MapToStatusCode<ApiArgumentNullException>(StatusCodes.Status400BadRequest);
                 options.MapToStatusCode<ApiArgumentOutOfRangeException>(StatusCodes.Status400BadRequest);
-
-
             });
 
             var steamOptions = new SteamOptions();
@@ -128,7 +144,7 @@ namespace EsportStats.Server
             app.UseCookiePolicy();
             app.UseIdentityServer();
             app.UseAuthentication();
-            app.UseAuthorization();                         
+            app.UseAuthorization();                                     
 
             app.UseEndpoints(endpoints =>
             {

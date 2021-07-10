@@ -110,17 +110,10 @@ namespace EsportStats.Server.Areas.Identity.Pages.Account
                 // If the user does not have an account, then create one automatically.
                 // In case of Steam OpenID Provider, the returned Claimed ID will contain the user's 64 bit SteamID.                
                 // More info at: https://steamcommunity.com/dev
-
-                var claim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-                if (claim == null)
-                {
-                    ErrorMessage = "Steam login unsuccessful.";
-                    return RedirectToPage("./Login");
-                }
+                                
+                ulong steamId = Convert.ToUInt64(info.ProviderKey.Split('/', StringSplitOptions.RemoveEmptyEntries).Last());
 
                 // The Claimed ID format is: https://steamcommunity.com/openid/id/<steamid>
-                var formattedId = claim.Value;
-                ulong steamId = Convert.ToUInt64(formattedId.Split('/', StringSplitOptions.RemoveEmptyEntries).Last());
 
                 var steamProfile = await _steamService.GetSteamProfileExternalAsync(steamId);
 
